@@ -1,4 +1,4 @@
 /**
- * Created by lpp on 5/3/15.
+ * @author Neven Miculini&#x107; neven.miculinic@gmail.com
  */
 package hr.best.ai.exceptions;

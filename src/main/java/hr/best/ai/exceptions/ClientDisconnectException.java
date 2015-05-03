@@ -1,7 +1,7 @@
 package hr.best.ai.exceptions;
 
 /**
- * Created by lpp on 5/3/15.
+ * Exception arising when client disconnects or some other error occurs with TCP connection.
  */
-public class ClientDisconnectException extends RuntimeException{
+public class ClientDisconnectException extends Exception {
 }

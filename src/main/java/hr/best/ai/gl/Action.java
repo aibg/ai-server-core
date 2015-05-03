@@ -1,7 +1,7 @@
 package hr.best.ai.gl;
 
 /**
- * Created by lpp on 5/3/15.
+ * Interface marking this class is an action class
  */
 public interface Action {
 }

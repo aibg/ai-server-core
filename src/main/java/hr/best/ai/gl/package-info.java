@@ -1,4 +1,4 @@
 /**
- * Created by lpp on 5/3/15.
+ * Package containing basic game logic primitives.
  */
 package hr.best.ai.gl;

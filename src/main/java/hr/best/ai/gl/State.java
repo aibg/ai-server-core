@@ -10,7 +10,10 @@ import java.util.List;
  */
 public interface State {
     public boolean isFinal();
+
     public JsonObject toJSONObject();
+
     public State nextState(List<Action> actionList);
+
     Action parseAction(JsonObject action) throws InvalidActionException;
 }

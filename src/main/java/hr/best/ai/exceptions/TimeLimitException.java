@@ -1,7 +1,7 @@
 package hr.best.ai.exceptions;
 
 /**
- * Created by lpp on 5/3/15.
+ * Exception arising when time allocated per player is
  */
-public class TimeLimitException extends RuntimeException{
+public class TimeLimitException extends Exception {
 }
