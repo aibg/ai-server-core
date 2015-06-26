@@ -3,17 +3,13 @@ package hr.best.ai;
 import com.google.gson.JsonObject;
 import hr.best.ai.gl.Action;
 import hr.best.ai.gl.State;
-import hr.best.ai.server.ClientThread;
+import hr.best.ai.server.IClient;
 import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
-
-// Ovo treba zesci rewrite.... staviti jednu worker dretvu koja radi sve dok joj ostale salju svoje funkcije da
-// izvrse u queue; kao u swingu invokeLater da ne bi bilo problema; previse toga moram onda stavljati volotile jbt.
-// Tim pristupom cu rjesiti dobar dio potencijalnih problema. Covjece o cemu sve covijek mora razmisljati.
 
 /**
  * Main class which surrounds whole play of one game. Game can be in one of three states, contained in enum GS. Those
@@ -46,7 +42,7 @@ public class GameContext {
      * Services for players
      */
 
-    private final List<ClientThread> clients;
+    private final List<IClient> clients;
     private volatile int noPlayers = 0;
     private volatile int noCommitted = 0;
     private volatile Action[] actions;
@@ -63,12 +59,12 @@ public class GameContext {
      * @param client
      * @return player ID
      */
-    public synchronized int registerPlayer(ClientThread client) {
+    public synchronized int registerPlayer(IClient client) {
         clients.add(client);
         return noPlayers++;
     }
 
-    public synchronized List<ClientThread> getPlayers() {
+    public synchronized List<IClient> getPlayers() {
         return clients;
     }
 
@@ -78,7 +74,7 @@ public class GameContext {
      * @param e error in question.
      */
     public synchronized void signalError(int playerID, Exception e) {
-        for (ClientThread cl : clients) {
+        for (IClient cl : clients) {
             cl.sendError("Error happened: " + e.toString());
             cl.signalCompleted("ERROR");
         }
@@ -125,7 +121,7 @@ public class GameContext {
             throw new IllegalStateException("Impossible to iterate if we're not playing");
         state = state.nextState(Arrays.asList(actions));
 
-        for (ClientThread cl : clients) {
+        for (IClient cl : clients) {
             cl.signalNewState(state);
             if (state.isFinal())
                 cl.signalCompleted("Game Finished. We have a winner");
@@ -145,6 +141,8 @@ public class GameContext {
      */
     private synchronized void bookkeeping() {
 
+        System.out.println("Bookkeeping start");
+
         StringBuilder sb = new StringBuilder();
         boolean over = false;
 
@@ -153,11 +151,12 @@ public class GameContext {
                 sb.append("player [" + i + "] has overstepped its time limit");
                 over = true;
             }
+            System.out.println("player [" + i + "], remaining:" + buckets[i].getMills());
         }
 
         if (over) {
             gamestate = GS.STOP;
-            for (ClientThread cl : clients)
+            for (IClient cl : clients)
                 cl.sendError(sb.toString());
         }
     }
@@ -171,10 +170,9 @@ public class GameContext {
 
         actions = new Action[noPlayers];
         buckets = new IBucket[noPlayers];
-        for (int i = 0; i < buckets.length; ++i)
-            buckets[i] = supplier.get();
 
-        for (ClientThread cl : clients) {
+
+        for (IClient cl : clients) {
             cl.signalNewState(state);
             if (state.isFinal())
                 cl.signalCompleted("Game Finished. We have a winner");
@@ -191,6 +189,11 @@ public class GameContext {
                 }
             }
         }).start();
+
+        for (int i = 0; i < buckets.length; ++i) {
+            buckets[i] = supplier.get();
+            buckets[i].tick();
+        }
 
     }
 

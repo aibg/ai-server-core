@@ -27,7 +27,7 @@ public class Bucket implements IBucket {
         long dt = java.lang.System.currentTimeMillis() - ticks;
         currentSize -= dt;
 
-        ticks += 100000; /// TODO: Correct this hack...I'm hungry. It should be something enormous.
+        ticks += 1000000; /// TODO: Correct this hack...I'm hungry. It should be something enormous.
 
         if (currentSize < 0) {
             return false;
@@ -41,6 +41,11 @@ public class Bucket implements IBucket {
 
     @Override
     public synchronized boolean ok() {
-        return currentSize - (java.lang.System.currentTimeMillis() - ticks) > 0;
+        return getMills() > 0;
+    }
+
+    @Override
+    public long  getMills() {
+        return currentSize - (java.lang.System.currentTimeMillis() - ticks);
     }
 }

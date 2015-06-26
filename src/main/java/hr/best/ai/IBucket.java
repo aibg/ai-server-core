@@ -20,4 +20,10 @@ public interface IBucket {
      * @return true if there's more time.
      */
     public boolean ok();
+
+    /**
+     *
+     * @return how many miliseconds the players has left
+     */
+    public long getMills();
 }
