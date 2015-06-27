@@ -1,6 +1,7 @@
 package hr.best.ai.gl;
 
 import com.google.gson.JsonObject;
+import hr.best.ai.exceptions.InvalidActionException;
 import hr.best.ai.server.IClient;
 import sun.plugin.dom.exception.InvalidStateException;
 
@@ -22,34 +23,29 @@ public class GameContext {
 
     // Bookkeeping time in ms.
     private final static int UPDATE_TIME = 10;
+    /**
+     * Services for players
+     */
 
+    private final List<IClient> clients;
+    private final Supplier<IBucket> supplier;
+
+    /**
+     * Services for observers
+     * LATER.. fuck the observers
+     * */
     private volatile State state;
+    private volatile int noPlayers = 0;
+    private volatile int noCommitted = 0;
+    private volatile Action[] actions;
+    private volatile IBucket[] buckets;
+    private GS gamestate = GS.INIT;
 
     public GameContext(State state, Supplier<IBucket> iBucketSupplier) {
         this.state = state;
         this.supplier = iBucketSupplier;
         clients = new ArrayList<>();
     }
-
-    /**
-     * Services for observers
-     * LATER.. fuck the observers
-     * */
-
-    /**
-     * Services for players
-     */
-
-    private final List<IClient> clients;
-    private volatile int noPlayers = 0;
-    private volatile int noCommitted = 0;
-    private volatile Action[] actions;
-    private volatile IBucket[] buckets;
-    private final Supplier<IBucket> supplier;
-
-    private GS gamestate = GS.INIT;
-
-    public static enum GS {INIT, STOP, PLAY}
 
     /**
      * Register a player to game context. Returns player ID which is used in all subsequent calls to this Game Context.
@@ -225,4 +221,13 @@ public class GameContext {
         sol.add("current State", state.toJSONObject());
         return sol;
     }
+
+    public synchronized Action parseAction(JsonObject obj) throws InvalidActionException {
+        if (gamestate == GS.PLAY) {
+            return state.parseAction(obj);
+        } else
+            throw new InvalidStateException("Game is not currently playing");
+    }
+
+    public static enum GS {INIT, STOP, PLAY}
 }
