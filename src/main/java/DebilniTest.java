@@ -1,13 +1,15 @@
-import hr.best.ai.Bucket;
-import hr.best.ai.GameContext;
 import hr.best.ai.games.sum.SumAction;
 import hr.best.ai.games.sum.SumState;
+import hr.best.ai.gl.Bucket;
+import hr.best.ai.gl.GameContext;
 import hr.best.ai.gl.State;
 import hr.best.ai.server.ClientThreadDummy;
 import hr.best.ai.server.IClient;
+import hr.best.ai.server.Server;
 
 public class DebilniTest {
-    public static void main(String[] args) {
+
+    static void f1() {
         State st = new SumState(0);
 
         GameContext gc = new GameContext(st, () -> new Bucket(10,10,10));
@@ -33,5 +35,14 @@ public class DebilniTest {
         System.out.println(java.lang.System.currentTimeMillis());
 
         gc.stopGame();
+    }
+
+    static void f2() {
+        Server a = new Server(1337);
+        a.start();
+    }
+
+    public static void main(String[] args) {
+        f2();
     }
 }

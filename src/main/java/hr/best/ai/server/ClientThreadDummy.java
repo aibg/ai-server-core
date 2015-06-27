@@ -1,11 +1,8 @@
 package hr.best.ai.server;
 
-import hr.best.ai.GameContext;
+import hr.best.ai.gl.GameContext;
 import hr.best.ai.gl.State;
 
-/**
- * Created by lpp on 5/3/15.
- */
 public class ClientThreadDummy implements IClient {
 
     private final int id;

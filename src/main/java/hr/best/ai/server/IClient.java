@@ -2,13 +2,11 @@ package hr.best.ai.server;
 
 import hr.best.ai.gl.State;
 
-/**
- * Created by lpp on 6/26/15.
- */
 public interface IClient {
-    void sendError(String message);
 
-    void signalNewState(State state);
+    public void sendError(String message);
 
-    void signalCompleted(String message);
+    public void signalNewState(State state);
+
+    public void signalCompleted(String message);
 }

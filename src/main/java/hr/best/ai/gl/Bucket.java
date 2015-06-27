@@ -1,4 +1,4 @@
-package hr.best.ai;
+package hr.best.ai.gl;
 
 public class Bucket implements IBucket {
 

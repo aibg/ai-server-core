@@ -1,8 +1,6 @@
-package hr.best.ai;
+package hr.best.ai.gl;
 
 import com.google.gson.JsonObject;
-import hr.best.ai.gl.Action;
-import hr.best.ai.gl.State;
 import hr.best.ai.server.IClient;
 import sun.plugin.dom.exception.InvalidStateException;
 
