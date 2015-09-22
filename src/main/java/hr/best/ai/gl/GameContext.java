@@ -1,10 +1,12 @@
 package hr.best.ai.gl;
 
+import hr.best.ai.exceptions.InvalidActionException;
 import org.apache.log4j.Logger;
 import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -73,8 +75,16 @@ public class GameContext {
                 }
 
                 List<Action> actions = new ArrayList<>();
-                for (Future<Action> ac : actionsF)
-                    actions.add(ac.get());
+                for (int i = 0; i < players.size(); ++i) {
+                    try {
+                        actions.add(actionsF.get(i).get());
+                    } catch (ExecutionException e) {
+                        Exception ex = (Exception) e.getCause();
+                        logger.error(players.get(i).getName(), ex);
+                        players.get(i).sendError("[ERROR]:" + ex.toString());
+                        throw  ex;
+                    }
+                }
 
                 state = state.nextState(actions);
             }

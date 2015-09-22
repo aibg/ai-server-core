@@ -38,15 +38,23 @@ public class ClientThread implements IPlayer{
     public Action signalNewState(State state) throws IOException, InvalidActionException {
         logger.debug("Client[" + socket.getInetAddress() + "] State: " + state.toJSONObject().toString());
         writer.println(state.toJSONObject().toString());
-        return state.parseAction(
-                parser.parse(reader.readLine()).getAsJsonObject()
-        );
+        String line = reader.readLine();
+        try {
+            return state.parseAction(parser.parse(line).getAsJsonObject());
+        } catch (IllegalStateException ex) {
+            throw new InvalidActionException(ex);
+        }
     }
 
     @Override
     public void signalCompleted(String message) {
         logger.debug("Client[" + socket.getInetAddress() + "] has signal Completed. Message " + message);
         writer.println(message);
+    }
+
+    @Override
+    public String getName() {
+        return socket.toString();
     }
 
     @Override

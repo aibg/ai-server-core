@@ -11,4 +11,6 @@ public interface IPlayer extends AutoCloseable {
     public Action signalNewState(State state) throws IOException, InvalidActionException;
 
     public void signalCompleted(String message);
+
+    public String getName();
 }
