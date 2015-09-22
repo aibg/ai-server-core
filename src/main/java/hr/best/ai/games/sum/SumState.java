@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import hr.best.ai.exceptions.InvalidActionException;
 import hr.best.ai.gl.Action;
 import hr.best.ai.gl.State;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public class SumState implements State {
     private int sum = 0;
+    final static Logger logger = Logger.getLogger(SumState.class);
 
     public SumState(int init) {
         sum = init;
@@ -27,6 +29,12 @@ public class SumState implements State {
         JsonObject sol = new JsonObject();
         sol.addProperty("value", sum);
         return sol;
+    }
+
+    @Override
+    public String toString() {
+        logger.trace("This shouldn't be called. Use toJSONObject and then convert to string");
+        return this.toJSONObject().toString();
     }
 
     @Override
