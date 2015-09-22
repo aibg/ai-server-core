@@ -2,11 +2,10 @@ package hr.best.ai.gl;
 
 public class Bucket implements IBucket {
 
-    private volatile long ticks = 0;
-    private volatile long currentSize = 0;
-
     private final long gain;
     private final long maxSize;
+    private volatile long ticks = 0;
+    private volatile long currentSize = 0;
 
     public Bucket(long initSize, long gain, long maxSize) {
         currentSize = initSize;
@@ -45,7 +44,7 @@ public class Bucket implements IBucket {
     }
 
     @Override
-    public long  getMills() {
+    public long getMills() {
         return currentSize - (java.lang.System.currentTimeMillis() - ticks);
     }
 }

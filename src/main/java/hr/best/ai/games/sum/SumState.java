@@ -19,7 +19,7 @@ public class SumState implements State {
 
     @Override
     public boolean isFinal() {
-        return false;
+        return sum > 10;
     }
 
     @Override
