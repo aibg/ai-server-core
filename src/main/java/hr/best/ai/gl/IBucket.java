@@ -22,7 +22,6 @@ public interface IBucket {
     public boolean ok();
 
     /**
-     *
      * @return how many miliseconds the players has left
      */
     public long getMills();
