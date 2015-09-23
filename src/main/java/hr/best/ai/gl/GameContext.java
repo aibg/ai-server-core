@@ -2,7 +2,6 @@ package hr.best.ai.gl;
 
 import hr.best.ai.exceptions.InvalidActionException;
 import org.apache.log4j.Logger;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,7 @@ public class GameContext {
      */
     public synchronized void registerPlayer(IPlayer client) {
         if (maxPlayers == players.size())
-            throw new InvalidStateException("Already at max players");
+            throw new IllegalStateException("Already at max players");
         players.add(client);
     }
 
