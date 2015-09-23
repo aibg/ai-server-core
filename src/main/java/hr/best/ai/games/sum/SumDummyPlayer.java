@@ -39,6 +39,11 @@ public class SumDummyPlayer implements IPlayer {
     }
 
     @Override
+    public String getName() {
+        return "dummy";
+    }
+
+    @Override
     public void close() throws Exception {
     }
 }
