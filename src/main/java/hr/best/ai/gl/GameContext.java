@@ -1,6 +1,5 @@
 package hr.best.ai.gl;
 
-import hr.best.ai.exceptions.InvalidActionException;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -9,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * Main class which surrounds whole play of one game. Game can be in one of three states, contained in enum GS. Those
@@ -22,21 +22,16 @@ import java.util.concurrent.Future;
 public class GameContext implements AutoCloseable {
 
     final static Logger logger = Logger.getLogger(GameContext.class);
-    private final List<IPlayer> players;
-    private final ExecutorService threadPool;
+    private final List<IPlayer> players = new ArrayList<>();
+    private final List<NewStateObserver> observers = new ArrayList<>();
     private final int maxPlayers;
-    /**
-     * Services for observers
-     * LATER.. fuck the observers
-     */
+
     private State state;
     private GS gamestate = GS.INIT;
 
     public GameContext(State state, int maxPlayers) {
-        this.threadPool = Executors.newFixedThreadPool(maxPlayers);
         this.maxPlayers = maxPlayers;
         this.state = state;
-        players = new ArrayList<>();
     }
 
     /**
@@ -44,10 +39,19 @@ public class GameContext implements AutoCloseable {
      *
      * @param client
      */
-    public synchronized void registerPlayer(IPlayer client) {
+    public synchronized void addPlayer(IPlayer client) {
+        if (gamestate != GS.INIT)
+            throw new IllegalStateException("Game must be in initialization state");
+
         if (maxPlayers == players.size())
             throw new IllegalStateException("Already at max players");
         players.add(client);
+    }
+
+    public synchronized void addObserver(NewStateObserver observer) {
+        if (gamestate != GS.INIT)
+            throw new IllegalStateException("Game must be in initialization state");
+        this.observers.add(observer);
     }
 
     public synchronized List<IPlayer> getPlayers() {
@@ -56,8 +60,7 @@ public class GameContext implements AutoCloseable {
 
 
     /**
-     * Runs one iteration of the game and signals all parties new game state.
-     * It's only possible to run this if game is currently playing.
+     * runs the whole game logic.
      */
     public synchronized void play() throws Exception {
 
@@ -65,13 +68,16 @@ public class GameContext implements AutoCloseable {
             throw new IllegalStateException("Impossible to iterate if we're not playing");
         gamestate = GS.PLAY;
 
+        ExecutorService threadPool =
+                Executors.newFixedThreadPool(observers.size() + players.size());
         try {
             while (!state.isFinal()) {
                 logger.debug("Current State: " + state.toJSONObject().toString());
-                List<Future<Action>> actionsF = new ArrayList<>();
-                for (IPlayer cl : players) {
-                    actionsF.add(this.threadPool.submit(() -> cl.signalNewState(state)));
-                }
+                List<Future<Action>> actionsF = players.stream()
+                        .map(cl -> threadPool.submit(() -> cl.signalNewState(state)))
+                        .collect(Collectors.toList());
+
+                observers.forEach(cl -> threadPool.submit(() -> cl.signalNewState(state)));
 
                 List<Action> actions = new ArrayList<>();
                 for (int i = 0; i < players.size(); ++i) {
@@ -90,14 +96,14 @@ public class GameContext implements AutoCloseable {
 
             logger.debug("Final state: " + state.toString());
             if (state.isFinal()) {
-                for (IPlayer cl : players)
-                    cl.signalCompleted("Game Finished. We have a winner");
+                players.forEach(cl -> cl.signalCompleted("Game Finished. We have a winner"));
+                observers.forEach(cl -> cl.signalCompleted("Game Finished. We have a winner"));
             }
-            threadPool.shutdown();
         } catch (Exception ex) {
             logger.error(ex);
             throw ex;
         } finally {
+            threadPool.shutdown();
             close();
         }
     }
@@ -105,10 +111,14 @@ public class GameContext implements AutoCloseable {
     @Override
     public void close() throws Exception {
         this.gamestate = GS.STOP;
-        this.threadPool.shutdown();
         for (IPlayer player : players) {
             try {
                 player.close();
+            } catch (Exception ignorable) {}
+        }
+        for (NewStateObserver observer : observers) {
+            try {
+                observer.close();
             } catch (Exception ignorable) {}
         }
     }
