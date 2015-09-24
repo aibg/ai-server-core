@@ -8,24 +8,21 @@ import hr.best.ai.gl.State;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Created by lpp on 9/23/15.
+ * Generic IPlayer operating on Input & output stream
  */
-public class ClientThread implements IPlayer{
+public class IOPlayer implements IPlayer{
 
-    final static Logger logger = Logger.getLogger(ClientThread.class);
-    private final Socket socket;
+    final static Logger logger = Logger.getLogger(IOPlayer.class);
     private final BufferedReader reader;
     private final PrintWriter writer;
     private final JsonParser parser = new JsonParser();
 
-    public ClientThread(Socket socket) throws IOException{
-        this.socket = socket;
-        this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-        this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
+    public IOPlayer(InputStream in, OutputStream out) throws IOException{
+        this.reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+        this.writer = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8), true);
     }
 
     @Override
@@ -36,7 +33,7 @@ public class ClientThread implements IPlayer{
 
     @Override
     public Action signalNewState(State state) throws IOException, InvalidActionException {
-        logger.debug("Client[" + socket.getInetAddress() + "] State: " + state.toJSONObject().toString());
+        logger.debug("Client[" + this.getName() + "] State: " + state.toJSONObject().toString());
         writer.println(state.toJSONObject().toString());
         String line = reader.readLine();
         try {
@@ -48,19 +45,18 @@ public class ClientThread implements IPlayer{
 
     @Override
     public void signalCompleted(String message) {
-        logger.debug("Client[" + socket.getInetAddress() + "] has signal Completed. Message " + message);
+        logger.debug("Client[" + this.getName() + "] has signal Completed. Message " + message);
         writer.println(message);
     }
 
     @Override
     public String getName() {
-        return socket.toString();
+        return "Player Name";
     }
 
     @Override
     public void close() throws Exception {
         reader.close();
         writer.close();
-        socket.close();
     }
 }
