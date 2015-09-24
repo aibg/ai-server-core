@@ -1,3 +1,5 @@
+package hr.best.ai.demo;
+
 import hr.best.ai.games.GameContextFactory;
 import hr.best.ai.games.sum.SumDummyPlayer;
 import hr.best.ai.gl.GameContext;
@@ -7,7 +9,9 @@ import hr.best.ai.gl.State;
 import hr.best.ai.server.ProcessIOPlayer;
 import hr.best.ai.server.SocketIOPlayer;
 
+import javax.swing.*;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 
 public class DebilniTest {
@@ -75,7 +79,24 @@ public class DebilniTest {
         runTestGame(p1,p2, a);
     }
 
-    public static void main(String[] args) throws IOException{
-        f4();
+    public static void f5() throws Exception{
+        JGameStateLabel textArea = new JGameStateLabel();
+        SwingUtilities.invokeAndWait(() -> {
+                JFrame f = new JFrame("Demo");
+                f.add(textArea);
+                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    f.setSize(250, 250);
+                    f.setVisible(true);
+                }
+        );
+
+        ProcessBuilder player = new ProcessBuilder("bash", "-c", "while :; do echo '{\"value\":1}'; sleep 1; done");
+        IPlayer p1 = new ProcessIOPlayer(player.start());
+        IPlayer p2 = new ProcessIOPlayer(player.start());
+        runTestGame(p1,p2, textArea);
+    }
+
+    public static void main(String[] args) throws Exception{
+        f5();
     }
 }
