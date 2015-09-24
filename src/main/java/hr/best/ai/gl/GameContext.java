@@ -19,7 +19,7 @@ import java.util.concurrent.Future;
  * example players fail to respond under given time limit). From PLAY game state can move to STOP.
  * From PAUSE it's possible to come back to PLAY, however once STOP there's no coming back.
  */
-public class GameContext {
+public class GameContext implements AutoCloseable {
 
     final static Logger logger = Logger.getLogger(GameContext.class);
     private final List<IPlayer> players;
@@ -93,17 +93,23 @@ public class GameContext {
                 for (IPlayer cl : players)
                     cl.signalCompleted("Game Finished. We have a winner");
             }
+            threadPool.shutdown();
         } catch (Exception ex) {
             logger.error(ex);
             throw ex;
         } finally {
-            this.gamestate = GS.STOP;
-            for (IPlayer player : players) {
-                try {
-                    player.close();
-                } catch (Exception ignorable) {
-                }
-            }
+            close();
+        }
+    }
+
+    @Override
+    public void close() throws Exception {
+        this.gamestate = GS.STOP;
+        this.threadPool.shutdown();
+        for (IPlayer player : players) {
+            try {
+                player.close();
+            } catch (Exception ignorable) {}
         }
     }
 
