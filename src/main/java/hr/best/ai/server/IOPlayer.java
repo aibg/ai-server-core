@@ -1,10 +1,13 @@
 package hr.best.ai.server;
 
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import hr.best.ai.exceptions.InvalidActionException;
 import hr.best.ai.gl.Action;
 import hr.best.ai.gl.IPlayer;
 import hr.best.ai.gl.State;
+
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -32,12 +35,12 @@ public class IOPlayer implements IPlayer{
     }
 
     @Override
-    public Action signalNewState(State state) throws IOException, InvalidActionException {
-        logger.debug("Client[" + this.getName() + "] State: " + state.toJSONObject().toString());
-        writer.println(state.toJSONObject().toString());
+    public JsonObject signalNewState(JsonObject state) throws IOException, InvalidActionException {
+        logger.debug("Client[" + this.getName() + "] State: " + state.toString());
+        writer.println(state.toString());
         String line = reader.readLine();
         try {
-            return state.parseAction(parser.parse(line).getAsJsonObject());
+            return parser.parse(line).getAsJsonObject();
         } catch (IllegalStateException ex) {
             throw new InvalidActionException(ex);
         }
