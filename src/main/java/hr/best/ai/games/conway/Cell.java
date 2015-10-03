@@ -1,9 +1,8 @@
 package hr.best.ai.games.conway;
 
-
-
 /**
- * Part of player action which contains coordinates of a cell to be activated next turn.
+ * Part of player action which contains coordinates of a cell to be activated
+ * next turn.
  * 
  * @author andrej
  */
@@ -22,6 +21,12 @@ public class Cell {
 
 	public int getCol() {
 		return col;
+	}
+
+	@Override
+	public String toString() {
+
+		return row + "," + col;
 	}
 
 	@Override

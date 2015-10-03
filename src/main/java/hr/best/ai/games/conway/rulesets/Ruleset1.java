@@ -4,6 +4,7 @@ package hr.best.ai.games.conway.rulesets;
 import java.util.List;
 
 import hr.best.ai.games.conway.Cell;
+import hr.best.ai.games.conway.Cells;
 import hr.best.ai.games.conway.GameState;
 
 public class Ruleset1 extends GameState {
@@ -25,7 +26,7 @@ public class Ruleset1 extends GameState {
 	}
 
 	public Ruleset1(int[][] field, int iteration, int winner, int V, int K,
-			int d, int maxIterations, List<Cell> p1, List<Cell> p2) {
+			int d, int maxIterations, Cells p1, Cells p2) {
 		super(field, iteration, winner, V, K, d, maxIterations, p1, p2);
 	}
 

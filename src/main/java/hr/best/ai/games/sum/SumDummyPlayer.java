@@ -3,7 +3,11 @@ package hr.best.ai.games.sum;
 import hr.best.ai.gl.Action;
 import hr.best.ai.gl.IPlayer;
 import hr.best.ai.gl.State;
+
 import org.apache.log4j.Logger;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 /**
  * Created by lpp on 9/22/15.
@@ -24,13 +28,16 @@ public class SumDummyPlayer implements IPlayer {
     }
 
     @Override
-    public Action signalNewState(State state) {
+    public JsonObject signalNewState(JsonObject state) {
         try {
             Thread.currentThread().sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return new SumAction(inc);
+        JsonObject obj=new JsonObject();
+        obj.add("value", new JsonPrimitive(inc));
+        
+        return obj;
     }
 
     @Override

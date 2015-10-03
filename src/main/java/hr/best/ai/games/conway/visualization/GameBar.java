@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 public class GameBar extends JPanel implements NewStateObserver {
 
-	private GameState state;
+	private volatile GameState state;
 
 	@Override
 	public void close() throws Exception {
@@ -36,6 +36,11 @@ public class GameBar extends JPanel implements NewStateObserver {
 
 		super.paintComponent(g);
 
+		if(state==null){
+			return;
+		}
+		
+		
 		// TODO maknut ovo
 		int blockSize = 32;
 
@@ -63,7 +68,7 @@ public class GameBar extends JPanel implements NewStateObserver {
 		g.setColor(Color.red);
 		g.fillRect(0, 0, divide, height * blockSize);
 		g.setColor(Color.blue);
-		g.fillRect(divide, 0, width * blockSize - divide, height * blockSize);
+		g.fillRect(divide, 0, width * blockSize - divide +1, height * blockSize);
 
 	}
 

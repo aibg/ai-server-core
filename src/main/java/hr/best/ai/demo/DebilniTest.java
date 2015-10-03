@@ -1,6 +1,7 @@
 package hr.best.ai.demo;
 
 import hr.best.ai.games.GameContextFactory;
+import hr.best.ai.games.conway.GameState;
 import hr.best.ai.games.conway.visualization.GameBar;
 import hr.best.ai.games.conway.visualization.GameGrid;
 import hr.best.ai.games.sum.SumDummyPlayer;
@@ -13,6 +14,10 @@ import hr.best.ai.server.SocketIOPlayer;
 
 import javax.swing.*;
 
+import org.apache.log4j.Layout;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
@@ -122,17 +127,19 @@ public class DebilniTest {
 
 		SwingUtilities.invokeAndWait(() -> {
 			JFrame f = new JFrame("DemoConway");
-			f.add(bar);
-			f.add(grid);
+			
+			f.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+			f.getContentPane().add(bar,BorderLayout.NORTH);
+			f.getContentPane().add(grid,BorderLayout.CENTER);
 			f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			f.pack();
+			
 			f.setVisible(true);
 		});
 
-		ProcessBuilder player = new ProcessBuilder("bash", "-c",
-				"while :; do echo '{\"value\":1}'; sleep 1; done");
-		IPlayer p1 = new ProcessIOPlayer(player.start());
-		IPlayer p2 = new ProcessIOPlayer(player.start());
+		
+		
+		IPlayer p1 = new Grower();
+		IPlayer p2 = new Grower();
 		runConwayTestGame(p1, p2, bar, grid);
 	}
 

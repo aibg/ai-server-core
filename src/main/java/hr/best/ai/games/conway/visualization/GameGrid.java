@@ -1,6 +1,7 @@
 package hr.best.ai.games.conway.visualization;
 
 import hr.best.ai.games.conway.Cell;
+import hr.best.ai.games.conway.Cells;
 import hr.best.ai.games.conway.GameState;
 import hr.best.ai.gl.NewStateObserver;
 import hr.best.ai.gl.State;
@@ -18,7 +19,7 @@ import javax.swing.JPanel;
 
 public class GameGrid extends JPanel implements NewStateObserver {
 
-	private GameState state;
+	private volatile GameState state;
 
 	// images
 	private BufferedImage logo1;
@@ -29,8 +30,8 @@ public class GameGrid extends JPanel implements NewStateObserver {
 		// TODO GameGrid.class.getResource(name);
 
 		try {
-			logo1 = ImageIO.read(new File("resources/BEST_ZG_mali.png"));
-			logo10 = ImageIO.read(new File("resources/EBEC.png"));
+			logo1 = ImageIO.read(new File("src/main/resources/BEST_ZG_mali.png"));
+			logo10 = ImageIO.read(new File("src/main/resources/EBEC.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -46,6 +47,7 @@ public class GameGrid extends JPanel implements NewStateObserver {
 	@Override
 	public void signalNewState(State state) {
 		this.state = (GameState) state;
+		//TODO Invoke later, provjerit dal moram bit tako repaint
 		this.repaint();
 	}
 
@@ -58,7 +60,9 @@ public class GameGrid extends JPanel implements NewStateObserver {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
+		if(state==null){
+			return;
+		}
 		// TODO
 		int blockSize = 32;
 
@@ -98,9 +102,11 @@ public class GameGrid extends JPanel implements NewStateObserver {
 	 * @param color
 	 * @param blockSize
 	 */
-	private void drawCurrentActions(Graphics g, List<Cell> actions,
+	private void drawCurrentActions(Graphics g, Cells actions,
 			Color color, int blockSize) {
-		g.setColor(Color.red);
+		if(actions==null)
+			return;
+		g.setColor(color);
 		for (int i = 0; i < actions.size(); i++) {
 			Cell c = actions.get(i);
 			g.fillRect(blockSize * c.getCol(), blockSize * c.getRow(),

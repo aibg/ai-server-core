@@ -1,5 +1,9 @@
 package hr.best.ai.demo;
+
 import hr.best.ai.exceptions.InvalidActionException;
+import hr.best.ai.games.conway.Cell;
+import hr.best.ai.games.conway.Cells;
+import hr.best.ai.games.conway.GameState;
 import hr.best.ai.gl.Action;
 import hr.best.ai.gl.IPlayer;
 import hr.best.ai.gl.State;
@@ -10,30 +14,73 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Grower implements IPlayer{
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
-	private int height, width;
-	private int[][] field;
+public class Grower implements IPlayer {
 
-	private int playerNo;
+	public Grower() {
+	}
 
-	public Grower(int playerNo, int height, int width, int[][] field,
-			int bucket, int d) {
+	/**
+	 * Adds value to every element around matrix[i][j]
+	 * 
+	 * @param matrix
+	 * @param i
+	 * @param j
+	 * @param k
+	 */
+	private void addAround(int[][] matrix, int i, int j, int value) {
 
-		this.height = height;
-		this.width = width;
-		this.field = field;
-		// not using bucket in this bot
-		// not using valid distance d either
+		int height = matrix.length;
+		int width = matrix[0].length;
+
+		matrix[Math.floorMod(i - 1, height)][Math.floorMod(j - 1, width)] += value;
+		matrix[Math.floorMod(i - 1, height)][Math.floorMod(j, width)] += value;
+		matrix[Math.floorMod(i - 1, height)][Math.floorMod(j + 1, width)] += value;
+
+		matrix[Math.floorMod(i, height)][Math.floorMod(j - 1, width)] += value;
+		matrix[Math.floorMod(i, height)][Math.floorMod(j + 1, width)] += value;
+
+		matrix[Math.floorMod(i + 1, height)][Math.floorMod(j - 1, width)] += value;
+		matrix[Math.floorMod(i + 1, height)][Math.floorMod(j, width)] += value;
+		matrix[Math.floorMod(i + 1, height)][Math.floorMod(j + 1, width)] += value;
 
 	}
 
-	public List<Point> calculate() {
+	@Override
+	public void close() throws Exception {
+		// TODO
+	}
+
+	@Override
+	public void sendError(String message) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public JsonObject signalNewState(JsonObject state) throws IOException,
+			InvalidActionException {
+
+		JsonArray jsonField = state.get("field").getAsJsonArray();
+		int height = jsonField.size();
+		int width = jsonField.get(0).getAsString().length();
+		int[][] field = new int[height][width];
+		for (int i = 0; i < height; i++) {
+			String line = jsonField.get(i).getAsString();
+			for (int j = 0; j < width; j++) {
+				field[i][j] = Integer.parseInt(line.substring(j, j + 1));
+			}
+
+		}
+
 		// no of players neighbor cells for each player cell
 		int[][] myNeighbors = new int[height][width];
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
-				if (field[i][j] == playerNo)
+				if (field[i][j] == 1)
 					addAround(myNeighbors, i, j, 1);
 			}
 		}
@@ -44,13 +91,13 @@ public class Grower implements IPlayer{
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
 				int neighbors = myNeighbors[i][j];
-				if (field[i][j] == playerNo) {
+				if (field[i][j] == 1) {
 					if (neighbors == 1 || neighbors == 2)
 						addAround(potential, i, j, 1);
 					if (neighbors == 3)
 						addAround(potential, i, j, -1);
-				} else if (field[i][j] == playerNo) {
-					if (neighbors == 3)
+				} else if (field[i][j] == 0) {
+					if (neighbors == 2)
 						addAround(potential, i, j, 1);
 				} else {
 					potential[i][j] -= 10;
@@ -61,73 +108,39 @@ public class Grower implements IPlayer{
 		}
 
 		// finds max potential
-		int maxPotential = 0;
+		int maxPotential = Integer.MIN_VALUE;
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
-				if (potential[i][j] > maxPotential && field[i][j] == 0)
+				if (potential[i][j] >= maxPotential && field[i][j] == 0)
 					maxPotential = potential[i][j];
 			}
 		}
 
 		// list of coordinates with max potential
-		List<Point> candidates = new LinkedList<Point>();
+		Cells candidates = new Cells();
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
 				if (potential[i][j] == maxPotential) {
-					candidates.add(new Point(i, j));
+					candidates.add(new Cell(i, j));
 				}
 			}
 		}
-		Collections.shuffle(candidates);
 
-		List<Point> output = new LinkedList<Point>();
-		output.add(candidates.get(0));
+		// List<Point> output = new LinkedList<Point>();
+		// output.add(candidates.get(0));
+
+		JsonObject output = new JsonObject();
+		JsonArray cells = new JsonArray();
+		cells.add(new JsonPrimitive(candidates.get(0).toString()));
+		output.add("cells", cells);
 
 		return output;
-	}
-
-	private void addAround(int[][] matrix, int i, int j, int k) {
-		matrix[mod(i - 1, height)][mod(j - 1, width)] += k;
-		matrix[mod(i - 1, height)][mod(j, width)] += k;
-		matrix[mod(i - 1, height)][mod(j + 1, width)] += k;
-
-		matrix[mod(i, height)][mod(j - 1, width)] += k;
-		matrix[mod(i, height)][mod(j + 1, width)] += k;
-
-		matrix[mod(i + 1, height)][mod(j - 1, width)] += k;
-		matrix[mod(i + 1, height)][mod(j, width)] += k;
-		matrix[mod(i + 1, height)][mod(j + 1, width)] += k;
-
-	}
-
-	private int mod(int a, int length) {
-
-		return (a + length) % length;
-	}
-
-	@Override
-	public void close() throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void sendError(String message) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Action signalNewState(State state) throws IOException,
-			InvalidActionException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
 	public void signalCompleted(String message) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

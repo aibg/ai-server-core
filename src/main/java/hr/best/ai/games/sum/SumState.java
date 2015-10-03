@@ -57,4 +57,10 @@ public class SumState implements State {
             throw new InvalidActionException(ex);
         }
     }
+
+	@Override
+	public JsonObject toJSONObjectAsPlayer(int playerId) {
+		
+		return toJSONObject();
+	}
 }

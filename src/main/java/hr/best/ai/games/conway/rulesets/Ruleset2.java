@@ -1,11 +1,10 @@
 package hr.best.ai.games.conway.rulesets;
 
-
 import java.util.List;
 
 import hr.best.ai.games.conway.Cell;
+import hr.best.ai.games.conway.Cells;
 import hr.best.ai.games.conway.GameState;
-
 
 public class Ruleset2 extends GameState {
 
@@ -16,15 +15,20 @@ public class Ruleset2 extends GameState {
 	public Ruleset2(int[][] field) {
 		super(field);
 	}
-	public Ruleset2(int[][] field,int maxIter) {
-		super(field,maxIter);
+
+	public Ruleset2(int[][] field, int maxIter) {
+		super(field, maxIter);
 	}
+
 	public Ruleset2(int[][] field, int iteration, int winner) {
 		super(field, iteration, winner);
 	}
-	public Ruleset2(int[][] field, int iteration, int winner, int V, int K,int d, int maxIterations,List<Cell> p1,List<Cell> p2) {
-		super(field, iteration, winner,V,K,d,maxIterations,p1,p2);
+
+	public Ruleset2(int[][] field, int iteration, int winner, int V, int K,
+			int d, int maxIterations, Cells p1, Cells p2) {
+		super(field, iteration, winner, V, K, d, maxIterations, p1, p2);
 	}
+
 	@Override
 	protected void calculate(int[][] sum) {
 		int height = sum.length;
