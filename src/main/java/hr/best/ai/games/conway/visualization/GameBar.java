@@ -22,7 +22,7 @@ public class GameBar extends JPanel implements NewStateObserver {
 	@Override
 	public void signalNewState(State state) {
 		this.state = (GameState) state;
-		this.repaint();
+		this.repaint(0);
 	}
 
 	@Override

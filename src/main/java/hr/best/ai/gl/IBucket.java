@@ -2,27 +2,16 @@ package hr.best.ai.gl;
 
 public interface IBucket {
 
-    /**
-     * Signals ticking.
-     */
-    public void tick();
+	/**
+	 * Fills the bucket.
+	 */
+	public void fill();
 
-    /**
-     * Signals end of ticking and add gain to internal clock.
-     *
-     * @return true if tok is called in time.
-     */
-    public boolean tok();
-
-    /**
-     * Checks does this bucket holds enough time before the tok. Tick must be called first.
-     *
-     * @return true if there's more time.
-     */
-    public boolean ok();
-
-    /**
-     * @return how many miliseconds the players has left
-     */
-    public long getMills();
+	/**
+	 * Takes amount of time from the bucket.
+	 * 
+	 * @param amount
+	 * @return true if there's enough time in bucket to take
+	 */
+	public void take(long amount) throws RuntimeException;
 }

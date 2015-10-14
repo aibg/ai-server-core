@@ -18,6 +18,8 @@ import hr.best.ai.gl.State;
  */
 public abstract class GameState implements State {
 
+	private static long maxAllowedTime= 100;
+
 	// cells gained per turn
 	private int cellsPerTurn = 1;
 
@@ -405,6 +407,10 @@ public abstract class GameState implements State {
 		}
 
 		return actions;
+	}
+
+	public static long getMaxTime() {
+		return maxAllowedTime;
 	}
 
 }

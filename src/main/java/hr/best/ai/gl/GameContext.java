@@ -76,15 +76,22 @@ public class GameContext implements AutoCloseable {
 
 		ExecutorService threadPool = Executors.newFixedThreadPool(observers
 				.size() + players.size());
+		
+		
 		try {
 			while (!state.isFinal()) {
-
+				Thread.sleep(1000);
+				long[] startTime=new long[players.size()];
 				List<Future<Action>> actionsF = new ArrayList<Future<Action>>();
 				for (int i = 0; i < players.size(); ++i) {
-					final int playerNo = i;
+					
 					logger.debug("Current State: "
-							+ state.toJSONObjectAsPlayer(playerNo + 1)
+							+ state.toJSONObjectAsPlayer(i + 1)
 									.toString());
+					players.get(i).getBucket().fill();
+					
+					final int playerNo = i;
+					startTime[i]=System.currentTimeMillis();
 					actionsF.add(threadPool.submit(new Callable<Action>() {
 						@Override
 						public Action call() throws Exception {
@@ -105,6 +112,8 @@ public class GameContext implements AutoCloseable {
 				for (int i = 0; i < players.size(); ++i) {
 					try {
 						actions.add(actionsF.get(i).get());
+						players.get(i).getBucket().take(System.currentTimeMillis()-startTime[i]);
+						
 					} catch (ExecutionException e) {
 						Exception ex = (Exception) e.getCause();
 						logger.error(players.get(i).getName(), ex);

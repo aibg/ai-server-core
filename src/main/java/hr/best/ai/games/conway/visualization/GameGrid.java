@@ -30,7 +30,8 @@ public class GameGrid extends JPanel implements NewStateObserver {
 		// TODO GameGrid.class.getResource(name);
 
 		try {
-			logo1 = ImageIO.read(new File("src/main/resources/BEST_ZG_mali.png"));
+			logo1 = ImageIO
+					.read(new File("src/main/resources/BEST_ZG_mali.png"));
 			logo10 = ImageIO.read(new File("src/main/resources/EBEC.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -47,8 +48,8 @@ public class GameGrid extends JPanel implements NewStateObserver {
 	@Override
 	public void signalNewState(State state) {
 		this.state = (GameState) state;
-		//TODO Invoke later, provjerit dal moram bit tako repaint
-		this.repaint();
+		// TODO Invoke later, provjerit dal moram bit tako repaint
+		this.repaint(0);
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class GameGrid extends JPanel implements NewStateObserver {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if(state==null){
+		if (state == null) {
 			return;
 		}
 		// TODO
@@ -102,9 +103,9 @@ public class GameGrid extends JPanel implements NewStateObserver {
 	 * @param color
 	 * @param blockSize
 	 */
-	private void drawCurrentActions(Graphics g, Cells actions,
-			Color color, int blockSize) {
-		if(actions==null)
+	private void drawCurrentActions(Graphics g, Cells actions, Color color,
+			int blockSize) {
+		if (actions == null)
 			return;
 		g.setColor(color);
 		for (int i = 0; i < actions.size(); i++) {
