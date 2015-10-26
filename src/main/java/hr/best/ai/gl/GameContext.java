@@ -80,7 +80,6 @@ public class GameContext implements AutoCloseable {
 		
 		try {
 			while (!state.isFinal()) {
-				Thread.sleep(1000);
 				long[] startTime=new long[players.size()];
 				List<Future<Action>> actionsF = new ArrayList<Future<Action>>();
 				for (int i = 0; i < players.size(); ++i) {
