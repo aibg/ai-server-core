@@ -4,25 +4,15 @@ import hr.best.ai.exceptions.InvalidActionException;
 import hr.best.ai.games.conway.Cell;
 import hr.best.ai.games.conway.Cells;
 import hr.best.ai.games.conway.GameState;
-import hr.best.ai.gl.Action;
-import hr.best.ai.gl.Bucket;
-import hr.best.ai.gl.IBucket;
 import hr.best.ai.gl.IPlayer;
-import hr.best.ai.gl.State;
 
-import java.awt.Point;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 public class Grower implements IPlayer {
-
-	private IBucket bucket=new Bucket(GameState.getMaxTime());
 
 	public Grower() {
 	}
@@ -33,7 +23,7 @@ public class Grower implements IPlayer {
 	 * @param matrix
 	 * @param i
 	 * @param j
-	 * @param k
+	 * @param value
 	 */
 	private void addAround(int[][] matrix, int i, int j, int value) {
 
@@ -149,13 +139,7 @@ public class Grower implements IPlayer {
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+        return "Grower demo";
 	}
 
-	@Override
-	public IBucket getBucket() {
-		
-		return bucket;
-	}
 }

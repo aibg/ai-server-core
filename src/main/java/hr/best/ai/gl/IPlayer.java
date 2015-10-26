@@ -15,6 +15,4 @@ public interface IPlayer extends AutoCloseable {
     public void signalCompleted(String message);
 
     public String getName();
-
-	public IBucket getBucket();
 }

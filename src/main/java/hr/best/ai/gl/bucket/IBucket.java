@@ -1,4 +1,4 @@
-package hr.best.ai.gl;
+package hr.best.ai.gl.bucket;
 
 public interface IBucket {
 
