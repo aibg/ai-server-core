@@ -1,7 +1,6 @@
 package hr.best.ai.demo;
 
 import hr.best.ai.games.GameContextFactory;
-import hr.best.ai.games.conway.GameState;
 import hr.best.ai.games.conway.visualization.GameBar;
 import hr.best.ai.games.conway.visualization.GameGrid;
 import hr.best.ai.games.sum.SumDummyPlayer;
@@ -14,12 +13,8 @@ import hr.best.ai.server.SocketIOPlayer;
 
 import javax.swing.*;
 
-import org.apache.log4j.Layout;
-
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 
 public class DebilniTest {

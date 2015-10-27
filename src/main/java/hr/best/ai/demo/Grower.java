@@ -3,7 +3,6 @@ package hr.best.ai.demo;
 import hr.best.ai.exceptions.InvalidActionException;
 import hr.best.ai.games.conway.Cell;
 import hr.best.ai.games.conway.Cells;
-import hr.best.ai.games.conway.GameState;
 import hr.best.ai.gl.IPlayer;
 
 import java.io.IOException;

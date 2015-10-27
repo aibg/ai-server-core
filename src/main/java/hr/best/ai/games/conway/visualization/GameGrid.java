@@ -2,7 +2,8 @@ package hr.best.ai.games.conway.visualization;
 
 import hr.best.ai.games.conway.Cell;
 import hr.best.ai.games.conway.Cells;
-import hr.best.ai.games.conway.GameState;
+import hr.best.ai.games.conway.ConwayGameState;
+import hr.best.ai.games.conway.ConwayGameStateConstants;
 import hr.best.ai.gl.NewStateObserver;
 import hr.best.ai.gl.State;
 
@@ -12,14 +13,13 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public class GameGrid extends JPanel implements NewStateObserver {
 
-	private volatile GameState state;
+	private volatile ConwayGameState state;
 
 	// images
 	private BufferedImage logo1;
@@ -47,7 +47,7 @@ public class GameGrid extends JPanel implements NewStateObserver {
 
 	@Override
 	public void signalNewState(State state) {
-		this.state = (GameState) state;
+		this.state = (ConwayGameState) state;
 		// TODO Invoke later, provjerit dal moram bit tako repaint
 		this.repaint(0);
 	}
@@ -67,25 +67,20 @@ public class GameGrid extends JPanel implements NewStateObserver {
 		// TODO
 		int blockSize = 32;
 
-		int[][] field = state.getField();
-
-		int height = field.length;
-		int width = field[0].length;
-
 		// clear canvas and paint background image
-		g.clearRect(0, 0, blockSize * (width + 1), blockSize * (height + 1));
+		g.clearRect(0, 0, blockSize * (state.getCols() + 1), blockSize * (state.getRows() + 1));
 
 		drawCurrentActions(g, state.getPlayer1Actions(), Color.red, blockSize);
 		drawCurrentActions(g, state.getPlayer2Actions(), Color.blue, blockSize);
 
 		// draw images for live cells
 		Image img = null;
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
+		for (int i = 0; i < state.getRows(); i++) {
+			for (int j = 0; j < state.getCols(); j++) {
 				g.drawRect(blockSize * j, blockSize * i, blockSize, blockSize);
-				if (field[i][j] == 1) {
+				if (state.getCell(i,j) == ConwayGameStateConstants.PLAYER1_CELL) {
 					img = logo1;
-				} else if (field[i][j] == 10) {
+				} else if (state.getCell(i,j) == ConwayGameStateConstants.PLAYER2_CELL) {
 					img = logo10;
 				} else
 					continue;
