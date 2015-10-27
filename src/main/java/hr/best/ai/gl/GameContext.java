@@ -80,7 +80,6 @@ public class GameContext implements AutoCloseable {
 		
 		try {
 			while (!state.isFinal()) {
-				long[] startTime=new long[players.size()];
 				List<Future<Action>> actionsF = new ArrayList<>();
 				for (int i = 0; i < players.size(); ++i) {
 					
@@ -89,12 +88,10 @@ public class GameContext implements AutoCloseable {
 									.toString());
 
                     final int playerNo = i + 1; // TODO Make state player beginning from zero
-					actionsF.add(threadPool.submit(() -> {
-							return state.parseAction(players
+					actionsF.add(threadPool.submit(() -> state.parseAction(players
 									.get(playerNo - 1) // TODO fix this monstrosity hack
 									.signalNewState(
-                                            state.toJSONObjectAsPlayer(playerNo)));
-						}
+                                            state.toJSONObjectAsPlayer(playerNo)))
 					));
 				}
 
