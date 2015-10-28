@@ -60,7 +60,7 @@ public class ConwayGameState implements State {
     public int getRows() { return field.length; }
     public int getCols() {return field[0].length;}
     public int getCell(int row, int col) {
-        if (row < 0 || col < 0 || row >= getRows() || col >= getRows())
+        if (row < 0 || col < 0 || row >= getRows() || col >= getCols())
             return ConwayGameStateConstants.DEAD_CELL;
         return field[row][col];
     }

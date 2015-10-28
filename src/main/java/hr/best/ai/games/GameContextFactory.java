@@ -21,26 +21,35 @@ public class GameContextFactory {
     }
     public static ConwayGameStateBuilder getBasicGrid() {
         return ConwayGameStateBuilder.newConwayGameStateBuilder(10,15)
-                .setCell(4, 5, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(4,5, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(5,5, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(5,4, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(7,9, ConwayGameStateConstants.PLAYER2_CELL)
                 .setCell(8,9, ConwayGameStateConstants.PLAYER2_CELL)
                 .setCell(8,8, ConwayGameStateConstants.PLAYER2_CELL);
     }
+
+    public static class Ruleset1 {
+        public final static Integer fromEmpty (Pair<Integer, Integer> a) {
+            if (a.getLeft() == 3 && a.getRight() == 0)
+                return ConwayGameStateConstants.PLAYER1_CELL;
+            if (a.getLeft() == 0 && a.getRight() == 3)
+                return ConwayGameStateConstants.PLAYER2_CELL;
+            return ConwayGameStateConstants.DEAD_CELL;
+        }
+
+        public final static Integer fromOccupied(Triple<Integer, Integer, Integer> a) {
+            return a.getLeft() == 2 || a.getLeft() == 3
+                    ? a.getRight() : ConwayGameStateConstants.DEAD_CELL;
+        }
+    }
+
     public static GameContext getConwayGameInstance() {
     	
     	//TODO this is just for now
         State state = getBasicGrid()
-                .setFromEmpty((Pair<Integer, Integer> a) -> {
-                    if (a.getLeft() == 3 && a.getRight() == 0)
-                        return ConwayGameStateConstants.PLAYER1_CELL;
-                    if (a.getLeft() == 0 && a.getRight() == 3)
-                        return ConwayGameStateConstants.PLAYER2_CELL;
-                    return ConwayGameStateConstants.DEAD_CELL;
-                })
-                .setFromOccupied((Triple<Integer, Integer, Integer> a) -> a.getLeft() == 2 || a.getLeft() == 3 ? a.getRight() : ConwayGameStateConstants.DEAD_CELL
-                )
+                .setFromEmpty(Ruleset1::fromEmpty)
+                .setFromOccupied(Ruleset1::fromOccupied)
                 .getState();
         
         return new GameContext(state, 2);
