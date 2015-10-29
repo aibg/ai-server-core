@@ -143,15 +143,15 @@ public class ConwayGameState implements State {
     }
 
 
-    private int distanceFrom(int row, int col, int cell_type, int maxSearchSpace) {
-        int sol = Integer.MAX_VALUE;
+    private int distanceToFriendlyCell(int row, int col, int cell_type, int maxSearchSpace) {
+        int distance = Integer.MAX_VALUE;
         for (int r = row - maxSearchSpace; r <= row + maxSearchSpace; ++r) {
-            int d = maxSearchSpace - Math.abs(r - row);
-            for (int c = col - d; c <= col + d; ++col)
+            int verticalDistance = maxSearchSpace - Math.abs(r - row);
+            for (int c = col - verticalDistance; c <= col + verticalDistance; ++c)
                 if (getCell(r,c) == cell_type)
-                    sol = Math.min(sol, Math.abs(r - row) + Math.abs(c - col));
+                	distance = Math.min(distance, Math.abs(r - row) + Math.abs(c - col));
         }
-        return sol;
+        return distance;
     }
 
     private int getSurroundingCellCount(int row, int col, int cell_type) {
@@ -190,12 +190,12 @@ public class ConwayGameState implements State {
          * Distance checks
          */
         for (Cell c : p1) {
-            if (distanceFrom(c.getRow(), c.getCol(), ConwayGameStateConstants.PLAYER1_CELL, this
+            if (distanceToFriendlyCell(c.getRow(), c.getCol(), ConwayGameStateConstants.PLAYER1_CELL, this
                     .maxColonisationDistance) > maxColonisationDistance)
                 throw new IllegalArgumentException("P2 over the distance");
         }
         for (Cell c : p2) {
-            if (distanceFrom(c.getRow(), c.getCol(), ConwayGameStateConstants.PLAYER2_CELL, this
+            if (distanceToFriendlyCell(c.getRow(), c.getCol(), ConwayGameStateConstants.PLAYER2_CELL, this
                     .maxColonisationDistance) > maxColonisationDistance)
                 throw new IllegalArgumentException("P2 over the distance");
         }
