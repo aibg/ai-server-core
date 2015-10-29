@@ -3,7 +3,8 @@ package hr.best.ai.games.conway.visualization;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import hr.best.ai.games.conway.GameState;
+import hr.best.ai.games.conway.ConwayGameState;
+import hr.best.ai.games.conway.ConwayGameStateConstants;
 import hr.best.ai.gl.NewStateObserver;
 import hr.best.ai.gl.State;
 
@@ -11,7 +12,7 @@ import javax.swing.JPanel;
 
 public class GameBar extends JPanel implements NewStateObserver {
 
-	private volatile GameState state;
+	private volatile ConwayGameState state;
 
 	@Override
 	public void close() throws Exception {
@@ -21,7 +22,7 @@ public class GameBar extends JPanel implements NewStateObserver {
 
 	@Override
 	public void signalNewState(State state) {
-		this.state = (GameState) state;
+		this.state = (ConwayGameState) state;
 		this.repaint(0);
 	}
 
@@ -33,31 +34,31 @@ public class GameBar extends JPanel implements NewStateObserver {
 
 	@Override
 	protected void paintComponent(Graphics g) {
-
 		super.paintComponent(g);
 
 		if(state==null){
 			return;
 		}
 		
-		
 		// TODO maknut ovo
 		int blockSize = 32;
-
-		int[][] field = state.getField();
-		int height = field.length;
-		int width = field[0].length;
 
 		// counting active cells
 		int p1 = 0, p2 = 0;
 
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				if (field[i][j] == GameState.PLAYER1_CELL) {
-					p1++;
-				} else if (field[i][j] == GameState.PLAYER2_CELL) {
-					p2++;
-				}
+        int width = state.getCols();
+        int height = state.getRows();
+
+		for (int i = 0; i < state.getRows(); i++) {
+			for (int j = 0; j < state.getCols(); j++) {
+				switch (state.getCell(i,j)) {
+                    case ConwayGameStateConstants.PLAYER1_CELL:
+                        p1++;
+                        break;
+                    case ConwayGameStateConstants.PLAYER2_CELL:
+                        p2++;
+                        break;
+                }
 			}
 		}
 
