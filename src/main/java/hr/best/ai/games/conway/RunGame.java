@@ -1,7 +1,6 @@
 package hr.best.ai.games.conway;
 
 import hr.best.ai.games.GameContextFactory;
-import hr.best.ai.games.conway.players.DoNothingPlayerDemo;
 import hr.best.ai.games.conway.visualization.GameBar;
 import hr.best.ai.games.conway.visualization.GameGrid;
 import hr.best.ai.gl.GameContext;

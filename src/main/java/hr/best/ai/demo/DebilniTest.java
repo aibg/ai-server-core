@@ -11,7 +11,6 @@ import hr.best.ai.gl.State;
 import hr.best.ai.server.ProcessIOPlayer;
 import hr.best.ai.server.SocketIOPlayer;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Arrays;
 
