@@ -232,7 +232,16 @@ public class DebilniTest {
         gc.play();
     }
 
+    public static void f9() throws Exception{
+        GameContext gc = new GameContext(GameContextFactory.demoState(), 2);
+        gc.addPlayer(new ProcessIOPlayer(new ProcessBuilder
+                ("python3", "/home/lpp/Documents/BEST/AI/python-bindings/main.py").start
+                ()));
+        gc.addPlayer(new DoNothingPlayerDemo());
+        gc.play();
+    }
+
     public static void main(String[] args) throws Exception {
-		f8();
+		f9();
 	}
 }

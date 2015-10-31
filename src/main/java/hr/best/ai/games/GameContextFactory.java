@@ -29,6 +29,29 @@ public class GameContextFactory {
                 .setCell(8,8, ConwayGameStateConstants.PLAYER2_CELL);
     }
 
+    public static State demoState() {
+        return ConwayGameStateBuilder.newConwayGameStateBuilder(12, 12)
+                .setFromEmpty(GameContextFactory.Ruleset1::fromEmpty)
+                .setFromOccupied(GameContextFactory.Ruleset1::fromOccupied)
+                        // P1 Oscilator
+                .setCell(2, 1, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(3, 1, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(4, 1, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(1, 2, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(2, 2, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(3, 2, ConwayGameStateConstants.PLAYER1_CELL)
+                        // P2 Oscilator
+                .setCell(7 ,  7, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(7 ,  8, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(8 ,  7, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(8 ,  8, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(9 ,  9, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(9 , 10, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(10,  9, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(10, 10, ConwayGameStateConstants.PLAYER2_CELL)
+                .getState();
+    }
+
     public static class Ruleset1 {
         public final static Integer fromEmpty (Pair<Integer, Integer> a) {
             if (a.getLeft() == 3 && a.getRight() == 0)
