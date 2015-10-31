@@ -39,6 +39,7 @@ public class IOPlayer implements IPlayer{
         logger.debug("Client[" + this.getName() + "] State: " + state.toString());
         writer.println(state.toString());
         String line = reader.readLine();
+        logger.debug("Client[" + this.getName() + "] Received: \"" + line + "\"");
         try {
             return parser.parse(line).getAsJsonObject();
         } catch (IllegalStateException ex) {
