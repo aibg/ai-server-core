@@ -89,13 +89,13 @@ public class ConwayGameState implements State {
             for (int j = 0; j < getCols(); j++) {
                 switch (field[i][j]) {
                     case ConwayGameStateConstants.PLAYER1_CELL:
-                        sb.append(playerId == ConwayGameStateConstants.PLAYER1_CELL ? "1" : "2");
+                        sb.append(playerId == ConwayGameStateConstants.PLAYER1_CELL ? "#" : "O");
                         break;
                     case ConwayGameStateConstants.PLAYER2_CELL:
-                        sb.append(playerId == ConwayGameStateConstants.PLAYER1_CELL ? "2" : "1");
+                        sb.append(playerId == ConwayGameStateConstants.PLAYER1_CELL ? "O" : "#");
                         break;
                     case ConwayGameStateConstants.DEAD_CELL:
-                        sb.append("0");
+                        sb.append(".");
                         break;
                 }
             }
@@ -113,24 +113,7 @@ public class ConwayGameState implements State {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				switch (field[i][j]) {
-
-				case ConwayGameStateConstants.PLAYER1_CELL:
-					sb.append("1");
-					break;
-				case ConwayGameStateConstants.PLAYER2_CELL:
-					sb.append("2");
-					break;
-				default:
-					sb.append("0");
-				}
-			}
-			sb.append('\n');
-		}
-		return sb.toString();
+        return this.toJSONObject().toString();
 	}
 
 	public Action parseAction(JsonObject action) throws InvalidActionException {
