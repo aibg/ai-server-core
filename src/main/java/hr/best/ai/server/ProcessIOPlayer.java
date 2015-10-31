@@ -1,6 +1,7 @@
 package hr.best.ai.server;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * IPlayer which uses system process to communicate with
@@ -8,9 +9,22 @@ import java.io.IOException;
 public class ProcessIOPlayer extends IOPlayer {
     private final Process process;
 
-    public ProcessIOPlayer(Process process)throws IOException {
+    private ProcessIOPlayer(Process process)throws IOException {
         super(process.getInputStream(), process.getOutputStream());
         this.process = process;
+    }
+
+    public ProcessIOPlayer(String... command) throws IOException{
+        this(new ProcessBuilder(command).start());
+    }
+
+    public ProcessIOPlayer(List<String> command) throws IOException{
+        this(new ProcessBuilder(command).start());
+    }
+
+    @Override
+    public String getName() {
+        return "Process default player";
     }
 
     @Override

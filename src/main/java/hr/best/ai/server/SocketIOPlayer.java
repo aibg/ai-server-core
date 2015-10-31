@@ -15,6 +15,11 @@ public class SocketIOPlayer extends IOPlayer {
     }
 
     @Override
+    public String getName() {
+        return "Socket player[" + socket.getInetAddress().toString() + "]";
+    }
+
+    @Override
     public void close() throws Exception{
         super.close();
         this.socket.close();

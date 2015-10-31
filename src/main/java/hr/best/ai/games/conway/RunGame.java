@@ -37,8 +37,8 @@ public class RunGame {
     public static void main(String[] args) throws Exception {
         State st = GameContextFactory.bigDemoState();
         GameContext gc = new GameContext(st, 2);
-        gc.addPlayer(new ProcessIOPlayer(new ProcessBuilder("/home/lpp/Documents/BEST/AI/python-bindings/main.py").start()));
-        gc.addPlayer(new ProcessIOPlayer(new ProcessBuilder("/home/lpp/Documents/BEST/AI/python-bindings/main.py").start()));
+        gc.addPlayer(new ProcessIOPlayer("/home/lpp/Documents/BEST/AI/python-bindings/main.py"));
+        gc.addPlayer(new ProcessIOPlayer("/home/lpp/Documents/BEST/AI/python-bindings/main.py"));
         RunGame.addVizualization(gc);
         gc.play();
     }

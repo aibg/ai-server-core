@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * Generic IPlayer operating on Input & output stream
  */
-public class IOPlayer implements IPlayer{
+public abstract class IOPlayer implements IPlayer{
 
     final static Logger logger = Logger.getLogger(IOPlayer.class);
     private final BufferedReader reader;
@@ -55,11 +55,6 @@ public class IOPlayer implements IPlayer{
     public void signalCompleted(String message) {
         logger.debug("Client[" + this.getName() + "] has signal Completed. Message " + message);
         writer.println(message);
-    }
-
-    @Override
-    public String getName() {
-        return "Player Name";
     }
 
     @Override

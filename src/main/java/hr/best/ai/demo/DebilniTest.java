@@ -43,10 +43,9 @@ public class DebilniTest {
 	}
 
 	static void processDummySumGame() throws Exception {
-		ProcessBuilder player = new ProcessBuilder("bash", "-c",
-				"while :; do echo '{\"value\":2}'; sleep 1; done");
-		IPlayer p1 = new ProcessIOPlayer(player.start());
-		IPlayer p2 = new ProcessIOPlayer(player.start());
+		String[] player = {"bash", "-c", "while :; do echo '{\"value\":2}'; sleep 1; done"};
+		IPlayer p1 = new ProcessIOPlayer(player);
+		IPlayer p2 = new ProcessIOPlayer(player);
         runGameContext(GameContextFactory.getSumGameInstance(), p1, p2);
 	}
 
@@ -71,9 +70,7 @@ public class DebilniTest {
 
     public static void f9() throws Exception{
         GameContext gc = new GameContext(GameContextFactory.demoState(), 2);
-        gc.addPlayer(new ProcessIOPlayer(new ProcessBuilder
-                ("python3", "/home/lpp/Documents/BEST/AI/python-bindings/main.py").start
-                ()));
+        gc.addPlayer(new ProcessIOPlayer( "/home/lpp/Documents/BEST/AI/python-bindings/main.py"));
         gc.addPlayer(new DoNothingPlayerDemo());
         RunGame.addVizualization(gc);
         gc.play();
