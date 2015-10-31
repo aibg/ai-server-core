@@ -6,6 +6,7 @@ import hr.best.ai.games.conway.visualization.GameBar;
 import hr.best.ai.games.conway.visualization.GameGrid;
 import hr.best.ai.gl.GameContext;
 import hr.best.ai.gl.State;
+import hr.best.ai.server.ProcessIOPlayer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,8 +37,8 @@ public class RunGame {
     public static void main(String[] args) throws Exception {
         State st = GameContextFactory.bigDemoState();
         GameContext gc = new GameContext(st, 2);
-        gc.addPlayer(new DoNothingPlayerDemo());
-        gc.addPlayer(new DoNothingPlayerDemo());
+        gc.addPlayer(new ProcessIOPlayer(new ProcessBuilder("/home/lpp/Documents/BEST/AI/python-bindings/main.py").start()));
+        gc.addPlayer(new ProcessIOPlayer(new ProcessBuilder("/home/lpp/Documents/BEST/AI/python-bindings/main.py").start()));
         RunGame.addVizualization(gc);
         gc.play();
     }

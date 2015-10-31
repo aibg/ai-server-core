@@ -21,28 +21,17 @@ public class GameGrid extends JPanel implements NewStateObserver {
 
 	private volatile ConwayGameState state;
 
-	// images
-	private BufferedImage logo1;
-	private BufferedImage logo10;
+	private BufferedImage P1_logo;
+	private BufferedImage P2_logo;
 
-	public GameGrid() {
-
-		// TODO GameGrid.class.getResource(name);
-
-		try {
-			logo1 = ImageIO
-					.read(new File("src/main/resources/BEST_ZG_mali.png"));
-			logo10 = ImageIO.read(new File("src/main/resources/EBEC.png"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public GameGrid() throws IOException{
+			P1_logo = ImageIO.read(new File("src/main/resources/BEST_ZG_mali.png"));
+			P2_logo = ImageIO.read(new File("src/main/resources/EBEC.png"));
 
 	}
 
 	@Override
 	public void close() throws Exception {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -54,8 +43,6 @@ public class GameGrid extends JPanel implements NewStateObserver {
 
 	@Override
 	public void signalCompleted(String message) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -65,7 +52,7 @@ public class GameGrid extends JPanel implements NewStateObserver {
 			return;
 		}
 		// TODO
-		int blockSize = 32;
+		int blockSize = 8;
 
 		// clear canvas and paint background image
 		g.clearRect(0, 0, blockSize * (state.getCols() + 1), blockSize * (state.getRows() + 1));
@@ -73,19 +60,19 @@ public class GameGrid extends JPanel implements NewStateObserver {
 		drawCurrentActions(g, state.getPlayer1Actions(), Color.red, blockSize);
 		drawCurrentActions(g, state.getPlayer2Actions(), Color.blue, blockSize);
 
-		// draw images for live cells
-		Image img = null;
 		for (int i = 0; i < state.getRows(); i++) {
 			for (int j = 0; j < state.getCols(); j++) {
 				g.drawRect(blockSize * j, blockSize * i, blockSize, blockSize);
-				if (state.getCell(i,j) == ConwayGameStateConstants.PLAYER1_CELL) {
-					img = logo1;
-				} else if (state.getCell(i,j) == ConwayGameStateConstants.PLAYER2_CELL) {
-					img = logo10;
-				} else
-					continue;
-				g.drawImage(img, blockSize * j, blockSize * i, this);
-
+                switch (state.getCell(i, j)) {
+                    case ConwayGameStateConstants.PLAYER1_CELL:
+                        g.drawImage(P1_logo, blockSize * j, blockSize * i, blockSize, blockSize, this);
+                        break;
+                    case ConwayGameStateConstants.PLAYER2_CELL:
+                        g.drawImage(P2_logo, blockSize * j, blockSize * i, blockSize, blockSize, this);
+                        break;
+                    case ConwayGameStateConstants.DEAD_CELL:
+                        continue;
+                }
 			}
 		}
 	}

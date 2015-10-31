@@ -75,6 +75,7 @@ public class DebilniTest {
                 ("python3", "/home/lpp/Documents/BEST/AI/python-bindings/main.py").start
                 ()));
         gc.addPlayer(new DoNothingPlayerDemo());
+        RunGame.addVizualization(gc);
         gc.play();
     }
 
