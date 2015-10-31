@@ -1,5 +1,9 @@
 package hr.best.ai.games.conway;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+
 /**
  * Part of player action which contains coordinates of a cell to be activated
  * next turn.
@@ -23,10 +27,16 @@ public class Cell {
 		return col;
 	}
 
+    public JsonElement toJSON() {
+        JsonArray sol = new JsonArray();
+        sol.add(new JsonPrimitive(row));
+        sol.add(new JsonPrimitive(col));
+        return sol;
+    }
+
 	@Override
 	public String toString() {
-
-		return row + "," + col;
+        return toJSON().toString();
 	}
 
 	@Override

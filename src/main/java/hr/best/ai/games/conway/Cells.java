@@ -18,9 +18,8 @@ public class Cells extends ArrayList<Cell> implements Action {
         JsonArray array = object.get("cells").getAsJsonArray();
         Cells actions = new Cells();
         for (JsonElement cell : array) {
-            String[] coordinate = cell.getAsString().split(",");
-            actions.add(new Cell(Integer.parseInt(coordinate[0]), Integer
-                    .parseInt(coordinate[1])));
+            JsonArray coordinate = cell.getAsJsonArray();
+            actions.add(new Cell(coordinate.get(0).getAsInt(), coordinate.get(1).getAsInt()));
         }
         return actions;
     }

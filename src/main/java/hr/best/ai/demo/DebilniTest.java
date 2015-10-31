@@ -186,7 +186,53 @@ public class DebilniTest {
         gc.play();
     }
 
+    public static void f8() throws Exception {
+        GameBar bar = new GameBar();
+        GameGrid grid = new GameGrid();
+
+        SwingUtilities.invokeAndWait(() -> {
+            JFrame f = new JFrame("DemoConway");
+
+            f.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            f.getContentPane().add(bar,BorderLayout.NORTH);
+            f.getContentPane().add(grid,BorderLayout.CENTER);
+            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            f.setVisible(true);
+        });
+
+        State st = ConwayGameStateBuilder.newConwayGameStateBuilder(12, 12)
+                .setFromEmpty(GameContextFactory.Ruleset1::fromEmpty)
+                .setFromOccupied(GameContextFactory.Ruleset1::fromOccupied)
+                        // P1 Oscilator
+                .setCell(2, 1, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(3, 1, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(4, 1, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(1, 2, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(2, 2, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(3, 2, ConwayGameStateConstants.PLAYER1_CELL)
+                        // P2 Oscilator
+                .setCell(7 ,  7, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(7 ,  8, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(8 ,  7, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(8 ,  8, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(9 ,  9, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(9 , 10, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(10,  9, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(10, 10, ConwayGameStateConstants.PLAYER2_CELL)
+                .getState();
+
+        int port = 5858;
+        ServerSocket socket = new ServerSocket(port, 50, null);
+        GameContext gc = new GameContext(st, 2);
+        gc.addPlayer(new SocketIOPlayer(socket.accept()));
+        gc.addPlayer(new DoNothingPlayerDemo());
+        gc.addObserver(bar);
+        gc.addObserver(grid);
+        gc.play();
+    }
+
     public static void main(String[] args) throws Exception {
-		f7();
+		f8();
 	}
 }
