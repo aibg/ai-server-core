@@ -166,8 +166,8 @@ public class ConwayGameState implements State {
         if (p1_cells_new < 0 || p2_cells_new < 0) {
             throw new IllegalArgumentException("too much cells" + p1_cells + " " + p2_cells);
         }
-        p1_cells_new = Math.min(maxCellCapacity, p1_cells + cellGainPerTurn);
-        p2_cells_new = Math.min(maxCellCapacity, p2_cells + cellGainPerTurn);
+        p1_cells_new = Math.min(maxCellCapacity, p1_cells_new + cellGainPerTurn);
+        p2_cells_new = Math.min(maxCellCapacity, p2_cells_new + cellGainPerTurn);
 
         /**
          * Distance checks
