@@ -3,6 +3,7 @@ package hr.best.ai.server;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import hr.best.ai.exceptions.ClientDisconnectException;
 import hr.best.ai.exceptions.InvalidActionException;
 import hr.best.ai.gl.Action;
 import hr.best.ai.gl.IPlayer;
@@ -39,6 +40,9 @@ public class IOPlayer implements IPlayer{
         logger.debug("Client[" + this.getName() + "] State: " + state.toString());
         writer.println(state.toString());
         String line = reader.readLine();
+        if (line == null) {
+            throw new ClientDisconnectException(this.getName() + " has disconnected. Unexpected end of stream");
+        }
         logger.debug("Client[" + this.getName() + "] Received: \"" + line + "\"");
         try {
             return parser.parse(line).getAsJsonObject();
