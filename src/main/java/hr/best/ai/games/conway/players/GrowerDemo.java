@@ -124,7 +124,7 @@ public class GrowerDemo implements IPlayer {
 
 		JsonObject output = new JsonObject();
 		JsonArray cells = new JsonArray();
-		cells.add(new JsonPrimitive(candidates.get(0).toString()));
+		cells.add(candidates.get(0).toJSON());
 		output.add("cells", cells);
 
 		return output;
