@@ -89,7 +89,6 @@ public class GameContext implements AutoCloseable {
 		ExecutorService threadPool = Executors.newFixedThreadPool(observers
 				.size() + players.size());
 		
-		
 		try {
 			while (!state.isFinal()) {
 				List<Future<Action>> actionsF = new ArrayList<>();

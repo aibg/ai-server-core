@@ -16,7 +16,7 @@ public class SocketIOPlayer extends IOPlayer {
 
     @Override
     public String getName() {
-        return "Socket player[" + socket.getInetAddress().toString() + "]";
+        return "Socket player[" + socket.getInetAddress().toString() + ":" + socket.getPort() + "]";
     }
 
     @Override
