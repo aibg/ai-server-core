@@ -57,8 +57,7 @@ public class RunGame {
                     .setMaxCellCapacity(gameConfig.get("maxCellCapacity").getAsInt())
                     .setMaxColonisationDistance(gameConfig.get("maxColonisationDistance").getAsInt())
                     .setMaxGameIterations(gameConfig.get("maxGameIterations").getAsInt())
-                    .setFromEmpty(GameContextFactory.Ruleset1::fromEmpty)
-                    .setFromOccupied(GameContextFactory.Ruleset1::fromOccupied);
+                    .setRuleset(gameConfig.get("ruleset").getAsString());
 
             players.get(0).getAsJsonObject().getAsJsonArray("startingCells").forEach((JsonElement e) -> {
                 final JsonArray a = e.getAsJsonArray();
@@ -104,6 +103,7 @@ public class RunGame {
     }
 
     public static void main(String[] args) throws Exception {
+        Rulesets.getInstance(); // loading the class static part into JVM
         final JsonParser parser = new JsonParser();
         final JsonObject config = parser.parse(new InputStreamReader(RunGame.class.getClassLoader().getResourceAsStream("ai.json"), StandardCharsets.UTF_8)).getAsJsonObject();
 
