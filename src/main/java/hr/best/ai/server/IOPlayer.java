@@ -5,9 +5,7 @@ import com.google.gson.JsonParser;
 
 import hr.best.ai.exceptions.ClientDisconnectException;
 import hr.best.ai.exceptions.InvalidActionException;
-import hr.best.ai.gl.Action;
 import hr.best.ai.gl.IPlayer;
-import hr.best.ai.gl.State;
 
 import org.apache.log4j.Logger;
 
@@ -23,8 +21,10 @@ public abstract class IOPlayer implements IPlayer{
     private final BufferedReader reader;
     private final PrintWriter writer;
     private final JsonParser parser = new JsonParser();
+    private final String name;
 
-    public IOPlayer(InputStream in, OutputStream out) throws IOException{
+    public IOPlayer(InputStream in, OutputStream out, String name) throws IOException{
+        this.name = name;
         this.reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
         this.writer = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8), true);
     }
@@ -37,7 +37,7 @@ public abstract class IOPlayer implements IPlayer{
 
     @Override
     public JsonObject signalNewState(JsonObject state) throws IOException, InvalidActionException {
-        logger.debug("Client[" + this.getName() + "] State: " + state.toString());
+        logger.debug(String.format("%s sent: %s", this.getName(), state.toString()));
         long t = System.currentTimeMillis();
         writer.println(state.toString());
         String line = reader.readLine();
@@ -45,9 +45,9 @@ public abstract class IOPlayer implements IPlayer{
             throw new ClientDisconnectException(this.getName() + " has disconnected. Unexpected end of stream");
         }
         logger.debug(String.format(
-                "Recieved[t:%3dms] Client[%s] line: \"%s\""
-                , System.currentTimeMillis() - t
+                "%s recieved[t:%3dms]: \"%s\""
                 , this.getName()
+                , System.currentTimeMillis() - t
                 , line)
         );
         try {
@@ -61,6 +61,11 @@ public abstract class IOPlayer implements IPlayer{
     public void signalCompleted(String message) {
         logger.debug("Client[" + this.getName() + "] has signal Completed. Message " + message);
         writer.println(message);
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

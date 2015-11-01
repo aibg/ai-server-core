@@ -9,14 +9,13 @@ import java.net.Socket;
 public class SocketIOPlayer extends IOPlayer {
 
     private final Socket socket;
-    public SocketIOPlayer(Socket socket) throws IOException {
-        super(socket.getInputStream(), socket.getOutputStream());
+    public SocketIOPlayer(Socket socket, String name) throws IOException {
+        super(socket.getInputStream(), socket.getOutputStream(), name);
         this.socket = socket;
     }
 
-    @Override
-    public String getName() {
-        return "Socket player[" + socket.getInetAddress().toString() + ":" + socket.getPort() + "]";
+    public SocketIOPlayer(Socket socket) throws IOException {
+        this(socket, String.format("%s:%d", socket.getInetAddress().toString(), socket.getPort()));
     }
 
     @Override

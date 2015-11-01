@@ -9,23 +9,19 @@ import java.util.List;
 public class ProcessIOPlayer extends IOPlayer {
     private final Process process;
 
-    private ProcessIOPlayer(Process process)throws IOException {
-        super(process.getInputStream(), process.getOutputStream());
+    private ProcessIOPlayer(Process process, String name) throws IOException {
+        super(process.getInputStream(), process.getOutputStream(), name);
         this.process = process;
     }
 
-    public ProcessIOPlayer(String... command) throws IOException{
-        this(new ProcessBuilder(command).start());
+    public ProcessIOPlayer(List<String> command, String name) throws IOException{
+        this(new ProcessBuilder(command).start(), name);
     }
 
     public ProcessIOPlayer(List<String> command) throws IOException{
-        this(new ProcessBuilder(command).start());
+        this(new ProcessBuilder(command).start(), "PIoPlayer");
     }
 
-    @Override
-    public String getName() {
-        return "Process default player";
-    }
 
     @Override
     public void close() throws Exception {

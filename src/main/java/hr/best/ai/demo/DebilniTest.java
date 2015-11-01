@@ -12,7 +12,9 @@ import hr.best.ai.server.ProcessIOPlayer;
 import hr.best.ai.server.SocketIOPlayer;
 
 import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class DebilniTest {
 
@@ -42,7 +44,7 @@ public class DebilniTest {
 	}
 
 	static void processDummySumGame() throws Exception {
-		String[] player = {"bash", "-c", "while :; do echo '{\"value\":2}'; sleep 1; done"};
+		List<String> player = Arrays.asList("bash", "-c", "while :; do echo '{\"value\":2}'; sleep 1; done");
 		IPlayer p1 = new ProcessIOPlayer(player);
 		IPlayer p2 = new ProcessIOPlayer(player);
         runGameContext(GameContextFactory.getSumGameInstance(), p1, p2);
@@ -69,7 +71,7 @@ public class DebilniTest {
 
     public static void f9() throws Exception{
         GameContext gc = new GameContext(GameContextFactory.demoState(), 2);
-        gc.addPlayer(new ProcessIOPlayer( "/home/lpp/Documents/BEST/AI/python-bindings/main.py"));
+        gc.addPlayer(new ProcessIOPlayer(Arrays.asList("/home/lpp/Documents/BEST/AI/python-bindings/main.py")));
         gc.addPlayer(new DoNothingPlayerDemo());
         RunGame.addVizualization(gc);
         gc.play();

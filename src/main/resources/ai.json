@@ -2,12 +2,14 @@
   "players": [
     {
       "type": "dummy",
+      "name" : "p1",
       "startingCells": [
         [0, 0], [0,1],[1,0],[1,1]
       ]
     },
     {
       "type": "process",
+      "name":"p2",
       "command": [
         "/home/lpp/Documents/BEST/AI/python-bindings/conway/main.py"
       ],
@@ -28,5 +30,5 @@
     "fromOccupied": ""
   },
   "port": 5858,
-  "visualization" : true
+  "visualization" : false
 }
