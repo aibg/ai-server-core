@@ -38,12 +38,18 @@ public abstract class IOPlayer implements IPlayer{
     @Override
     public JsonObject signalNewState(JsonObject state) throws IOException, InvalidActionException {
         logger.debug("Client[" + this.getName() + "] State: " + state.toString());
+        long t = System.currentTimeMillis();
         writer.println(state.toString());
         String line = reader.readLine();
         if (line == null) {
             throw new ClientDisconnectException(this.getName() + " has disconnected. Unexpected end of stream");
         }
-        logger.debug("Client[" + this.getName() + "] Received: \"" + line + "\"");
+        logger.debug(String.format(
+                "Recieved[t:%3dms] Client[%s] line: \"%s\""
+                , System.currentTimeMillis() - t
+                , this.getName()
+                , line)
+        );
         try {
             return parser.parse(line).getAsJsonObject();
         } catch (IllegalStateException ex) {

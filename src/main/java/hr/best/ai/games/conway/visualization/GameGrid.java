@@ -6,6 +6,7 @@ import hr.best.ai.games.conway.ConwayGameState;
 import hr.best.ai.games.conway.ConwayGameStateConstants;
 import hr.best.ai.gl.NewStateObserver;
 import hr.best.ai.gl.State;
+import org.apache.log4j.Logger;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -19,6 +20,7 @@ import javax.swing.JPanel;
 
 public class GameGrid extends JPanel implements NewStateObserver {
 
+    final static Logger logger = Logger.getLogger(GameGrid.class);
 	private volatile ConwayGameState state;
 
 	private BufferedImage P1_logo;
@@ -47,6 +49,7 @@ public class GameGrid extends JPanel implements NewStateObserver {
 
 	@Override
 	protected void paintComponent(Graphics g) {
+        long t = System.currentTimeMillis();
 		super.paintComponent(g);
 		if (state == null) {
 			return;
@@ -75,6 +78,7 @@ public class GameGrid extends JPanel implements NewStateObserver {
                 }
 			}
 		}
+        logger.debug(String.format("Repaint finished: %3dms", System.currentTimeMillis() - t));
 	}
 
 	/**

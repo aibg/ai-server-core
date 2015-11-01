@@ -1,7 +1,7 @@
 {
   "players": [
     {
-      "type": "tcp",
+      "type": "dummy",
       "startingCells": [
         [0, 0], [0,1],[1,0],[1,1]
       ]
@@ -9,7 +9,7 @@
     {
       "type": "process",
       "command": [
-        "/home/lpp/Documents/BEST/AI/python-bindings/main.py"
+        "/home/lpp/Documents/BEST/AI/python-bindings/conway/main.py"
       ],
       "startingCells": [
         [4, 4], [4,5],[5,4],[5,5]
