@@ -55,7 +55,7 @@ public class DebilniTest {
         GameContext gc = new GameContext(st, 2);
         gc.addPlayer(new DoNothingPlayerDemo());
         gc.addPlayer(new DoNothingPlayerDemo());
-        RunGame.addVizualization(gc);
+        RunGame.addVisualization(gc);
         gc.play();
     }
 
@@ -65,7 +65,7 @@ public class DebilniTest {
         GameContext gc = new GameContext(st, 2);
         gc.addPlayer(new SocketIOPlayer(socket.accept()));
         gc.addPlayer(new DoNothingPlayerDemo());
-        RunGame.addVizualization(gc);
+        RunGame.addVisualization(gc);
         gc.play();
     }
 
@@ -75,7 +75,7 @@ public class DebilniTest {
                 ("python3", "/home/lpp/Documents/BEST/AI/python-bindings/main.py").start
                 ()));
         gc.addPlayer(new DoNothingPlayerDemo());
-        RunGame.addVizualization(gc);
+        RunGame.addVisualization(gc);
         gc.play();
     }
 
