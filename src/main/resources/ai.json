@@ -4,7 +4,7 @@
       "type": "process",
       "name" : "p1_python",
       "command": [
-        "/home/lpp/Desktop/t.py"
+        "/data/Documents/BEST/AI/python-bindings/conway/main.py"
       ],
       "startingCells": [
         [0, 0], [0,1],[1,0],[1,1]
@@ -29,8 +29,7 @@
     "startingCells": 5,
     "maxColonisationDistance": 4,
     "maxGameIterations": 10000,
-    "fromEmpty": "",
-    "fromOccupied": ""
+    "ruleset":"classic"
   },
   "port": 5858,
   "visualization" : false

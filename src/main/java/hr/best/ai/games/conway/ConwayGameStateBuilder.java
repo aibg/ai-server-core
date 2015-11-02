@@ -1,5 +1,6 @@
 package hr.best.ai.games.conway;
 
+import com.sun.deploy.security.ruleset.Rule;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -96,6 +97,16 @@ public class ConwayGameStateBuilder {
      */
     public ConwayGameStateBuilder setFromOccupied(Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied) {
         this.fromOccupied = fromOccupied;
+        return this;
+    }
+
+    public ConwayGameStateBuilder setRuleset(String name) {
+        if (!Rulesets.fromEmpty.containsKey(name)) {
+            throw new IllegalArgumentException(name + " is not recognized game ruleset. Supported ones are: " +
+                    Rulesets.fromEmpty.keySet().toString());
+        }
+        setFromEmpty(Rulesets.fromEmpty.get(name));
+        setFromOccupied(Rulesets.fromOccupied.get(name));
         return this;
     }
 
