@@ -32,7 +32,7 @@ public class ConwayGameStateBuilder {
     private int maxColonisationDistance = 4;
     private int maxGameIterations = 10000;
     private final int[][] field;
-    private int startingCells = maxCellCapacity;
+    private int startingCells = 5;
     /**
      * (P1, P2) -> resulting cell
      */
@@ -55,6 +55,11 @@ public class ConwayGameStateBuilder {
      * we'd have (1, 7, 2)
      */
     Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied;
+
+    public ConwayGameStateBuilder setStartingCells(int startingCells) {
+        this.startingCells = startingCells;
+        return this;
+    }
 
     public ConwayGameStateBuilder setCellGainPerTurn(int cellGainPerTurn) {
         this.cellGainPerTurn = cellGainPerTurn;

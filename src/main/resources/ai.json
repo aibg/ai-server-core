@@ -11,7 +11,7 @@
       ]
     },
     {
-      "type": "process",
+      "type": "dummy",
       "name":"p2_python",
       "command": [
         "/home/lpp/Desktop/t.py"

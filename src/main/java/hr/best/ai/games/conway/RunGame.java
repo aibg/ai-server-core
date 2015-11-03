@@ -57,6 +57,7 @@ public class RunGame {
                     .setMaxCellCapacity(gameConfig.get("maxCellCapacity").getAsInt())
                     .setMaxColonisationDistance(gameConfig.get("maxColonisationDistance").getAsInt())
                     .setMaxGameIterations(gameConfig.get("maxGameIterations").getAsInt())
+                    .setStartingCells(gameConfig.get("startingCells").getAsInt())
                     .setRuleset(gameConfig.get("ruleset").getAsString());
 
             players.get(0).getAsJsonObject().getAsJsonArray("startingCells").forEach((JsonElement e) -> {
