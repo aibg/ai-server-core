@@ -4,7 +4,7 @@
       "type": "process",
       "name" : "p1_python",
       "command": [
-        "/data/Documents/BEST/AI/python-bindings/conway/main.py"
+        "/data/Documents/BEST/AI/python-bindings/run"
       ],
       "startingCells": [
         [0, 0], [0,1],[1,0],[1,1]
@@ -12,10 +12,7 @@
     },
     {
       "type": "dummy",
-      "name":"p2_python",
-      "command": [
-        "/home/lpp/Desktop/t.py"
-      ],
+      "name":"dummy",
       "startingCells": [
         [4, 4], [4,5],[5,4],[5,5]
       ],

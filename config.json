@@ -4,7 +4,7 @@
       "type": "process",
       "name" : "p1_python",
       "command": [
-        "/data/Documents/BEST/AI/python-bindings/run.py"
+        "/data/Documents/BEST/AI/python-bindings/run"
       ],
       "startingCells": [
         [0, 0], [0,1],[1,0],[1,1]

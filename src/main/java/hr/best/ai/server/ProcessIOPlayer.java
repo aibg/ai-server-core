@@ -25,9 +25,12 @@ public class ProcessIOPlayer extends IOPlayer {
     }
 
     private static Process runProcessHelper(List<String> command) throws IOException{
+        Path wd = Paths.get(".").toAbsolutePath().resolve(command.get(0));
+        command.set(0, wd.toString());
+
         ProcessBuilder pb = new ProcessBuilder(command);
-        Path wd = Paths.get(".").toAbsolutePath().resolve(command.get(0)).getParent();
-        pb.directory(wd.toFile());
+        pb.directory(wd.getParent().toFile());
+
         logger.info("Starting player process with command: " + command.toString() + " with working directory: " + pb
                 .directory());
         return pb.start();
