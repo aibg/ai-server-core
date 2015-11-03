@@ -5,7 +5,7 @@ import com.google.gson.JsonParser;
 
 import hr.best.ai.exceptions.ClientDisconnectException;
 import hr.best.ai.exceptions.InvalidActionException;
-import hr.best.ai.gl.IPlayer;
+import hr.best.ai.gl.AbstractPlayer;
 
 import org.apache.log4j.Logger;
 
@@ -15,16 +15,15 @@ import java.nio.charset.StandardCharsets;
 /**
  * Generic IPlayer operating on Input & output stream
  */
-public abstract class IOPlayer implements IPlayer{
+public abstract class IOPlayer extends AbstractPlayer{
 
     final static Logger logger = Logger.getLogger(IOPlayer.class);
     private final BufferedReader reader;
     private final PrintWriter writer;
     private final JsonParser parser = new JsonParser();
-    private final String name;
 
     public IOPlayer(InputStream in, OutputStream out, String name) throws IOException{
-        this.name = name;
+        super(name);
         this.reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
         this.writer = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8), true);
     }
@@ -55,11 +54,6 @@ public abstract class IOPlayer implements IPlayer{
         } catch (IllegalStateException ex) {
             throw new InvalidActionException(ex);
         }
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override

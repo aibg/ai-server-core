@@ -73,21 +73,20 @@ public class RunGame {
             for (JsonElement playerElement : players) {
                 JsonObject player = playerElement.getAsJsonObject();
                 String type = player.get("type").getAsString();
-                String name = player.get("name") == null ? null : player.get("name").getAsString();
+                String name = player.get("name") == null ? "Unknown player" : player.get("name").getAsString();
                 switch (type) {
                     case "dummy":
-                        gc.addPlayer(new DoNothingPlayerDemo());
+                        gc.addPlayer(new DoNothingPlayerDemo(name));
                         break;
                     case "tcp":
                         socket = socket != null ? socket : new ServerSocket(config.get("port").getAsInt(), 50, null);
-                        gc.addPlayer(name != null ? new SocketIOPlayer(socket.accept(), name) : new SocketIOPlayer
-                                (socket.accept()));
+                        gc.addPlayer(new SocketIOPlayer(socket.accept(), name));
                         break;
                     case "process":
                         ArrayList<String> command = new ArrayList<>();
                         for (JsonElement e : player.getAsJsonArray("command"))
                             command.add(e.getAsString());
-                        gc.addPlayer(name != null ? new ProcessIOPlayer(command, name) : new ProcessIOPlayer(command));
+                        gc.addPlayer(new ProcessIOPlayer(command, name));
                         break;
                     default:
                         throw new IllegalArgumentException("Unknown player type. Got: " + type);
