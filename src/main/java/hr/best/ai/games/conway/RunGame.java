@@ -4,14 +4,18 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.sun.corba.se.spi.activation.Server;
 import hr.best.ai.games.GameContextFactory;
 import hr.best.ai.games.conway.players.DoNothingPlayerDemo;
 import hr.best.ai.games.conway.visualization.GameBar;
 import hr.best.ai.games.conway.visualization.GameGrid;
+import hr.best.ai.gl.AbstractPlayer;
 import hr.best.ai.gl.GameContext;
 import hr.best.ai.gl.State;
+import hr.best.ai.gl.bucket.SimpleBucket;
 import hr.best.ai.server.ProcessIOPlayer;
 import hr.best.ai.server.SocketIOPlayer;
+import hr.best.ai.server.TimeBucketPlayer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,11 +48,38 @@ public class RunGame {
         gc.addObserver(grid);
     }
 
+    private static ServerSocket socket = null;
+
+    private static AbstractPlayer createPlayer(JsonObject playerConfiguration, int port) throws Exception {
+        String type = playerConfiguration.get("type").getAsString();
+        String name = playerConfiguration.get("name") == null ? "Unknown player" : playerConfiguration.get("name").getAsString();
+        switch (type) {
+            case "dummy":
+                return new DoNothingPlayerDemo(name);
+            case "tcp":
+                socket = socket != null ? socket : new ServerSocket(port, 50, null);
+                return new SocketIOPlayer(socket.accept(), name);
+            case "process":
+                ArrayList<String> command = new ArrayList<>();
+                for (JsonElement e : playerConfiguration.getAsJsonArray("command"))
+                    command.add(e.getAsString());
+                return new ProcessIOPlayer(command, name);
+            default:
+                throw new IllegalArgumentException("Unknown player type. Got: " + type);
+        }
+    }
+
+    private static AbstractPlayer getTimeBucketedPlayer(AbstractPlayer player, JsonObject timeBucketConfig) {
+        return new TimeBucketPlayer(player, new SimpleBucket(
+                timeBucketConfig.get("maxLength").getAsInt()
+        ));
+    }
+
     private static GameContext initialize(JsonObject config) throws Exception{
-        ServerSocket socket = null;
         try {
             final JsonObject gameConfig = config.getAsJsonObject("game");
             final JsonArray players = config.getAsJsonArray("players");
+            final int port = config.get("port").getAsInt();
 
             ConwayGameStateBuilder builder = ConwayGameStateBuilder.newConwayGameStateBuilder
                     (gameConfig.get("rows").getAsInt()
@@ -72,31 +103,22 @@ public class RunGame {
             GameContext gc = new GameContext(builder.getState(), 2);
 
             for (JsonElement playerElement : players) {
-                JsonObject player = playerElement.getAsJsonObject();
-                String type = player.get("type").getAsString();
-                String name = player.get("name") == null ? "Unknown player" : player.get("name").getAsString();
-                switch (type) {
-                    case "dummy":
-                        gc.addPlayer(new DoNothingPlayerDemo(name));
-                        break;
-                    case "tcp":
-                        socket = socket != null ? socket : new ServerSocket(config.get("port").getAsInt(), 50, null);
-                        gc.addPlayer(new SocketIOPlayer(socket.accept(), name));
-                        break;
-                    case "process":
-                        ArrayList<String> command = new ArrayList<>();
-                        for (JsonElement e : player.getAsJsonArray("command"))
-                            command.add(e.getAsString());
-                        gc.addPlayer(new ProcessIOPlayer(command, name));
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unknown player type. Got: " + type);
-                }
+                JsonObject playerConfiguration = playerElement.getAsJsonObject();
+                AbstractPlayer player = createPlayer(playerConfiguration, port);
+
+                if (playerConfiguration.has("timer"))
+                    gc.addPlayer(getTimeBucketedPlayer(
+                            player
+                            , playerConfiguration.get("timer").getAsJsonObject())
+                    );
+                else
+                    gc.addPlayer(player);
             }
             return gc;
         } catch (Exception ex) {
             if (socket != null) {
                 socket.close();
+                socket = null;
             }
             throw ex;
         }
