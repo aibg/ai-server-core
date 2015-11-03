@@ -1,6 +1,7 @@
 package hr.best.ai.gl;
 
 import org.apache.log4j.Logger;
+import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +29,20 @@ public class GameContext implements AutoCloseable {
 	private final List<IPlayer> players = new ArrayList<>();
 	private final List<NewStateObserver> observers = new ArrayList<>();
 	private final int maxPlayers;
+    private final int minPlayers;
 
 	private State state;
 	private GS gamestate = GS.INIT;
 
-	public GameContext(State state, int maxPlayers) {
-		this.maxPlayers = maxPlayers;
-		this.state = state;
-	}
+	public GameContext(State state, int minPlayers, int maxPlayers) {
+        this.minPlayers = minPlayers;
+        this.maxPlayers = maxPlayers;
+        this.state = state;
+    }
+
+    public GameContext(State state, int noPlayers) {
+        this(state, noPlayers, noPlayers);
+    }
 
 	/**
 	 * Register a player to game context. Returns player ID which is used in all
@@ -68,6 +75,11 @@ public class GameContext implements AutoCloseable {
 	 * runs the whole game logic.
 	 */
 	public synchronized void play() throws Exception {
+        if (players.size() < this.minPlayers || players.size() > this.maxPlayers)
+            throw new InvalidStateException(
+                    "Invalid number of player. Expected in range ["
+                            + minPlayers + ", "
+                            + maxPlayers + "] got: " + players.size());
 
 		if (gamestate != GS.INIT)
 			throw new IllegalStateException(
@@ -76,7 +88,6 @@ public class GameContext implements AutoCloseable {
 
 		ExecutorService threadPool = Executors.newFixedThreadPool(observers
 				.size() + players.size());
-		
 		
 		try {
 			while (!state.isFinal()) {
