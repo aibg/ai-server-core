@@ -4,14 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.sun.corba.se.spi.activation.Server;
-import hr.best.ai.games.GameContextFactory;
 import hr.best.ai.games.conway.players.DoNothingPlayerDemo;
 import hr.best.ai.games.conway.visualization.GameBar;
 import hr.best.ai.games.conway.visualization.GameGrid;
 import hr.best.ai.gl.AbstractPlayer;
 import hr.best.ai.gl.GameContext;
-import hr.best.ai.gl.State;
 import hr.best.ai.gl.bucket.SimpleBucket;
 import hr.best.ai.server.ProcessIOPlayer;
 import hr.best.ai.server.SocketIOPlayer;
@@ -19,11 +16,11 @@ import hr.best.ai.server.TimeBucketPlayer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Properties;
 
 /**
  * Created by lpp on 10/31/15.
@@ -127,7 +124,15 @@ public class RunGame {
     public static void main(String[] args) throws Exception {
         Rulesets.getInstance(); // loading the class static part into JVM
         final JsonParser parser = new JsonParser();
-        final JsonObject config = parser.parse(new InputStreamReader(RunGame.class.getClassLoader().getResourceAsStream("ai.json"), StandardCharsets.UTF_8)).getAsJsonObject();
+        JsonObject config;
+
+        if (args.length == 0) {
+            System.out.println("Falling back to default game configuration.");
+            config = parser.parse(new InputStreamReader(RunGame.class.getClassLoader().getResourceAsStream("defaultConfig.json"), StandardCharsets.UTF_8)).getAsJsonObject();
+        } else {
+            System.out.println("Using " + args[0] + " configuration file");
+            config = parser.parse(new FileReader(args[0])).getAsJsonObject();
+        }
 
         try (GameContext gc = initialize(config)) {
             if (config.get("visualization").getAsBoolean()) {

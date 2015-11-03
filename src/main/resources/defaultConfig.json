@@ -1,0 +1,39 @@
+{
+  "players": [
+    {
+      "type": "process",
+      "name" : "p1_python",
+      "command": [
+        "/data/Documents/BEST/AI/python-bindings/conway/main.py"
+      ],
+      "startingCells": [
+        [0, 0], [0,1],[1,0],[1,1]
+      ]
+    },
+    {
+      "type": "dummy",
+      "name":"p2_python",
+      "command": [
+        "/home/lpp/Desktop/t.py"
+      ],
+      "startingCells": [
+        [4, 4], [4,5],[5,4],[5,5]
+      ],
+      "timer": {
+        "maxLength" : 200
+      }
+    }
+  ],
+  "game": {
+    "rows": 10,
+    "cols": 10,
+    "cellGainPerTurn": 1,
+    "maxCellCapacity": 5,
+    "startingCells": 5,
+    "maxColonisationDistance": 4,
+    "maxGameIterations": 100,
+    "ruleset":"classic"
+  },
+  "port": 5858,
+  "visualization" : false
+}
