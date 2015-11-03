@@ -1,8 +1,6 @@
 package hr.best.ai.games.sum;
 
-import hr.best.ai.gl.Action;
-import hr.best.ai.gl.IPlayer;
-import hr.best.ai.gl.State;
+import hr.best.ai.gl.AbstractPlayer;
 
 import org.apache.log4j.Logger;
 
@@ -10,21 +8,20 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 /**
- * Created by lpp on 9/22/15.
+ * Created by nmiculinic on 9/22/15.
  */
-public class SumDummyPlayer implements IPlayer {
+public class SumDummyPlayer extends AbstractPlayer {
     final static Logger logger = Logger.getLogger(SumDummyPlayer.class);
     private int inc;
-    private String name;
 
     public SumDummyPlayer(int inc, String name) {
+        super(name);
         this.inc = inc;
-        this.name = name;
     }
 
     @Override
-    public void sendError(String message) {
-        logger.error("[" + name + "]: " + message);
+    public void sendError(JsonObject message) {
+        logger.error("[" + this.getName() + "]: " + message);
     }
 
     @Override
@@ -38,16 +35,6 @@ public class SumDummyPlayer implements IPlayer {
         obj.add("value", new JsonPrimitive(inc));
         
         return obj;
-    }
-
-    @Override
-    public void signalCompleted(String message) {
-        logger.info("[" + name + "]: " + message);
-    }
-
-    @Override
-    public String getName() {
-        return "dummy";
     }
 
     @Override

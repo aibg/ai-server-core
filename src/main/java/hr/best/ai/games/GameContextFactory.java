@@ -2,6 +2,7 @@ package hr.best.ai.games;
 
 import hr.best.ai.games.conway.ConwayGameStateBuilder;
 import hr.best.ai.games.conway.ConwayGameStateConstants;
+import hr.best.ai.games.conway.Rulesets.*;
 import hr.best.ai.games.sum.SumState;
 import hr.best.ai.gl.GameContext;
 import hr.best.ai.gl.State;
@@ -31,8 +32,7 @@ public class GameContextFactory {
 
     public static State demoState() {
         return ConwayGameStateBuilder.newConwayGameStateBuilder(12, 12)
-                .setFromEmpty(GameContextFactory.Ruleset1::fromEmpty)
-                .setFromOccupied(GameContextFactory.Ruleset1::fromOccupied)
+                .setRuleset("classic")
                         // P1 Oscilator
                 .setCell(2, 1, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(3, 1, ConwayGameStateConstants.PLAYER1_CELL)
@@ -54,8 +54,7 @@ public class GameContextFactory {
 
     public static State bigDemoState() {
         return ConwayGameStateBuilder.newConwayGameStateBuilder(100, 100)
-                .setFromEmpty(GameContextFactory.Ruleset1::fromEmpty)
-                .setFromOccupied(GameContextFactory.Ruleset1::fromOccupied)
+                .setRuleset("classic")
                         // P1 Oscilator
                 .setCell(2, 1, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(3, 1, ConwayGameStateConstants.PLAYER1_CELL)
@@ -76,20 +75,6 @@ public class GameContextFactory {
     }
 
 
-    public static class Ruleset1 {
-        public final static Integer fromEmpty (Pair<Integer, Integer> a) {
-            if (a.getLeft() == 3 && a.getRight() == 0)
-                return ConwayGameStateConstants.PLAYER1_CELL;
-            if (a.getLeft() == 0 && a.getRight() == 3)
-                return ConwayGameStateConstants.PLAYER2_CELL;
-            return ConwayGameStateConstants.DEAD_CELL;
-        }
-
-        public final static Integer fromOccupied(Triple<Integer, Integer, Integer> a) {
-            return a.getLeft() == 2 || a.getLeft() == 3
-                    ? a.getRight() : ConwayGameStateConstants.DEAD_CELL;
-        }
-    }
 
     public static GameContext getConwayGameInstance() {
     	

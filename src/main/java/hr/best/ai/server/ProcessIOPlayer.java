@@ -27,7 +27,7 @@ public class ProcessIOPlayer extends IOPlayer {
     }
 
     public ProcessIOPlayer(List<String> command) throws IOException{
-        this(command, "PIoPlayer");
+        this(command, "PIoPlayer: " + String.join(" ", command));
     }
 
     @Override

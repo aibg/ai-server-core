@@ -1,12 +1,9 @@
 package hr.best.ai.games.conway;
 
+import java.util.function.Function;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Function;
 
 /**
  * Created by lpp on 10/27/15.
@@ -31,7 +28,7 @@ public class ConwayGameStateBuilder {
     private int maxColonisationDistance = 4;
     private int maxGameIterations = 10000;
     private final int[][] field;
-    private int startingCells = maxCellCapacity;
+    private int startingCells = 5;
     /**
      * (P1, P2) -> resulting cell
      */
@@ -54,6 +51,11 @@ public class ConwayGameStateBuilder {
      * we'd have (1, 7, 2)
      */
     Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied;
+
+    public ConwayGameStateBuilder setStartingCells(int startingCells) {
+        this.startingCells = startingCells;
+        return this;
+    }
 
     public ConwayGameStateBuilder setCellGainPerTurn(int cellGainPerTurn) {
         this.cellGainPerTurn = cellGainPerTurn;
@@ -96,6 +98,16 @@ public class ConwayGameStateBuilder {
      */
     public ConwayGameStateBuilder setFromOccupied(Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied) {
         this.fromOccupied = fromOccupied;
+        return this;
+    }
+
+    public ConwayGameStateBuilder setRuleset(String name) {
+        if (!Rulesets.fromEmpty.containsKey(name)) {
+            throw new IllegalArgumentException(name + " is not recognized game ruleset. Supported ones are: " +
+                    Rulesets.fromEmpty.keySet().toString());
+        }
+        setFromEmpty(Rulesets.fromEmpty.get(name));
+        setFromOccupied(Rulesets.fromOccupied.get(name));
         return this;
     }
 

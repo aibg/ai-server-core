@@ -1,13 +1,16 @@
 package hr.best.ai.games.conway;
 
-import hr.best.ai.games.GameContextFactory;
+
 import hr.best.ai.games.conway.players.DoNothingPlayerDemo;
 import hr.best.ai.games.conway.visualization.GameBarPanel;
 import hr.best.ai.games.conway.visualization.GameGridPanel;
 import hr.best.ai.games.conway.visualization.PlayerInfoPanel;
+import hr.best.ai.gl.AbstractPlayer;
 import hr.best.ai.gl.GameContext;
+import hr.best.ai.gl.bucket.SimpleBucket;
 import hr.best.ai.server.ProcessIOPlayer;
 import hr.best.ai.server.SocketIOPlayer;
+import hr.best.ai.server.TimeBucketPlayer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -82,11 +85,38 @@ public class RunGame {
 	}
 
 
+    private static ServerSocket socket = null;
+
+    private static AbstractPlayer createPlayer(JsonObject playerConfiguration, int port) throws Exception {
+        String type = playerConfiguration.get("type").getAsString();
+        String name = playerConfiguration.get("name") == null ? "Unknown player" : playerConfiguration.get("name").getAsString();
+        switch (type) {
+            case "dummy":
+                return new DoNothingPlayerDemo(name);
+            case "tcp":
+                socket = socket != null ? socket : new ServerSocket(port, 50, null);
+                return new SocketIOPlayer(socket.accept(), name);
+            case "process":
+                ArrayList<String> command = new ArrayList<>();
+                for (JsonElement e : playerConfiguration.getAsJsonArray("command"))
+                    command.add(e.getAsString());
+                return new ProcessIOPlayer(command, name);
+            default:
+                throw new IllegalArgumentException("Unknown player type. Got: " + type);
+        }
+    }
+
+    private static AbstractPlayer getTimeBucketedPlayer(AbstractPlayer player, JsonObject timeBucketConfig) {
+        return new TimeBucketPlayer(player, new SimpleBucket(
+                timeBucketConfig.get("maxLength").getAsInt()
+        ));
+    }
+
     private static GameContext initialize(JsonObject config) throws Exception{
-        ServerSocket socket = null;
         try {
             final JsonObject gameConfig = config.getAsJsonObject("game");
             final JsonArray players = config.getAsJsonArray("players");
+            final int port = config.get("port").getAsInt();
 
             ConwayGameStateBuilder builder = ConwayGameStateBuilder.newConwayGameStateBuilder
                     (gameConfig.get("rows").getAsInt()
@@ -95,8 +125,8 @@ public class RunGame {
                     .setMaxCellCapacity(gameConfig.get("maxCellCapacity").getAsInt())
                     .setMaxColonisationDistance(gameConfig.get("maxColonisationDistance").getAsInt())
                     .setMaxGameIterations(gameConfig.get("maxGameIterations").getAsInt())
-                    .setFromEmpty(GameContextFactory.Ruleset1::fromEmpty)
-                    .setFromOccupied(GameContextFactory.Ruleset1::fromOccupied);
+                    .setStartingCells(gameConfig.get("startingCells").getAsInt())
+                    .setRuleset(gameConfig.get("ruleset").getAsString());
 
             players.get(0).getAsJsonObject().getAsJsonArray("startingCells").forEach((JsonElement e) -> {
                 final JsonArray a = e.getAsJsonArray();
@@ -110,38 +140,29 @@ public class RunGame {
             GameContext gc = new GameContext(builder.getState(), 2);
 
             for (JsonElement playerElement : players) {
-                JsonObject player = playerElement.getAsJsonObject();
-                String type = player.get("type").getAsString();
-                String name = player.get("name") == null ? null : player.get("name").getAsString();
-                switch (type) {
-                    case "dummy":
-                        gc.addPlayer(new DoNothingPlayerDemo());
-                        break;
-                    case "tcp":
-                        socket = socket != null ? socket : new ServerSocket(config.get("port").getAsInt(), 50, null);
-                        gc.addPlayer(name != null ? new SocketIOPlayer(socket.accept(), name) : new SocketIOPlayer
-                                (socket.accept()));
-                        break;
-                    case "process":
-                        ArrayList<String> command = new ArrayList<>();
-                        for (JsonElement e : player.getAsJsonArray("command"))
-                            command.add(e.getAsString());
-                        gc.addPlayer(name != null ? new ProcessIOPlayer(command, name) : new ProcessIOPlayer(command));
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unknown player type. Got: " + type);
-                }
+                JsonObject playerConfiguration = playerElement.getAsJsonObject();
+                AbstractPlayer player = createPlayer(playerConfiguration, port);
+
+                if (playerConfiguration.has("timer"))
+                    gc.addPlayer(getTimeBucketedPlayer(
+                            player
+                            , playerConfiguration.get("timer").getAsJsonObject())
+                    );
+                else
+                    gc.addPlayer(player);
             }
             return gc;
         } catch (Exception ex) {
             if (socket != null) {
                 socket.close();
+                socket = null;
             }
             throw ex;
         }
     }
 
     public static void main(String[] args) throws Exception {
+        Rulesets.getInstance(); // loading the class static part into JVM
         final JsonParser parser = new JsonParser();
         final JsonObject config = parser.parse(new InputStreamReader(RunGame.class.getClassLoader().getResourceAsStream("ai.json"), StandardCharsets.UTF_8)).getAsJsonObject();
 

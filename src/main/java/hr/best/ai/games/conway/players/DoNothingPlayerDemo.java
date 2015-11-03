@@ -3,16 +3,23 @@ package hr.best.ai.games.conway.players;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import hr.best.ai.exceptions.InvalidActionException;
-import hr.best.ai.gl.IPlayer;
+import hr.best.ai.gl.AbstractPlayer;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 
 /**
- * Created by lpp on 10/28/15.
+ * Created by nmiculinic on 10/28/15.
  */
-public class DoNothingPlayerDemo implements IPlayer {
+public class DoNothingPlayerDemo extends AbstractPlayer {
+
+    final static Logger logger = Logger.getLogger(DoNothingPlayerDemo.class);
+    public DoNothingPlayerDemo(String name) {
+        super(name);
+    }
+
     @Override
-    public void sendError(String message) {
+    public void sendError(JsonObject message) {
         System.err.println(message);
     }
 
@@ -21,20 +28,16 @@ public class DoNothingPlayerDemo implements IPlayer {
         JsonObject sol = new JsonObject();
         sol.add("cells", new JsonArray());
         try {
-            Thread.sleep(200);
+            Thread.sleep(150);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        logger.debug(String.format(
+                "%s recieved: \"%s\""
+                , this.getName()
+                , sol.toString()
+        ));
         return sol;
-    }
-
-    @Override
-    public void signalCompleted(String message) {
-    }
-
-    @Override
-    public String getName() {
-        return "Chillin' on the beach.";
     }
 
     @Override

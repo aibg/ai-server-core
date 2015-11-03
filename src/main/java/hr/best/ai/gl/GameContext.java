@@ -1,16 +1,15 @@
 package hr.best.ai.gl;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.apache.log4j.Logger;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 /**
  * Main class which surrounds whole play of one game. Game can be in one of
@@ -26,7 +25,7 @@ import java.util.stream.Collectors;
 public class GameContext implements AutoCloseable {
 
 	final static Logger logger = Logger.getLogger(GameContext.class);
-	private final List<IPlayer> players = new ArrayList<>();
+	private final List<AbstractPlayer> players = new ArrayList<>();
 	private final List<NewStateObserver> observers = new ArrayList<>();
 	private final int maxPlayers;
     private final int minPlayers;
@@ -50,7 +49,7 @@ public class GameContext implements AutoCloseable {
 	 *
 	 * @param client
 	 */
-	public synchronized void addPlayer(IPlayer client) {
+	public synchronized void addPlayer(AbstractPlayer client) {
 		if (gamestate != GS.INIT)
 			throw new IllegalStateException(
 					"Game must be in initialization state");
@@ -67,7 +66,7 @@ public class GameContext implements AutoCloseable {
 		this.observers.add(observer);
 	}
 
-	public synchronized List<IPlayer> getPlayers() {
+	public synchronized List<AbstractPlayer> getPlayers() {
 		return players;
 	}
 
@@ -76,7 +75,7 @@ public class GameContext implements AutoCloseable {
 	 */
 	public synchronized void play() throws Exception {
         if (players.size() < this.minPlayers || players.size() > this.maxPlayers)
-            throw new InvalidStateException(
+            throw new IllegalStateException(
                     "Invalid number of player. Expected in range ["
                             + minPlayers + ", "
                             + maxPlayers + "] got: " + players.size());
@@ -117,21 +116,18 @@ public class GameContext implements AutoCloseable {
 					} catch (ExecutionException e) {
 						Exception ex = (Exception) e.getCause();
 						logger.error(players.get(i).getName(), ex);
-						players.get(i).sendError("[ERROR]:" + ex.toString());
+                        JsonObject json = new JsonObject();
+                        json.add("error", new JsonPrimitive(ex.toString()));
+						players.get(i).sendError(json);
 						throw ex;
 					}
 				}
 
+                long t = System.currentTimeMillis();
 				state = state.nextState(actions);
+                logger.debug(String.format("Calculating new state finished [%3dms]", System.currentTimeMillis() - t));
 			}
-
 			logger.debug("Final state: " + state.toString());
-			if (state.isFinal()) {
-				players.forEach(cl -> cl
-						.signalCompleted("Game Finished. We have a winner"));
-				observers.forEach(cl -> cl
-						.signalCompleted("Game Finished. We have a winner"));
-			}
 		} catch (Exception ex) {
 			logger.error(ex);
 			throw ex;
@@ -144,7 +140,7 @@ public class GameContext implements AutoCloseable {
 	@Override
 	public void close() throws Exception {
 		this.gamestate = GS.STOP;
-		for (IPlayer player : players) {
+		for (AbstractPlayer player : players) {
 			try {
 				player.close();
 			} catch (Exception ignorable) {

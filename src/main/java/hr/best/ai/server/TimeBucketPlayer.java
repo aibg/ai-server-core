@@ -2,22 +2,23 @@ package hr.best.ai.server;
 
 import com.google.gson.JsonObject;
 import hr.best.ai.exceptions.InvalidActionException;
+import hr.best.ai.gl.AbstractPlayer;
 import hr.best.ai.gl.bucket.IBucket;
-import hr.best.ai.gl.IPlayer;
 
 import java.io.IOException;
 
-public class TimeBucketPlayer implements IPlayer {
-    private final IPlayer player;
+public class TimeBucketPlayer extends AbstractPlayer {
+    private final AbstractPlayer  player;
     private final IBucket bucket;
 
-    public TimeBucketPlayer(IPlayer player, IBucket bucket) {
+    public TimeBucketPlayer(AbstractPlayer player, IBucket bucket) {
+        super(player.getName());
         this.player = player;
         this.bucket = bucket;
     }
 
     @Override
-    public void sendError(String message) {
+    public void sendError(JsonObject message) {
         player.sendError(message);
     }
 
@@ -28,11 +29,6 @@ public class TimeBucketPlayer implements IPlayer {
         JsonObject sol = player.signalNewState(state);
         bucket.take(System.currentTimeMillis() - t0);
         return sol;
-    }
-
-    @Override
-    public void signalCompleted(String message) {
-        player.signalCompleted(message);
     }
 
     @Override
