@@ -30,9 +30,9 @@ public abstract class IOPlayer implements IPlayer{
     }
 
     @Override
-    public void sendError(String message) {
-        logger.error(message);
-        writer.println(message);
+    public void sendError(JsonObject message) {
+        logger.error(message.toString());
+        writer.println(message.toString());
     }
 
     @Override
@@ -55,12 +55,6 @@ public abstract class IOPlayer implements IPlayer{
         } catch (IllegalStateException ex) {
             throw new InvalidActionException(ex);
         }
-    }
-
-    @Override
-    public void signalCompleted(String message) {
-        logger.debug("Client[" + this.getName() + "] has signal Completed. Message " + message);
-        writer.println(message);
     }
 
     @Override

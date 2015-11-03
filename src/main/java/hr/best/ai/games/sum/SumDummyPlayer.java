@@ -23,7 +23,7 @@ public class SumDummyPlayer implements IPlayer {
     }
 
     @Override
-    public void sendError(String message) {
+    public void sendError(JsonObject message) {
         logger.error("[" + name + "]: " + message);
     }
 
@@ -38,11 +38,6 @@ public class SumDummyPlayer implements IPlayer {
         obj.add("value", new JsonPrimitive(inc));
         
         return obj;
-    }
-
-    @Override
-    public void signalCompleted(String message) {
-        logger.info("[" + name + "]: " + message);
     }
 
     @Override

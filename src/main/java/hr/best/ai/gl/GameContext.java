@@ -1,5 +1,7 @@
 package hr.best.ai.gl;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.apache.log4j.Logger;
 import sun.plugin.dom.exception.InvalidStateException;
 
@@ -117,7 +119,9 @@ public class GameContext implements AutoCloseable {
 					} catch (ExecutionException e) {
 						Exception ex = (Exception) e.getCause();
 						logger.error(players.get(i).getName(), ex);
-						players.get(i).sendError("[ERROR]:" + ex.toString());
+                        JsonObject json = new JsonObject();
+                        json.add("error", new JsonPrimitive(ex.toString()));
+						players.get(i).sendError(json);
 						throw ex;
 					}
 				}
@@ -126,14 +130,7 @@ public class GameContext implements AutoCloseable {
 				state = state.nextState(actions);
                 logger.debug(String.format("Calculating new state finished [%3dms]", System.currentTimeMillis() - t));
 			}
-
 			logger.debug("Final state: " + state.toString());
-			if (state.isFinal()) {
-				players.forEach(cl -> cl
-						.signalCompleted("Game Finished. We have a winner"));
-				observers.forEach(cl -> cl
-						.signalCompleted("Game Finished. We have a winner"));
-			}
 		} catch (Exception ex) {
 			logger.error(ex);
 			throw ex;

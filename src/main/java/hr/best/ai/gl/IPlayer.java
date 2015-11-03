@@ -8,11 +8,9 @@ import com.google.gson.JsonObject;
 
 public interface IPlayer extends AutoCloseable {
 
-    public void sendError(String message);
+    public void sendError(JsonObject message);
 
     public JsonObject signalNewState(JsonObject state) throws IOException, InvalidActionException;
-
-    public void signalCompleted(String message);
 
     public String getName();
 }

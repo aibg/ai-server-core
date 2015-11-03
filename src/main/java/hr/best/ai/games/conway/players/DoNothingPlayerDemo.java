@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public class DoNothingPlayerDemo implements IPlayer {
     @Override
-    public void sendError(String message) {
+    public void sendError(JsonObject message) {
         System.err.println(message);
     }
 
@@ -26,10 +26,6 @@ public class DoNothingPlayerDemo implements IPlayer {
             e.printStackTrace();
         }
         return sol;
-    }
-
-    @Override
-    public void signalCompleted(String message) {
     }
 
     @Override

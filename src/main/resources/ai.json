@@ -28,7 +28,7 @@
     "maxCellCapacity": 5,
     "startingCells": 5,
     "maxColonisationDistance": 4,
-    "maxGameIterations": 10000,
+    "maxGameIterations": 100,
     "ruleset":"classic"
   },
   "port": 5858,

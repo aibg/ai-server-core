@@ -17,7 +17,7 @@ public class TimeBucketPlayer implements IPlayer {
     }
 
     @Override
-    public void sendError(String message) {
+    public void sendError(JsonObject message) {
         player.sendError(message);
     }
 
@@ -28,11 +28,6 @@ public class TimeBucketPlayer implements IPlayer {
         JsonObject sol = player.signalNewState(state);
         bucket.take(System.currentTimeMillis() - t0);
         return sol;
-    }
-
-    @Override
-    public void signalCompleted(String message) {
-        player.signalCompleted(message);
     }
 
     @Override

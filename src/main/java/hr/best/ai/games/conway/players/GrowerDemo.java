@@ -44,13 +44,11 @@ public class GrowerDemo implements IPlayer {
 
 	@Override
 	public void close() throws Exception {
-		// TODO
 	}
 
 	@Override
-	public void sendError(String message) {
-		// TODO Auto-generated method stub
-
+	public void sendError(JsonObject message) {
+        System.err.println(message);
 	}
 
 	@Override
@@ -128,12 +126,6 @@ public class GrowerDemo implements IPlayer {
 		output.add("cells", cells);
 
 		return output;
-	}
-
-	@Override
-	public void signalCompleted(String message) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
