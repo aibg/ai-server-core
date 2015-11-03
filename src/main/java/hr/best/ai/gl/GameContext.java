@@ -3,7 +3,6 @@ package hr.best.ai.gl;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.apache.log4j.Logger;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +75,7 @@ public class GameContext implements AutoCloseable {
 	 */
 	public synchronized void play() throws Exception {
         if (players.size() < this.minPlayers || players.size() > this.maxPlayers)
-            throw new InvalidStateException(
+            throw new IllegalStateException(
                     "Invalid number of player. Expected in range ["
                             + minPlayers + ", "
                             + maxPlayers + "] got: " + players.size());
