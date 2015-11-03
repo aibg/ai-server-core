@@ -122,7 +122,9 @@ public class GameContext implements AutoCloseable {
 					}
 				}
 
+                long t = System.currentTimeMillis();
 				state = state.nextState(actions);
+                logger.debug(String.format("Calculating new state finished [%3dms]", System.currentTimeMillis() - t));
 			}
 
 			logger.debug("Final state: " + state.toString());
