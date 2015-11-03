@@ -7,12 +7,10 @@ import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 /**
  * Main class which surrounds whole play of one game. Game can be in one of
@@ -28,7 +26,7 @@ import java.util.stream.Collectors;
 public class GameContext implements AutoCloseable {
 
 	final static Logger logger = Logger.getLogger(GameContext.class);
-	private final List<IPlayer> players = new ArrayList<>();
+	private final List<AbstractPlayer> players = new ArrayList<>();
 	private final List<NewStateObserver> observers = new ArrayList<>();
 	private final int maxPlayers;
     private final int minPlayers;
@@ -52,7 +50,7 @@ public class GameContext implements AutoCloseable {
 	 *
 	 * @param client
 	 */
-	public synchronized void addPlayer(IPlayer client) {
+	public synchronized void addPlayer(AbstractPlayer client) {
 		if (gamestate != GS.INIT)
 			throw new IllegalStateException(
 					"Game must be in initialization state");
@@ -69,7 +67,7 @@ public class GameContext implements AutoCloseable {
 		this.observers.add(observer);
 	}
 
-	public synchronized List<IPlayer> getPlayers() {
+	public synchronized List<AbstractPlayer> getPlayers() {
 		return players;
 	}
 
@@ -143,7 +141,7 @@ public class GameContext implements AutoCloseable {
 	@Override
 	public void close() throws Exception {
 		this.gamestate = GS.STOP;
-		for (IPlayer player : players) {
+		for (AbstractPlayer player : players) {
 			try {
 				player.close();
 			} catch (Exception ignorable) {

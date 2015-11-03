@@ -3,17 +3,17 @@ package hr.best.ai.games.conway.players;
 import hr.best.ai.exceptions.InvalidActionException;
 import hr.best.ai.games.conway.Cell;
 import hr.best.ai.games.conway.Cells;
-import hr.best.ai.gl.IPlayer;
+import hr.best.ai.gl.AbstractPlayer;
 
 import java.io.IOException;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 
-public class GrowerDemo implements IPlayer {
+public class GrowerDemo extends AbstractPlayer {
 
 	public GrowerDemo() {
+        super("grower demo");
 	}
 
 	/**
@@ -127,10 +127,4 @@ public class GrowerDemo implements IPlayer {
 
 		return output;
 	}
-
-	@Override
-	public String getName() {
-        return "GrowerDemo demo";
-	}
-
 }
