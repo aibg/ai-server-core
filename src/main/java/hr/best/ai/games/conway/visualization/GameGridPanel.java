@@ -8,6 +8,7 @@ import hr.best.ai.gl.NewStateObserver;
 import hr.best.ai.gl.State;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -21,6 +22,7 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 
 	private volatile ConwayGameState state;
 	private double blockSize;
+	private boolean prefSizeSet = false;
 
 	private BufferedImage P1_logo;
 	private BufferedImage P2_logo;
@@ -36,14 +38,41 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 		this.player1Color = player1Color;
 		this.player2Color = player2Color;
 		this.gridColor = gridColor;
+
+		setVisible(false);
+		setOpaque(false);
 	}
 
 	@Override
 	public void signalNewState(State state) {
 		this.state = (ConwayGameState) state;
-		blockSize = Math.min(
-				((double) getBounds().width) / this.state.getCols(),
-				((double) getBounds().height) / this.state.getRows());
+
+		double blockWidth = (double) getParent().getBounds().width
+				/ this.state.getCols();
+		double blockHeight = ((double) getParent().getBounds().height)
+				/ this.state.getRows();
+
+		blockSize = Math.min(blockWidth, blockHeight);
+
+		System.out.println(getParent().getBounds());
+		System.out.println(blockSize * this.state.getRows());
+		// System.exit(0);
+		if (!prefSizeSet) {
+			int width = (int) (getParent().getBounds().width);
+			int height = getParent().getBounds().height;
+			
+			if (blockHeight < blockWidth) {
+				width = (int) (blockSize * this.state.getCols() +1);
+			} else {
+				height = (int) (blockSize * this.state.getRows());
+			}
+			Dimension newSize = new Dimension(width, height);
+			setPreferredSize(newSize);
+			setMaximumSize(newSize);
+			prefSizeSet = true;
+			setVisible(true);
+			revalidate();
+		}
 		this.repaint(0);
 	}
 

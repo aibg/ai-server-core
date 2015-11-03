@@ -4,10 +4,10 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 1366 768" enable-background="new 0 0 1366 768" xml:space="preserve">
 <g id="pozadina">
-	<rect x="-4" y="-197.1" opacity="0.32" fill="#252626" width="1369.9" height="967.2"/>
-	<g opacity="0.32">
+	<rect x="-4" y="-197.1" fill="#252626" width="1369.9" height="967.2"/>
+	<g>
 		<defs>
-			<rect id="SVGID_1_" x="-2.3" y="-197.1" opacity="0.32" width="1371.8" height="966.7"/>
+			<rect id="SVGID_1_" x="-2.3" y="-197.1" width="1371.8" height="966.7"/>
 		</defs>
 		<clipPath id="SVGID_2_">
 			<use xlink:href="#SVGID_1_"  overflow="visible"/>
