@@ -54,9 +54,6 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 
 		blockSize = Math.min(blockWidth, blockHeight);
 
-		System.out.println(getParent().getBounds());
-		System.out.println(blockSize * this.state.getRows());
-		// System.exit(0);
 		if (!prefSizeSet) {
 			int width = (int) (getParent().getBounds().width);
 			int height = getParent().getBounds().height;
