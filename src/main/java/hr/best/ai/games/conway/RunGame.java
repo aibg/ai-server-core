@@ -41,7 +41,7 @@ public class RunGame {
 		
 		Color p1color = Color.red;
 		Color p2color = Color.blue;
-		Color gridColor = new Color(200, 200, 200);
+		Color gridColor = new Color(200, 200, 200, 200);
 		
 		int barHeight = 30;
 		String p1Logo="/BEST_ZG_mali.png";

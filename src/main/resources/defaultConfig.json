@@ -2,28 +2,25 @@
   "players": [
     {
       "type": "process",
-      "name" : "p1_java",
+      "name" : "p1_python",
       "command": [
-        "java", "-jar", "/home/andrej/Desktop/testbot.jar"
+        "/home/andrej/Desktop/python/run"
       ],
       "startingCells": [
         [0, 0], [0,1],[1,0],[1,1]
       ]
     },
     {
-      "type": "process",
-      "name":"p2_java",
-      "command": [
-        "java", "-jar", "/home/andrej/Desktop/testbot.jar"
-      ],
+      "type": "dummy",
+      "name":"dummy",
       "startingCells": [
         [4, 4], [4,5],[5,4],[5,5]
       ]
     }
   ],
   "game": {
-    "rows": 10,
-    "cols": 10,
+    "rows": 100,
+    "cols": 100,
     "cellGainPerTurn": 1,
     "maxCellCapacity": 5,
     "startingCells": 5,
