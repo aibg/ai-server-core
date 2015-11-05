@@ -27,9 +27,8 @@ public class GameGrid extends JPanel implements NewStateObserver {
 	private BufferedImage P2_logo;
 
 	public GameGrid() throws IOException{
-			P1_logo = ImageIO.read(new File("src/main/resources/BEST_ZG_mali.png"));
-			P2_logo = ImageIO.read(new File("src/main/resources/EBEC.png"));
-
+			P1_logo =  ImageIO.read(this.getClass().getResourceAsStream("/BEST_ZG_mali.png"));
+			P2_logo = ImageIO.read(this.getClass().getResourceAsStream("/EBEC.png"));
 	}
 
 	@Override
