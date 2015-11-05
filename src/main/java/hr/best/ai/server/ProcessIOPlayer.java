@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -26,7 +27,9 @@ public class ProcessIOPlayer extends IOPlayer {
 
     private static Process runProcessHelper(List<String> command) throws IOException{
         Path wd = Paths.get(".").toAbsolutePath().resolve(command.get(0));
-        command.set(0, wd.toString());
+        if (Files.isExecutable(wd)) {
+            command.set(0, wd.toString());
+        }
 
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.directory(wd.getParent().toFile());
