@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -22,8 +24,20 @@ public class ProcessIOPlayer extends IOPlayer {
         error = new BufferedReader(new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8));
     }
 
+    private static Process runProcessHelper(List<String> command) throws IOException{
+        Path wd = Paths.get(".").toAbsolutePath().resolve(command.get(0));
+        command.set(0, wd.toString());
+
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.directory(wd.getParent().toFile());
+
+        logger.info("Starting player process with command: " + command.toString() + " with working directory: " + pb
+                .directory());
+        return pb.start();
+    }
+
     public ProcessIOPlayer(List<String> command, String name) throws IOException{
-        this(new ProcessBuilder(command).start(), name);
+        this(runProcessHelper(command), name);
     }
 
     public ProcessIOPlayer(List<String> command) throws IOException{

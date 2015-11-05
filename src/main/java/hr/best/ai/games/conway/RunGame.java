@@ -15,6 +15,7 @@ import hr.best.ai.server.TimeBucketPlayer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +30,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.kitfox.svg.app.beans.SVGPanel;
+
 
 /**
  * Created by lpp on 10/31/15.
@@ -165,7 +167,15 @@ public class RunGame {
     public static void main(String[] args) throws Exception {
         Rulesets.getInstance(); // loading the class static part into JVM
         final JsonParser parser = new JsonParser();
-        final JsonObject config = parser.parse(new InputStreamReader(RunGame.class.getClassLoader().getResourceAsStream("ai.json"), StandardCharsets.UTF_8)).getAsJsonObject();
+        JsonObject config;
+
+        if (args.length == 0) {
+            System.out.println("Falling back to default game configuration.");
+            config = parser.parse(new InputStreamReader(RunGame.class.getClassLoader().getResourceAsStream("defaultConfig.json"), StandardCharsets.UTF_8)).getAsJsonObject();
+        } else {
+            System.out.println("Using " + args[0] + " configuration file");
+            config = parser.parse(new FileReader(args[0])).getAsJsonObject();
+        }
 
         try (GameContext gc = initialize(config)) {
             if (config.get("visualization").getAsBoolean()) {
