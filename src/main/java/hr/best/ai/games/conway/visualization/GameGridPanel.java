@@ -22,7 +22,6 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 
 	private volatile ConwayGameState state;
 	private double blockSize;
-	private boolean prefSizeSet = false;
 
 	private BufferedImage P1_logo;
 	private BufferedImage P2_logo;
@@ -30,11 +29,10 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 	private Color player2Color;
 	private Color gridColor;
 
-	public GameGridPanel(String p1LogoPath, String p2LogoPath,
-			Color player1Color, Color player2Color, Color gridColor)
-			throws IOException {
-		P1_logo = ImageIO.read(new File(p1LogoPath));
-		P2_logo = ImageIO.read(new File(p2LogoPath));
+	public GameGridPanel(String p1Logo, String p2Logo, Color player1Color,
+			Color player2Color, Color gridColor) throws IOException {
+		P1_logo = ImageIO.read(this.getClass().getResource(p1Logo));
+		P2_logo = ImageIO.read(this.getClass().getResource(p2Logo));
 		this.player1Color = player1Color;
 		this.player2Color = player2Color;
 		this.gridColor = gridColor;
@@ -54,29 +52,25 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 
 		blockSize = Math.min(blockWidth, blockHeight);
 
-		if (!prefSizeSet) {
-			int width = (int) (getParent().getBounds().width);
-			int height = getParent().getBounds().height;
-			
-			if (blockHeight < blockWidth) {
-				width = (int) (blockSize * this.state.getCols() +1);
-			} else {
-				height = (int) (blockSize * this.state.getRows());
-			}
-			Dimension newSize = new Dimension(width, height);
-			setPreferredSize(newSize);
-			setMaximumSize(newSize);
-			prefSizeSet = true;
-			setVisible(true);
-			revalidate();
-		}
+		
+		//this shouldn't be done on every new state but can't make it differently for now
+		int width = (int) (blockSize * this.state.getCols() + 1);
+		int height = (int) (blockSize * this.state.getRows());
+		Dimension newSize = new Dimension(width, height);
+		setMinimumSize(newSize);
+		setPreferredSize(newSize);
+		setMaximumSize(newSize);
+		setVisible(true);
+		validate();
+		//--------------------------------------------------------------------------------
+		
+		
 		this.repaint(0);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
 		// initially called before first state
 		if (state == null)
 			return;

@@ -29,6 +29,8 @@ public class ConwayGameStateBuilder {
     private int maxGameIterations = 10000;
     private final int[][] field;
     private int startingCells = 5;
+    private int p1score=0;
+    private int p2score=0;
     /**
      * (P1, P2) -> resulting cell
      */
@@ -133,6 +135,8 @@ public class ConwayGameStateBuilder {
                         , startingCells
                         , new Cells()
                         , fromEmpty
-                        , fromOccupied);
+                        , fromOccupied
+                        , p1score
+                        , p2score);
     }
 }

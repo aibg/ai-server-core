@@ -42,12 +42,14 @@ public class RunGame {
 		Color gridColor = new Color(200, 200, 200);
 		
 		int barHeight = 30;
-		String p1Logo="src/main/resources/BEST_ZG_mali.png";
-		String p2Logo="src/main/resources/Untitled-3.png";
+		String p1Logo="/BEST_ZG_mali.png";
+		String p2Logo="/Untitled-3.png";
 		
 		GameBarPanel bar = new GameBarPanel(p1color, p2color);
 		GameGridPanel grid = new GameGridPanel(p1Logo,p2Logo,p1color,p2color,gridColor);
-
+		PlayerInfoPanel p1info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER1_CELL,p1color);
+		PlayerInfoPanel p2info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER2_CELL,p2color);
+		
 		SwingUtilities.invokeAndWait(() -> {
 
 			JFrame f = new JFrame("Conway");
@@ -69,19 +71,18 @@ public class RunGame {
 				}
 				f.getContentPane().add(background, BorderLayout.CENTER);
 				
-				background.add(new PlayerInfoPanel(1));
+				background.add(p1info);
 				background.add(grid);
-				background.add(new PlayerInfoPanel(2));
-				
+				background.add(p2info);
 				
 				f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				f.setVisible(true);
-				
-				
 			});
 
 		gc.addObserver(bar);
 		gc.addObserver(grid);
+		gc.addObserver(p1info);
+		gc.addObserver(p2info);
 	}
 
 

@@ -36,24 +36,8 @@ public class GameBarPanel extends JPanel implements NewStateObserver {
 		if (state == null)
 			return;
 
-		// counting active cells
-		int player1count = 0, player2count = 0;
-
-		for (int i = 0; i < state.getRows(); i++) {
-			for (int j = 0; j < state.getCols(); j++) {
-				switch (state.getCell(i, j)) {
-				case ConwayGameStateConstants.PLAYER1_CELL:
-					player1count++;
-					break;
-				case ConwayGameStateConstants.PLAYER2_CELL:
-					player2count++;
-					break;
-				}
-			}
-		}
-
 		// calculating the location of color change
-		int divide = (int) (1.0 * getWidth() / (player1count + player2count) * player1count);
+		int divide = (int) (1.0 * getWidth() / (state.getP1count() + state.getP2count()) * state.getP1count());
 
 		// drawing
 		g.setColor(player1Color);
