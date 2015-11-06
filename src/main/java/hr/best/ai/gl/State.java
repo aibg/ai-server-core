@@ -19,6 +19,10 @@ public interface State {
     public State nextState(List<Action> actionList);
 
     Action parseAction(JsonObject action) throws InvalidActionException;
-    
-    
+
+    /**
+     *
+     * @return -1 for TIE, else playerID for winner
+     */
+    public int getWinner();
 }

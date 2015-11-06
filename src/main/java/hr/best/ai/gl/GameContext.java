@@ -124,6 +124,12 @@ public class GameContext implements AutoCloseable {
                 logger.debug(String.format("Calculating new state finished [%3dms]", System.currentTimeMillis() - t));
 			}
 			logger.debug("Final state: " + state.toString());
+            /**
+             * One last update to observers. They should query whether isFinal state
+             * and than determine what they'd like to do with it.
+             */
+            observers.forEach(cl -> threadPool.submit(() -> cl
+                    .signalNewState(state)));
 		} catch (Exception ex) {
 			logger.error(ex);
 			throw ex;
