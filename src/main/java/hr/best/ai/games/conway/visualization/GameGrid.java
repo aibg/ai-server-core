@@ -1,5 +1,6 @@
 package hr.best.ai.games.conway.visualization;
 
+import com.google.gson.JsonObject;
 import hr.best.ai.games.conway.Cell;
 import hr.best.ai.games.conway.Cells;
 import hr.best.ai.games.conway.ConwayGameState;
@@ -10,9 +11,7 @@ import org.apache.log4j.Logger;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -48,7 +47,7 @@ public class GameGrid extends JPanel implements NewStateObserver {
 	}
 
 	@Override
-	public void signalCompleted(String message) {
+	public void signalError(JsonObject message) {
 	}
 
 	@Override

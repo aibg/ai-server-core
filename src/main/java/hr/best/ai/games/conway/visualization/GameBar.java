@@ -3,6 +3,7 @@ package hr.best.ai.games.conway.visualization;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import com.google.gson.JsonObject;
 import hr.best.ai.games.conway.ConwayGameState;
 import hr.best.ai.games.conway.ConwayGameStateConstants;
 import hr.best.ai.gl.NewStateObserver;
@@ -27,7 +28,7 @@ public class GameBar extends JPanel implements NewStateObserver {
 	}
 
 	@Override
-	public void signalCompleted(String message) {
+	public void signalError(JsonObject message) {
 		// TODO Auto-generated method stub
 
 	}

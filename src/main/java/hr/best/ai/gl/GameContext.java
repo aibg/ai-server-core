@@ -2,6 +2,8 @@ package hr.best.ai.gl;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import hr.best.ai.exceptions.AIBGExceptions;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -105,6 +107,7 @@ public class GameContext implements AutoCloseable {
 						.signalNewState(state)));
 
 				List<Action> actions = new ArrayList<>();
+                final ArrayList<Pair<Integer, Exception>> playerErrors = new ArrayList<>();
 				for (int i = 0; i < players.size(); ++i) {
 					try {
 						actions.add(actionsF.get(i).get());
@@ -115,13 +118,18 @@ public class GameContext implements AutoCloseable {
                         JsonObject json = new JsonObject();
                         json.add("error", new JsonPrimitive(ex.toString()));
 						players.get(i).sendError(json);
-						throw ex;
+                        playerErrors.add(Pair.of(i, ex));
 					}
 				}
 
-                long t = System.currentTimeMillis();
-				state = state.nextState(actions);
-                logger.debug(String.format("Calculating new state finished [%3dms]", System.currentTimeMillis() - t));
+                if (playerErrors.isEmpty()) {
+                    long t = System.currentTimeMillis();
+                    state = state.nextState(actions);
+                    logger.debug(String.format("Calculating new state finished [%3dms]", System.currentTimeMillis() - t));
+                } else {
+                    logger.debug("Errors happened. Aborting!");
+                    throw new AIBGExceptions(playerErrors.toString());
+                }
 			}
 			logger.debug("Final state: " + state.toString());
             /**
