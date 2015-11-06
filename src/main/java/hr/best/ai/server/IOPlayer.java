@@ -30,7 +30,7 @@ public abstract class IOPlayer extends AbstractPlayer{
 
     @Override
     public void sendError(JsonObject message) {
-        logger.error(message.toString());
+        logger.error("Player " + getName() + " error happened: " +message.toString());
         writer.println(message.toString());
     }
 

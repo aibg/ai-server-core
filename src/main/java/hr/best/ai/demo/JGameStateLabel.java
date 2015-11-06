@@ -1,11 +1,10 @@
 package hr.best.ai.demo;
 
-import hr.best.ai.gl.GameContext;
+import com.google.gson.JsonObject;
 import hr.best.ai.gl.NewStateObserver;
 import hr.best.ai.gl.State;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * For demo purposes how would someone implement game dependent components.
@@ -18,8 +17,8 @@ public class JGameStateLabel extends JTextArea implements NewStateObserver {
     }
 
     @Override
-    public void signalCompleted(String message) {
-        SwingUtilities.invokeLater(() -> this.setText(message));
+    public void signalError(JsonObject message) {
+        SwingUtilities.invokeLater(() -> this.setText(message.toString()));
     }
 
     @Override
