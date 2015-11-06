@@ -2,19 +2,22 @@
   "players": [
     {
       "type": "process",
-      "name" : "p1_python",
+      "name" : "cpp1",
       "command": [
-        "/data/Documents/BEST/AI/python-bindings/run"
+        "/data/Documents/BEST/AI/cpp-bindings/run"
       ],
       "startingCells": [
         [0, 0], [0,1],[1,0],[1,1]
       ]
     },
     {
-      "type": "dummy",
-      "name":"dummy",
+      "type": "process",
+      "name":"cpp2",
       "startingCells": [
         [4, 4], [4,5],[5,4],[5,5]
+      ],
+      "command": [
+        "/data/Documents/BEST/AI/cpp-bindings/run"
       ],
       "timer": {
         "maxLength" : 200
@@ -22,15 +25,15 @@
     }
   ],
   "game": {
-    "rows": 10,
-    "cols": 10,
+    "rows": 40,
+    "cols": 40,
     "cellGainPerTurn": 10,
     "maxCellCapacity": 50,
     "startingCells": 50,
     "maxColonisationDistance": 4,
-    "maxGameIterations": 100,
+    "maxGameIterations": 1000,
     "ruleset":"classic"
   },
   "port": 5858,
-  "visualization" : false
+  "visualization" : true
 }

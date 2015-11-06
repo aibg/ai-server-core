@@ -19,8 +19,8 @@
     }
   ],
   "game": {
-    "rows": 100,
-    "cols": 100,
+    "rows": 20,
+    "cols": 20,
     "cellGainPerTurn": 1,
     "maxCellCapacity": 5,
     "startingCells": 5,

@@ -55,8 +55,8 @@ public class RunGame {
 		SwingUtilities.invokeAndWait(() -> {
 
 			JFrame f = new JFrame("Conway");
-			//f.setSize(new Dimension(1200,800));
-			f.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			f.setSize(new Dimension(1200,800));
+			//f.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			// bar setup
 				bar.setPreferredSize(new Dimension(0, barHeight));
 				f.getContentPane().add(bar, BorderLayout.NORTH);

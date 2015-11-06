@@ -92,10 +92,6 @@ public class GameContext implements AutoCloseable {
 			while (!state.isFinal()) {
 				List<Future<Action>> actionsF = new ArrayList<>();
 				for (int i = 0; i < players.size(); ++i) {
-					
-					logger.debug("Current State: "
-							+ state.toJSONObjectAsPlayer(i)
-									.toString());
 
                     final int playerNo = i + 1; // TODO Make state player beginning from zero
 					actionsF.add(threadPool.submit(() -> state.parseAction(players

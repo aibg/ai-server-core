@@ -11,17 +11,19 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import org.apache.log4j.Logger;
+
 @SuppressWarnings("serial")
 public class GameGridPanel extends JPanel implements NewStateObserver {
 
+	final static Logger logger = Logger.getLogger(GameGridPanel.class);
 	private volatile ConwayGameState state;
-	private double blockSize;
+	private int blockSize;
 
 	private BufferedImage P1_logo;
 	private BufferedImage P2_logo;
@@ -43,29 +45,33 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 
 	@Override
 	public void signalNewState(State state) {
+		long t = System.currentTimeMillis();
 		this.state = (ConwayGameState) state;
 
 		double blockWidth = (double) getParent().getBounds().width
 				/ this.state.getCols();
-		double blockHeight = ((double) getParent().getBounds().height)
+		double blockHeight = (double) getParent().getBounds().height
 				/ this.state.getRows();
 
-		blockSize = Math.min(blockWidth, blockHeight);
+		blockSize = Math.toIntExact(Math.round(Math.floor(Math.min(blockWidth,
+				blockHeight))));
 
-		
-		//this shouldn't be done on every new state but can't make it differently for now
-		int width = (int) (blockSize * this.state.getCols() + 1);
-		int height = (int) (blockSize * this.state.getRows());
+		// this shouldn't be done on every new state but can't make it
+		// differently for now
+		int width = blockSize * this.state.getCols()+1;
+		int height = blockSize * this.state.getRows()+1;
 		Dimension newSize = new Dimension(width, height);
 		setMinimumSize(newSize);
 		setPreferredSize(newSize);
 		setMaximumSize(newSize);
 		setVisible(true);
-		validate();
-		//--------------------------------------------------------------------------------
-		
-		
+		// validate();
+		// System.out.println(getBounds());
+		// --------------------------------------------------------------------------------
+
 		this.repaint(0);
+		logger.debug(String.format("Repaint finished: %3dms",
+				System.currentTimeMillis() - t));
 	}
 
 	@Override
@@ -82,35 +88,33 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 
 		// horizontal lines
 		for (int i = 0; i <= state.getRows(); i++) {
-			g.drawLine(0, (int) (i * blockSize),
-					(int) (state.getCols() * blockSize), (int) (i * blockSize));
+			g.drawLine(0, i * blockSize, state.getCols() * blockSize, i
+					* blockSize);
 		}
 		// vertical lines
 		for (int i = 0; i <= state.getCols(); i++) {
-			g.drawLine((int) (i * blockSize), 0, (int) (i * blockSize),
-					(int) (state.getCols() * blockSize));
+			g.drawLine(i * blockSize, 0, i * blockSize, state.getCols()
+					* blockSize);
 		}
 
 		// draw images
 		for (int i = 0; i < state.getRows(); i++) {
 			for (int j = 0; j < state.getCols(); j++) {
-
 				switch (state.getCell(i, j)) {
 				case ConwayGameStateConstants.PLAYER1_CELL:
-					g.drawImage(P1_logo, (int) (blockSize * j),
-							(int) (blockSize * i), (int) blockSize,
-							(int) blockSize, this);
+					g.drawImage(P1_logo, blockSize * j, blockSize * i,
+							blockSize, blockSize, this);
 					break;
 				case ConwayGameStateConstants.PLAYER2_CELL:
-					g.drawImage(P2_logo, (int) (blockSize * j),
-							(int) (blockSize * i), (int) blockSize,
-							(int) blockSize, this);
+					g.drawImage(P2_logo, blockSize * j, blockSize * i,
+							blockSize, blockSize, this);
 					break;
 				case ConwayGameStateConstants.DEAD_CELL:
 					continue;
 				}
 			}
 		}
+
 	}
 
 	/**
@@ -126,13 +130,11 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 		// initial state doesn't have actions
 		if (actions == null)
 			return;
-
 		g.setColor(color);
 		for (int i = 0; i < actions.size(); i++) {
 			Cell c = actions.get(i);
-			g.fillRect((int) (blockSize * c.getCol()),
-					(int) (blockSize * c.getRow()), (int) blockSize,
-					(int) blockSize);
+			g.fillRect(blockSize * c.getCol(), blockSize * c.getRow(),
+					blockSize, blockSize);
 		}
 		g.setColor(gridColor);
 	}
