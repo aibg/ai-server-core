@@ -7,20 +7,20 @@
         "/home/andrej/Desktop/python/run"
       ],
       "startingCells": [
-        [0, 0], [0,1],[1,0],[1,1]
+        [11, 5], [11,6],[12,5],[12,6]
       ]
     },
     {
       "type": "dummy",
       "name":"dummy",
       "startingCells": [
-        [4, 4], [4,5],[5,4],[5,5]
+        [11, 17], [11,18],[12,17],[12,18]
       ]
     }
   ],
   "game": {
-    "rows": 20,
-    "cols": 20,
+    "rows": 24,
+    "cols": 24,
     "cellGainPerTurn": 1,
     "maxCellCapacity": 5,
     "startingCells": 5,
