@@ -137,6 +137,8 @@ public class ConwayGameStateBuilder {
                         , startingCells
                         , new Cells()
                         , fromEmpty
-                        , fromOccupied);
+                        , fromOccupied
+                        , 0
+                        , 0);
     }
 }

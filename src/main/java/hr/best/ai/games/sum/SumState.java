@@ -63,4 +63,9 @@ public class SumState implements State {
 		
 		return toJSONObject();
 	}
+
+    @Override
+    public int getWinner() {
+        return 0;
+    }
 }
