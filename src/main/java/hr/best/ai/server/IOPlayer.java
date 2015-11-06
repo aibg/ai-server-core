@@ -50,7 +50,7 @@ public abstract class IOPlayer extends AbstractPlayer{
                 , System.currentTimeMillis() - t
                 , logger.isTraceEnabled() ? line : "[Set logging level to TRACE for full line received]"));
         try {
-            return parser.parse(line).getAsJsonObject();jj
+            return parser.parse(line).getAsJsonObject();
         } catch (IllegalStateException ex) {
             throw new InvalidActionException(ex);
         }
