@@ -33,8 +33,8 @@ public class ConwayGameState implements State {
 	private final Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied;
 	private final int p1score;
 	private final int p2score;
-	private int p1count;
-	private int p2count;
+	private final int p1count;
+	private final int p2count;
 
 	public ConwayGameState(
 			int cellGainPerTurn,
@@ -64,8 +64,8 @@ public class ConwayGameState implements State {
 		this.fromOccupied = fromOccupied;
 		this.p1score = p1score;
 		this.p2score = p2score;
-
-		countCells();
+		this.p1count=countCells(ConwayGameStateConstants.PLAYER1_CELL);
+		this.p2count=countCells(ConwayGameStateConstants.PLAYER2_CELL);
 
 	}
 
@@ -77,21 +77,16 @@ public class ConwayGameState implements State {
 		return lastTurnP2;
 	}
 
-	private void countCells() {
+	private int countCells(int player) {
+		int count = 0;
+
 		for (int i = 0; i < getRows(); i++) {
 			for (int j = 0; j < getCols(); j++) {
-				switch (getCell(i, j)) {
-				case ConwayGameStateConstants.PLAYER1_CELL:
-					p1count++;
-					break;
-				case ConwayGameStateConstants.PLAYER2_CELL:
-					p2count++;
-					break;
-				default:
-					break;
-				}
+				if (getCell(i, j) == player)
+					count++;
 			}
 		}
+		return count;
 	}
 
 	public int getP1count() {
@@ -101,9 +96,11 @@ public class ConwayGameState implements State {
 	public int getP2count() {
 		return p2count;
 	}
+
 	public int getP1Score() {
 		return p1score;
 	}
+
 	public int getP2Score() {
 		return p2score;
 	}
