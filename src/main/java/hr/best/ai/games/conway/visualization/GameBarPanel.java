@@ -37,7 +37,7 @@ public class GameBarPanel extends JPanel implements NewStateObserver {
 			return;
 
 		// calculating the location of color change
-		int divide = (int) (1.0 * getWidth() / (state.getP1count() + state.getP2count()) * state.getP1count());
+		int divide = (int) (1.0 * getWidth() / (state.getP1LiveCellcount() + state.getP2LiveCellcount()) * state.getP1LiveCellcount());
 
 		// drawing
 		g.setColor(player1Color);

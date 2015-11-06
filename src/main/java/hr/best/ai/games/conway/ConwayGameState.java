@@ -89,11 +89,11 @@ public class ConwayGameState implements State {
 		return count;
 	}
 
-	public int getP1count() {
+	public int getP1LiveCellcount() {
 		return p1count;
 	}
 
-	public int getP2count() {
+	public int getP2LiveCellcount() {
 		return p2count;
 	}
 
