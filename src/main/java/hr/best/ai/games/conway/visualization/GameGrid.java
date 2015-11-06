@@ -39,7 +39,12 @@ public class GameGrid extends JPanel implements NewStateObserver {
 	public void signalNewState(State state) {
 		this.state = (ConwayGameState) state;
 		// TODO Invoke later, provjerit dal moram bit tako repaint
-		this.repaint(0);
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        this.repaint(0);
 	}
 
 	@Override
@@ -54,7 +59,9 @@ public class GameGrid extends JPanel implements NewStateObserver {
 			return;
 		}
 		// TODO
-		int blockSize = 8;
+        double blockWidth = (double) getParent().getBounds().width / this.state.getCols();
+        double blockHeight = ((double) getParent().getBounds().height) / this.state.getRows();
+        int blockSize = Math.toIntExact(Math.round(Math.floor(Math.min(blockWidth, blockHeight))));
 
 		// clear canvas and paint background image
 		g.clearRect(0, 0, blockSize * (state.getCols() + 1), blockSize * (state.getRows() + 1));

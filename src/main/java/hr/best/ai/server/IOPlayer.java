@@ -36,7 +36,8 @@ public abstract class IOPlayer extends AbstractPlayer{
 
     @Override
     public JsonObject signalNewState(JsonObject state) throws IOException, InvalidActionException {
-        logger.debug(String.format("%s sent: %s", this.getName(), state.toString()));
+        logger.debug(String.format("%s sent: %s", this.getName(),
+                logger.isTraceEnabled() ? state.toString() : "[Set logging level to TRACE for full state]"));
         long t = System.currentTimeMillis();
         writer.println(state.toString());
         String line = reader.readLine();
@@ -44,13 +45,12 @@ public abstract class IOPlayer extends AbstractPlayer{
             throw new ClientDisconnectException(this.getName() + " has disconnected. Unexpected end of stream");
         }
         logger.debug(String.format(
-                "%s recieved[t:%3dms]: \"%s\""
+                "%s response received [t:%3dms] :%s"
                 , this.getName()
                 , System.currentTimeMillis() - t
-                , line)
-        );
+                , logger.isTraceEnabled() ? line : "[Set logging level to TRACE for full line received]"));
         try {
-            return parser.parse(line).getAsJsonObject();
+            return parser.parse(line).getAsJsonObject();jj
         } catch (IllegalStateException ex) {
             throw new InvalidActionException(ex);
         }
