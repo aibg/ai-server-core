@@ -114,9 +114,7 @@ public class ConwayGameState implements State {
 	}
 
 	public int getCell(int row, int col) {
-		if (row < 0 || col < 0 || row >= getRows() || col >= getCols())
-			return ConwayGameStateConstants.DEAD_CELL;
-		return field[row][col];
+		return field[Math.floorMod(row, field.length)][Math.floorMod(col, field[0].length)];
 	}
 
 	/**
