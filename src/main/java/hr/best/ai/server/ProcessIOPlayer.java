@@ -25,22 +25,30 @@ public class ProcessIOPlayer extends IOPlayer {
         error = new BufferedReader(new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8));
     }
 
-    private static Process runProcessHelper(List<String> command) throws IOException{
+    private static Process runProcessHelper(List<String> command, Path workingDir) throws IOException{
         Path wd = Paths.get(".").toAbsolutePath().resolve(command.get(0)).normalize();
         if (Files.isExecutable(wd)) {
             command.set(0, wd.toString());
         }
 
         ProcessBuilder pb = new ProcessBuilder(command);
-        pb.directory(wd.getParent().toFile());
+        if (workingDir == null) {
+            pb.directory(wd.getParent().toFile());
+        } else {
+            pb.directory(workingDir.toFile());
+        }
 
         logger.info("Starting player process with command: " + command.toString() + " with working directory: " + pb
                 .directory());
         return pb.start();
     }
 
+    public ProcessIOPlayer(List<String> command, Path workingDir, String name) throws IOException{
+        this(runProcessHelper(command, workingDir), name);
+    }
+
     public ProcessIOPlayer(List<String> command, String name) throws IOException{
-        this(runProcessHelper(command), name);
+        this(runProcessHelper(command, null), name);
     }
 
     public ProcessIOPlayer(List<String> command) throws IOException{

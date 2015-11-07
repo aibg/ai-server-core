@@ -1,8 +1,8 @@
 {
   "players": [
     {
-      "type": "process",
-      "name" : "cpp1",
+      "type": "dummy",
+      "name" : "ai-1",
       "command": [
         "/data/Documents/BEST/AI/cpp-bindings/run"
       ],
@@ -12,13 +12,14 @@
     },
     {
       "type": "process",
-      "name":"cpp2",
+      "name":"ai-2",
       "startingCells": [
         [4, 4], [4,5],[5,4],[5,5]
       ],
       "command": [
-        "/data/Documents/BEST/AI/cpp-bindings/run"
+        "java", "-jar", "/data/Documents/BEST/AI/java-bindings/target/java-bot.jar"
       ],
+      "workingDirectory" : "/data/Documents/BEST/AI/java-bindings/",
       "timer": {
         "maxLength" : 200
       }

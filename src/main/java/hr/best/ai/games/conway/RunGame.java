@@ -22,6 +22,7 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -122,7 +123,12 @@ public class RunGame {
                 ArrayList<String> command = new ArrayList<>();
                 for (JsonElement e : playerConfiguration.getAsJsonArray("command"))
                     command.add(e.getAsString());
-                return new ProcessIOPlayer(command, name);
+                if (playerConfiguration.has("workingDirectory")) {
+                    return new ProcessIOPlayer(command, Paths.get(playerConfiguration.get("workingDirectory")
+                            .getAsString()), name);
+                } else {
+                    return new ProcessIOPlayer(command, name);
+                }
             default:
                 throw new IllegalArgumentException("Unknown player type. Got: " + type);
         }
