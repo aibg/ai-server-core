@@ -4,7 +4,7 @@
       "type": "tcp",
       "name" : "ai-1",
       "startingCells": [
-        [0, 0], [0,1],[1,0],[1,1]
+        [11, 5], [11,6],[12,5],[12,6]
       ],
       "timer": {
       	"maxLength" : 200
@@ -14,7 +14,7 @@
       "type": "tcp",
       "name":"ai-2",
       "startingCells": [
-        [4, 4], [4,5],[5,4],[5,5]
+        [11, 17], [11,18],[12,17],[12,18]
       ],
       "timer": {
         "maxLength" : 200
@@ -24,9 +24,9 @@
   "game": {
     "rows": 24,
     "cols": 24,
-    "cellGainPerTurn": 3,
-    "maxCellCapacity": 24,
-    "startingCells": 5,
+    "cellGainPerTurn": 2,
+    "maxCellCapacity": 5,
+    "startingCells": 2,
     "maxColonisationDistance": 2,
     "maxGameIterations": 1000,
     "ruleset":"diff"
