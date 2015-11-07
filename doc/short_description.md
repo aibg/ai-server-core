@@ -6,16 +6,16 @@ Game of Life rules and some additional restrictions for multiplayer game.
 
 Classic Game of Life ruleset specifies:
 	
-	- any live cell with fewer than two live neighbours dies, as if caused
+	1) any live cell with fewer than two live neighbours dies, as if caused
 	by under-population
 	
-	- any live cell with two or three live neighbours lives on to the next
+	2) any live cell with two or three live neighbours lives on to the next
 	generation
 	
-	- any live cell with more than three live neighbours dies, as if by
+	3) any live cell with more than three live neighbours dies, as if by
 	over-population
 	
-	- any dead cell with exactly three live neighbours becomes a live
+	4) any dead cell with exactly three live neighbours becomes a live
 	cell, as if by reproduction
 
 The game depends only on the initial pattern of the system, on the other hand,
@@ -47,6 +47,7 @@ AI Battleground graphics engine
 
 The current AI Battleground implementation provides a simple GUI for battle
 simulations (PvP). The GUI includes:
+
 	- a finite number of cells representing battleground
 	- small images representing each player's colony
 	- players' names in the up left and right corner of the screen
