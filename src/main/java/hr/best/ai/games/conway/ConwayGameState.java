@@ -70,6 +70,9 @@ public class ConwayGameState implements State {
 
 	}
 
+	public int getIteration() {
+		return currIteration;
+	}
 	public Cells getPlayer1Actions() {
 		return lastTurnP1;
 	}
