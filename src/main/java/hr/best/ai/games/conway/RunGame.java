@@ -41,9 +41,8 @@ import com.kitfox.svg.app.beans.SVGPanel;
  */
 public class RunGame {
 
-	static ConwayGameState initialState;
-	
-	
+	private static ConwayGameState initialState;
+		
 	public static void addVisualization(GameContext gc) throws Exception {
 		
 		Color p1color = Color.red;
