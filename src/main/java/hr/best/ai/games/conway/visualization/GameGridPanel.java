@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 
+import com.google.gson.JsonObject;
+
 @SuppressWarnings("serial")
 public class GameGridPanel extends JPanel implements NewStateObserver {
 
@@ -146,9 +148,9 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 	}
 
 	@Override
-	public void signalCompleted(String message) {
+	public void signalError(JsonObject message) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

@@ -13,6 +13,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.google.gson.JsonObject;
+
 @SuppressWarnings("serial")
 public class PlayerInfoPanel extends JPanel implements NewStateObserver{
 
@@ -68,7 +70,7 @@ public class PlayerInfoPanel extends JPanel implements NewStateObserver{
 	}
 
 	@Override
-	public void signalCompleted(String message) {
+	public void signalError(JsonObject message) {
 		// TODO Auto-generated method stub
 		
 	}

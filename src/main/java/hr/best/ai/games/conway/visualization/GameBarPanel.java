@@ -11,6 +11,8 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
+import com.google.gson.JsonObject;
+
 @SuppressWarnings("serial")
 public class GameBarPanel extends JPanel implements NewStateObserver {
 
@@ -54,7 +56,7 @@ public class GameBarPanel extends JPanel implements NewStateObserver {
 	}
 
 	@Override
-	public void signalCompleted(String message) {
+	public void signalError(JsonObject message) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -297,4 +297,15 @@ public class ConwayGameState implements State {
 				sol, p1_cells_new, p1, p2_cells_new, p2, fromEmpty,
 				fromOccupied, p1score_new, p2score_new);
 	}
+
+    @Override
+    public int getWinner() {
+        if (!this.isFinal())
+            throw new IllegalStateException("Cannot get winner while game is running.");
+        if (p1score > p2score)
+            return ConwayGameStateConstants.PLAYER1_CELL;
+        if (p1score == p2score)
+            return -1;
+        return ConwayGameStateConstants.PLAYER2_CELL;
+    }
 }
