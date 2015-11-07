@@ -14,6 +14,9 @@ import hr.best.ai.server.TimeBucketPlayer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
@@ -37,6 +40,8 @@ import com.kitfox.svg.app.beans.SVGPanel;
  */
 public class RunGame {
 
+	private static ConwayGameState initialState;
+		
 	public static void addVisualization(GameContext gc) throws Exception {
 		
 		Color p1color = Color.red;
@@ -47,21 +52,30 @@ public class RunGame {
 		String p1Logo="/BEST_ZG_mali.png";
 		String p2Logo="/Untitled-3.png";
 		
-		GameBarPanel bar = new GameBarPanel(p1color, p2color);
-		GameGridPanel grid = new GameGridPanel(p1Logo,p2Logo,p1color,p2color,gridColor);
-		PlayerInfoPanel p1info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER1_CELL,p1color);
-		PlayerInfoPanel p2info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER2_CELL,p2color);
-		
 		SwingUtilities.invokeAndWait(() -> {
 
-			JFrame f = new JFrame("Conway");
-			f.setSize(new Dimension(1200,800));
-			//f.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			JFrame frame = new JFrame("Conway");
+			
+			Dimension screenSize=Toolkit.getDefaultToolkit().getScreenSize();
+			Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame.getGraphicsConfiguration());
+			Dimension frameSize=new Dimension(screenSize.width,screenSize.height-screenInsets.top);
+			
+			frame.setSize(frameSize);
+			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			
+			Dimension gridSize=new Dimension(frame.getWidth()-frame.getInsets().left-frame.getInsets().right,frame.getHeight()-frame.getInsets().top-frame.getInsets().bottom-barHeight);
+			
+			GameGridPanel grid = new GameGridPanel(initialState,p1Logo,p2Logo,p1color,p2color,gridColor,gridSize);
+			
+			PlayerInfoPanel p1info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER1_CELL,p1color);
+			PlayerInfoPanel p2info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER2_CELL,p2color);
+			
 			// bar setup
-				bar.setPreferredSize(new Dimension(0, barHeight));
-				f.getContentPane().add(bar, BorderLayout.NORTH);
+			GameBarPanel bar = new GameBarPanel(initialState,p1color, p2color);
+			bar.setPreferredSize(new Dimension(0, barHeight));
+			frame.getContentPane().add(bar, BorderLayout.NORTH);
 
-				// background setup
+			// background setup
 				SVGPanel background = new SVGPanel();
 				background.setLayout(new BoxLayout(background, BoxLayout.LINE_AXIS));
 				background.setScaleToFit(true);
@@ -69,22 +83,26 @@ public class RunGame {
 				try {
 					background.setSvgResourcePath("/background.svg");
 				} catch (Exception e) {
+					// TODO
 					e.printStackTrace();
 				}
-				f.getContentPane().add(background, BorderLayout.CENTER);
+				frame.getContentPane().add(background, BorderLayout.CENTER);
 				
 				background.add(p1info);
 				background.add(grid);
 				background.add(p2info);
 				
-				f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				f.setVisible(true);
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				
+				frame.setVisible(true);
+				
+
+				gc.addObserver(bar);
+				gc.addObserver(grid);
+				gc.addObserver(p1info);
+				gc.addObserver(p2info);
 			});
 
-		gc.addObserver(bar);
-		gc.addObserver(grid);
-		gc.addObserver(p1info);
-		gc.addObserver(p2info);
 	}
 
 
@@ -144,7 +162,8 @@ public class RunGame {
                 final JsonArray a = e.getAsJsonArray();
                 builder.setCell(a.get(0).getAsInt(), a.get(1).getAsInt(), ConwayGameStateConstants.PLAYER2_CELL);
             });
-            GameContext gc = new GameContext(builder.getState(), 2);
+            initialState=builder.getState();
+            GameContext gc = new GameContext(initialState, 2);
 
             for (JsonElement playerElement : players) {
                 JsonObject playerConfiguration = playerElement.getAsJsonObject();
@@ -184,6 +203,7 @@ public class RunGame {
         try (GameContext gc = initialize(config)) {
             if (config.get("visualization").getAsBoolean()) {
                 RunGame.addVisualization(gc);
+                Thread.sleep(2000);
             }
             gc.play();
         }

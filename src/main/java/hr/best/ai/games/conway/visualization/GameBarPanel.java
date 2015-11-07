@@ -20,9 +20,10 @@ public class GameBarPanel extends JPanel implements NewStateObserver {
 	private Color player1Color;
 	private Color player2Color;
 
-	public GameBarPanel(Color player1Color, Color player2Color) {
+	public GameBarPanel(ConwayGameState initialState, Color player1Color, Color player2Color) {
 		this.player1Color = player1Color;
 		this.player2Color = player2Color;
+		signalNewState(initialState);
 	}
 
 	@Override

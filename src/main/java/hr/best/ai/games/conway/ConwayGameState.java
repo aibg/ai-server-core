@@ -114,9 +114,7 @@ public class ConwayGameState implements State {
 	}
 
 	public int getCell(int row, int col) {
-		if (row < 0 || col < 0 || row >= getRows() || col >= getCols())
-			return ConwayGameStateConstants.DEAD_CELL;
-		return field[row][col];
+		return field[Math.floorMod(row, field.length)][Math.floorMod(col, field[0].length)];
 	}
 
 	/**
@@ -185,14 +183,13 @@ public class ConwayGameState implements State {
 	}
 
 	private int distanceToFriendlyCell(int row, int col, int cell_type,
-			int maxSearchSpace) {
+			int maxSearchDistance) {
 		int distance = Integer.MAX_VALUE;
-		for (int r = row - maxSearchSpace; r <= row + maxSearchSpace; ++r) {
-			int verticalDistance = maxSearchSpace - Math.abs(r - row);
-			for (int c = col - verticalDistance; c <= col + verticalDistance; ++c)
+		
+		for (int r = row - maxSearchDistance; r <= row + maxSearchDistance; ++r) {
+			for (int c = col - maxSearchDistance; c <= col + maxSearchDistance; ++c)
 				if (getCell(r, c) == cell_type)
-					distance = Math.min(distance,
-							Math.abs(r - row) + Math.abs(c - col));
+					distance = Math.min(distance,Math.max(Math.abs(r - row),Math.abs(c - col)));
 		}
 		return distance;
 	}
