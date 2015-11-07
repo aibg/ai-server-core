@@ -1,12 +1,10 @@
 package hr.best.ai.games.conway;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
 import hr.best.ai.games.conway.players.DoNothingPlayerDemo;
-import hr.best.ai.games.conway.visualization.GameBar;
-import hr.best.ai.games.conway.visualization.GameGrid;
+import hr.best.ai.games.conway.visualization.GameBarPanel;
+import hr.best.ai.games.conway.visualization.GameGridPanel;
+import hr.best.ai.games.conway.visualization.PlayerInfoPanel;
 import hr.best.ai.gl.AbstractPlayer;
 import hr.best.ai.gl.GameContext;
 import hr.best.ai.gl.bucket.SimpleBucket;
@@ -14,36 +12,81 @@ import hr.best.ai.server.ProcessIOPlayer;
 import hr.best.ai.server.SocketIOPlayer;
 import hr.best.ai.server.TimeBucketPlayer;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.kitfox.svg.app.beans.SVGPanel;
+
+
 /**
  * Created by lpp on 10/31/15.
  */
 public class RunGame {
-    public static void addVizualization(GameContext gc) throws Exception{
-        GameBar bar = new GameBar();
-        GameGrid grid = new GameGrid();
 
-        SwingUtilities.invokeAndWait(() -> {
-            JFrame f = new JFrame("DemoConway");
+	public static void addVisualization(GameContext gc) throws Exception {
+		
+		Color p1color = Color.red;
+		Color p2color = Color.blue;
+		Color gridColor = new Color(200, 200, 200, 200);
+		
+		int barHeight = 30;
+		String p1Logo="/BEST_ZG_mali.png";
+		String p2Logo="/Untitled-3.png";
+		
+		GameBarPanel bar = new GameBarPanel(p1color, p2color);
+		GameGridPanel grid = new GameGridPanel(p1Logo,p2Logo,p1color,p2color,gridColor);
+		PlayerInfoPanel p1info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER1_CELL,p1color);
+		PlayerInfoPanel p2info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER2_CELL,p2color);
+		
+		SwingUtilities.invokeAndWait(() -> {
 
-            f.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            f.getContentPane().add(bar, BorderLayout.NORTH);
-            f.getContentPane().add(grid, BorderLayout.CENTER);
-            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			JFrame f = new JFrame("Conway");
+			f.setSize(new Dimension(1200,800));
+			//f.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			// bar setup
+				bar.setPreferredSize(new Dimension(0, barHeight));
+				f.getContentPane().add(bar, BorderLayout.NORTH);
 
-            f.setVisible(true);
-        });
+				// background setup
+				SVGPanel background = new SVGPanel();
+				background.setLayout(new BoxLayout(background, BoxLayout.LINE_AXIS));
+				background.setScaleToFit(true);
+				background.setAntiAlias(true);
+				try {
+					background.setSvgResourcePath("/background.svg");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				f.getContentPane().add(background, BorderLayout.CENTER);
+				
+				background.add(p1info);
+				background.add(grid);
+				background.add(p2info);
+				
+				f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				f.setVisible(true);
+			});
 
-        gc.addObserver(bar);
-        gc.addObserver(grid);
-    }
+		gc.addObserver(bar);
+		gc.addObserver(grid);
+		gc.addObserver(p1info);
+		gc.addObserver(p2info);
+	}
+
 
     private static ServerSocket socket = null;
 
@@ -136,7 +179,7 @@ public class RunGame {
 
         try (GameContext gc = initialize(config)) {
             if (config.get("visualization").getAsBoolean()) {
-                RunGame.addVizualization(gc);
+                RunGame.addVisualization(gc);
             }
             gc.play();
         }

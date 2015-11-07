@@ -55,7 +55,7 @@ public class DebilniTest {
         GameContext gc = new GameContext(st, 2);
         gc.addPlayer(new DoNothingPlayerDemo("dummy 1"));
         gc.addPlayer(new DoNothingPlayerDemo("duumy 2"));
-        RunGame.addVizualization(gc);
+        RunGame.addVisualization(gc);
         gc.play();
     }
 
@@ -65,7 +65,7 @@ public class DebilniTest {
         GameContext gc = new GameContext(st, 2);
         gc.addPlayer(new SocketIOPlayer(socket.accept()));
         gc.addPlayer(new DoNothingPlayerDemo("dummy"));
-        RunGame.addVizualization(gc);
+        RunGame.addVisualization(gc);
         gc.play();
     }
 
@@ -73,7 +73,7 @@ public class DebilniTest {
         GameContext gc = new GameContext(GameContextFactory.demoState(), 2);
         gc.addPlayer(new ProcessIOPlayer(Arrays.asList("/home/lpp/Documents/BEST/AI/python-bindings/main.py")));
         gc.addPlayer(new DoNothingPlayerDemo("dummy 2"));
-        RunGame.addVizualization(gc);
+        RunGame.addVisualization(gc);
         gc.play();
     }
 
