@@ -33,44 +33,47 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 	private Color player2Color;
 	private Color gridColor;
 
-	public GameGridPanel(String p1Logo, String p2Logo, Color player1Color,
-			Color player2Color, Color gridColor) throws IOException {
-		P1_logo = ImageIO.read(this.getClass().getResource(p1Logo));
-		P2_logo = ImageIO.read(this.getClass().getResource(p2Logo));
+	public GameGridPanel(ConwayGameState initialState, String p1Logo,
+			String p2Logo, Color player1Color, Color player2Color,
+			Color gridColor, Dimension containterDimension) {
+
+		this.state = initialState;
+		try {
+			this.P1_logo = ImageIO.read(this.getClass().getResource(p1Logo));
+			this.P2_logo = ImageIO.read(this.getClass().getResource(p2Logo));
+		} catch (IOException e) {
+			// TODO
+		}
 		this.player1Color = player1Color;
 		this.player2Color = player2Color;
 		this.gridColor = gridColor;
 
-		setVisible(false);
+		setSizes(containterDimension);
+
 		setOpaque(false);
+		setVisible(true);
+		
+	}
+
+	private void setSizes(Dimension drawSpace) {
+		double blockWidth = drawSpace.width / this.state.getCols();
+		double blockHeight = drawSpace.height / this.state.getRows();
+
+		blockSize = Math.toIntExact(Math.round(Math.floor(Math.min(blockWidth,
+				blockHeight))));
+		
+		int width = blockSize * this.state.getCols() + 1;
+		int height = blockSize * this.state.getRows() + 1;
+		Dimension newSize = new Dimension(width, height);
+		setMinimumSize(newSize);
+		setPreferredSize(newSize);
+		setMaximumSize(newSize);
 	}
 
 	@Override
 	public void signalNewState(State state) {
 		long t = System.currentTimeMillis();
 		this.state = (ConwayGameState) state;
-
-		double blockWidth = (double) getParent().getBounds().width
-				/ this.state.getCols();
-		double blockHeight = (double) getParent().getBounds().height
-				/ this.state.getRows();
-
-		blockSize = Math.toIntExact(Math.round(Math.floor(Math.min(blockWidth,
-				blockHeight))));
-
-		// this shouldn't be done on every new state but can't make it
-		// differently for now
-		int width = blockSize * this.state.getCols()+1;
-		int height = blockSize * this.state.getRows()+1;
-		Dimension newSize = new Dimension(width, height);
-		setMinimumSize(newSize);
-		setPreferredSize(newSize);
-		setMaximumSize(newSize);
-		setVisible(true);
-		// validate();
-		// System.out.println(getBounds());
-		// --------------------------------------------------------------------------------
-
 		this.repaint(0);
 		logger.debug(String.format("Repaint finished: %3dms",
 				System.currentTimeMillis() - t));
@@ -83,9 +86,10 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 		if (state == null)
 			return;
 
+		setSizes(getParent().getBounds().getSize());
 		drawCurrentActions(g, state.getPlayer1Actions(), player1Color);
 		drawCurrentActions(g, state.getPlayer2Actions(), player2Color);
-
+		
 		// draw grid
 
 		// horizontal lines
@@ -150,7 +154,7 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 	@Override
 	public void signalError(JsonObject message) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
