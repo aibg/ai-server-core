@@ -15,6 +15,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.io.FileReader;
@@ -24,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -41,16 +43,18 @@ import com.kitfox.svg.app.beans.SVGPanel;
 public class RunGame {
 
 	private static ConwayGameState initialState;
+	private static String p1name;
+	private static String p2name;
 		
 	public static void addVisualization(GameContext gc) throws Exception {
 		
-		Color p1color = Color.red;
-		Color p2color = Color.blue;
+		Color p1color = Color.white;
+		Color p2color = new Color(248,156,16);
 		Color gridColor = new Color(200, 200, 200, 200);
 		
 		int barHeight = 30;
-		String p1Logo="/BEST_ZG_mali.png";
-		String p2Logo="/Untitled-3.png";
+		Image p1Logo=ImageIO.read(RunGame.class.getResource("/BEST_ZG_mali.png"));
+		Image p2Logo=ImageIO.read(RunGame.class.getResource("/Untitled-3.png"));
 		
 		SwingUtilities.invokeAndWait(() -> {
 
@@ -62,13 +66,15 @@ public class RunGame {
 			
 			frame.setSize(frameSize);
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			frame.setVisible(true);
 			
-			Dimension gridSize=new Dimension(frame.getWidth()-frame.getInsets().left-frame.getInsets().right,frame.getHeight()-frame.getInsets().top-frame.getInsets().bottom-barHeight);
+			//TODO the following -1 hack must be changed
+			Dimension gridSize=new Dimension(frame.getWidth()-frame.getInsets().left-frame.getInsets().right,frame.getHeight()-frame.getInsets().top-frame.getInsets().bottom-barHeight-1);
 			
-			GameGridPanel grid = new GameGridPanel(initialState,p1Logo,p2Logo,p1color,p2color,gridColor,gridSize);
+			GameGridPanel grid = new GameGridPanel(initialState,null,null,p1color,p2color,gridColor,gridSize);
 			
-			PlayerInfoPanel p1info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER1_CELL,p1color);
-			PlayerInfoPanel p2info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER2_CELL,p2color);
+			PlayerInfoPanel p1info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER1_CELL,p1color,p1name);
+			PlayerInfoPanel p2info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER2_CELL,p2color,p2name);
 			
 			// bar setup
 			GameBarPanel bar = new GameBarPanel(initialState,p1color, p2color);
@@ -152,23 +158,27 @@ public class RunGame {
                     .setMaxGameIterations(gameConfig.get("maxGameIterations").getAsInt())
                     .setStartingCells(gameConfig.get("startingCells").getAsInt())
                     .setRuleset(gameConfig.get("ruleset").getAsString());
-
+            
             players.get(0).getAsJsonObject().getAsJsonArray("startingCells").forEach((JsonElement e) -> {
                 final JsonArray a = e.getAsJsonArray();
                 builder.setCell(a.get(0).getAsInt(), a.get(1).getAsInt(), ConwayGameStateConstants.PLAYER1_CELL);
             });
-
+            p1name=players.get(0).getAsJsonObject().get("name").getAsString();
+            
             players.get(1).getAsJsonObject().getAsJsonArray("startingCells").forEach((JsonElement e) -> {
                 final JsonArray a = e.getAsJsonArray();
                 builder.setCell(a.get(0).getAsInt(), a.get(1).getAsInt(), ConwayGameStateConstants.PLAYER2_CELL);
             });
+            p2name=players.get(1).getAsJsonObject().get("name").getAsString();
+            
             initialState=builder.getState();
+            
             GameContext gc = new GameContext(initialState, 2);
 
             for (JsonElement playerElement : players) {
                 JsonObject playerConfiguration = playerElement.getAsJsonObject();
                 AbstractPlayer player = createPlayer(playerConfiguration, port);
-
+                
                 if (playerConfiguration.has("timer"))
                     gc.addPlayer(getTimeBucketedPlayer(
                             player

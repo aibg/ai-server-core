@@ -18,30 +18,27 @@ import com.google.gson.JsonObject;
 @SuppressWarnings("serial")
 public class PlayerInfoPanel extends JPanel implements NewStateObserver{
 
-	private JLabel scoreLabel=new JLabel();
-	private int playerID;
+	private final JLabel label=new JLabel();
+	private final int playerID;
+	private final String playerName;
 	
-	
-	public PlayerInfoPanel(int playerID,Color textColor) {
+	public PlayerInfoPanel(int playerID,Color textColor, String playerName) {
 		this.playerID=playerID;
+		this.playerName=playerName;
 		setOpaque(false);
 		JPanel innerPanel=new JPanel();
 		innerPanel.setOpaque(false);
 		add(innerPanel,BorderLayout.CENTER);
 		innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.PAGE_AXIS));
 		
-		//adding labels
-		
-		//TODO player name??		
-		innerPanel.add(new JLabel("Player"+playerID));
-		innerPanel.add(Box.createVerticalGlue());
-		innerPanel.add(new JLabel("SCORE"));
-		innerPanel.add(scoreLabel);
+		//add label
+		int score=0;
+		label.setText("<html><center><h1><b>"+ playerName +"</b><h1></center>"+"<br><center><h2>score:<h2></center><br><center><h1>"+score+"</h1></center></html>");
+		innerPanel.add(label);
 		
 		//set text color
-		for(int i=0;i<innerPanel.getComponentCount();i++){
-			innerPanel.getComponent(i).setForeground(textColor);
-		}
+		label.setForeground(textColor);
+		
 		
 		
 		
@@ -58,15 +55,15 @@ public class PlayerInfoPanel extends JPanel implements NewStateObserver{
 		int score = 0;
 		switch (playerID) {
 		case ConwayGameStateConstants.PLAYER1_CELL:
-			score=((ConwayGameState)state).getP1Score();
+			score=((ConwayGameState)state).getP1LiveCellcount();
 			break;
 		case ConwayGameStateConstants.PLAYER2_CELL:
-			score=((ConwayGameState)state).getP2Score();
+			score=((ConwayGameState)state).getP2LiveCellcount();
 		break;
 		default:
 			break;
 		}
-		scoreLabel.setText(String.valueOf(score));
+		label.setText("<html><center><h1><b>"+ playerName +"</b><h1></center>"+"<br><center><h2>score:<h2></center><br><center><h1>"+score+"</h1></center></html>");
 	}
 
 	@Override
