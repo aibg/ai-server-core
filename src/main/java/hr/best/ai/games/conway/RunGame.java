@@ -7,7 +7,6 @@ import hr.best.ai.games.conway.visualization.GameGridPanel;
 import hr.best.ai.games.conway.visualization.PlayerInfoPanel;
 import hr.best.ai.gl.AbstractPlayer;
 import hr.best.ai.gl.GameContext;
-import hr.best.ai.gl.bucket.SimpleBucket;
 import hr.best.ai.server.ProcessIOPlayer;
 import hr.best.ai.server.SocketIOPlayer;
 import hr.best.ai.server.TimeBucketPlayer;
@@ -116,9 +115,8 @@ public class RunGame {
     }
 
     private static AbstractPlayer getTimeBucketedPlayer(AbstractPlayer player, JsonObject timeBucketConfig) {
-        return new TimeBucketPlayer(player, new SimpleBucket(
-                timeBucketConfig.get("maxLength").getAsInt()
-        ));
+        long timePerTurn = timeBucketConfig.get("maxLength").getAsInt();
+        return new TimeBucketPlayer(player, timePerTurn, 5 * timePerTurn);
     }
 
     private static GameContext initialize(JsonObject config) throws Exception{
