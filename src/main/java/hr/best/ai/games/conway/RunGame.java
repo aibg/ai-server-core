@@ -7,7 +7,6 @@ import hr.best.ai.games.conway.visualization.GameGridPanel;
 import hr.best.ai.games.conway.visualization.PlayerInfoPanel;
 import hr.best.ai.gl.AbstractPlayer;
 import hr.best.ai.gl.GameContext;
-import hr.best.ai.gl.bucket.SimpleBucket;
 import hr.best.ai.server.ProcessIOPlayer;
 import hr.best.ai.server.SocketIOPlayer;
 import hr.best.ai.server.TimeBucketPlayer;
@@ -41,9 +40,8 @@ import com.kitfox.svg.app.beans.SVGPanel;
  */
 public class RunGame {
 
-	static ConwayGameState initialState;
-	
-	
+	private static ConwayGameState initialState;
+		
 	public static void addVisualization(GameContext gc) throws Exception {
 		
 		Color p1color = Color.red;
@@ -135,9 +133,8 @@ public class RunGame {
     }
 
     private static AbstractPlayer getTimeBucketedPlayer(AbstractPlayer player, JsonObject timeBucketConfig) {
-        return new TimeBucketPlayer(player, new SimpleBucket(
-                timeBucketConfig.get("maxLength").getAsInt()
-        ));
+        long timePerTurn = timeBucketConfig.get("maxLength").getAsInt();
+        return new TimeBucketPlayer(player, timePerTurn, 5 * timePerTurn);
     }
 
     private static GameContext initialize(JsonObject config) throws Exception{
