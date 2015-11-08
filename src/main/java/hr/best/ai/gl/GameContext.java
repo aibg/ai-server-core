@@ -92,6 +92,7 @@ public class GameContext implements AutoCloseable {
 		
 		try {
 			while (!state.isFinal()) {
+                long t0 = System.currentTimeMillis();
 				List<Future<Action>> actionsF = new ArrayList<>();
 				for (int i = 0; i < players.size(); ++i) {
 
@@ -130,6 +131,7 @@ public class GameContext implements AutoCloseable {
                     logger.debug("Errors happened. Aborting!");
                     throw new AIBGExceptions(playerErrors.toString());
                 }
+                logger.debug(String.format("Whole State cycle finished: [%3d ms]", System.currentTimeMillis() - t0));
 			}
 			logger.debug("Final state: " + state.toString());
             /**
