@@ -4,10 +4,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import com.sun.istack.internal.NotNull;
 import hr.best.ai.exceptions.InvalidActionException;
 import hr.best.ai.gl.Action;
 import hr.best.ai.gl.State;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -47,8 +47,8 @@ public class ConwayGameState implements State {
 			Cells lastTurnP1,
 			int p2_cells,
 			Cells lastTurnP2,
-			@NotNull Function<Pair<Integer, Integer>, Integer> fromEmpty,
-			@NotNull Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied,
+			Function<Pair<Integer, Integer>, Integer> fromEmpty,
+			Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied,
 			int p1score, int p2score) {
 		this.cellGainPerTurn = cellGainPerTurn;
 		this.maxCellCapacity = maxCellCapacity;
@@ -69,6 +69,9 @@ public class ConwayGameState implements State {
 
 	}
 
+	public int getIteration() {
+		return currIteration;
+	}
 	public Cells getPlayer1Actions() {
 		return lastTurnP1;
 	}
@@ -156,7 +159,7 @@ public class ConwayGameState implements State {
 			}
 			array.add(new JsonPrimitive(sb.toString()));
 		}
-		// TODO make better name
+
 		json.addProperty("cellsRemaining",
 				playerId == ConwayGameStateConstants.PLAYER1_CELL ? p1_cells
 						: p2_cells);
@@ -233,7 +236,19 @@ public class ConwayGameState implements State {
 		int p1score_new = p1score + p1count;
 		int p2score_new = p2score + p2count;
 
-		/**
+		
+		//check if activating live cells
+		for (Cell c : p1)
+			if (getCell(c.getRow(),c.getCol()) == ConwayGameStateConstants.PLAYER2_CELL) 
+				throw new IllegalArgumentException("P1 tried to activate a cell on top of other player's live cell");
+		
+	
+		for (Cell c : p2)
+			if (getCell(c.getRow(),c.getCol()) == ConwayGameStateConstants.PLAYER1_CELL) 
+				throw new IllegalArgumentException("P2 tried to activate a cell on top of other player's live cell");
+		
+
+				/**
 		 * Distance checks
 		 */
 		for (Cell c : p1) {
