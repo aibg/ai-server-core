@@ -103,7 +103,8 @@ public class RunGame {
 						g.setColor(Color.black);
 						g.fillRect(0, 0, getWidth(), getHeight());
 						g.setColor(current);
-						//g.drawImage(back.getScaledInstance(getWidth(), -1, Image.SCALE_AREA_AVERAGING),0, 0, null);
+						g.drawImage(back, 0, 0, getWidth(), getHeight(), this);
+						
 					}
 				};
 			} catch (Exception e) {
