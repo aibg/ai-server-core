@@ -75,8 +75,9 @@ public class HistoricRunGame extends JPanel {
         
         
             SwingUtilities.invokeLater(()->{
-            	HistoricFrame hf=new HistoricFrame(stanje);   	
-            	hf.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            	HistoricFrame hf=new HistoricFrame(stanje);  
+            	hf.setSize(new Dimension(1000,800));
+            	//hf.setExtendedState(JFrame.MAXIMIZED_BOTH);
             	hf.setVisible(true);
             });
             
