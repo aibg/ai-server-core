@@ -27,11 +27,6 @@ public class DoNothingPlayerDemo extends AbstractPlayer {
     public JsonObject signalNewState(JsonObject state) throws IOException, InvalidActionException {
         JsonObject sol = new JsonObject();
         sol.add("cells", new JsonArray());
-        try {
-            Thread.sleep(150);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         logger.debug(String.format(
                 "%s recieved: \"%s\""
                 , this.getName()
