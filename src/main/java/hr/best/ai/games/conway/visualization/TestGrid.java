@@ -17,6 +17,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -152,12 +153,16 @@ public class TestGrid extends JPanel {
 	}
 
 	public static void main(String[] args) throws Exception {
-
 		Rulesets.getInstance(); // loading the class static part into JVM
-		JsonObject config = new JsonParser().parse(
-				new InputStreamReader(RunGame.class.getClassLoader()
-						.getResourceAsStream("defaultConfig.json"),
-						StandardCharsets.UTF_8)).getAsJsonObject();
+        JsonParser parser = new JsonParser();
+        JsonObject config;
+        if (args.length == 0) {
+            System.out.println("Falling back to default game configuration.");
+            config = parser.parse(new InputStreamReader(RunGame.class.getClassLoader().getResourceAsStream("defaultConfig.json"), StandardCharsets.UTF_8)).getAsJsonObject();
+        } else {
+            System.out.println("Using " + args[0] + " configuration file");
+            config = parser.parse(new FileReader(args[0])).getAsJsonObject();
+        }
 
 		ConwayGameState cgs = initialize(config);
 		if (config.get("visualization").getAsBoolean())
