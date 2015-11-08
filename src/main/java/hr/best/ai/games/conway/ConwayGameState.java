@@ -3,7 +3,6 @@ package hr.best.ai.games.conway;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.sun.istack.internal.NotNull;
 
 import hr.best.ai.exceptions.InvalidActionException;
 import hr.best.ai.gl.Action;
@@ -48,8 +47,8 @@ public class ConwayGameState implements State {
 			Cells lastTurnP1,
 			int p2_cells,
 			Cells lastTurnP2,
-			@NotNull Function<Pair<Integer, Integer>, Integer> fromEmpty,
-			@NotNull Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied,
+			Function<Pair<Integer, Integer>, Integer> fromEmpty,
+			Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied,
 			int p1score, int p2score) {
 		this.cellGainPerTurn = cellGainPerTurn;
 		this.maxCellCapacity = maxCellCapacity;
