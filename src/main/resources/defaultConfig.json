@@ -1,21 +1,15 @@
 {
   "players": [
     {
-      "type": "process",
-      "name" : "P1_python",
-      "command": [
-        "/home/andrej/Desktop/python/run"
-      ],
+      "type": "dummy",
+      "name" : "p1-dummy",
       "startingCells": [
         [11, 5], [11,6],[12,5],[12,6]
       ]
     },
     {
-      "type": "process",
-      "name":"P2_python",
-      "command": [
-        "/home/andrej/Desktop/python/run"
-      ],
+      "type": "dummy",
+      "name":"p2-dummy",
       "startingCells": [
         [11, 17], [11,18],[12,17],[12,18]
       ]
@@ -24,11 +18,11 @@
   "game": {
     "rows": 24,
     "cols": 24,
-    "cellGainPerTurn": 1,
-    "maxCellCapacity": 5,
-    "startingCells": 5,
-    "maxColonisationDistance": 4,
-    "maxGameIterations": 20,
+    "cellGainPerTurn": 3,
+    "maxCellCapacity": 15,
+    "startingCells": 3,
+    "maxColonisationDistance": 2,
+    "maxGameIterations": 500,
     "ruleset":"diff"
   },
   "port": 5858,

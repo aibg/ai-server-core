@@ -119,12 +119,12 @@ public class HistoricFrame extends JFrame{
 				super.keyPressed(e);
 				
 				switch (e.getKeyCode()) {
-				case KeyEvent.VK_J:
+				case KeyEvent.VK_K:
 					if(currState>0)
 						--currState;
 					
 					break;
-				case KeyEvent.VK_K:
+				case KeyEvent.VK_J:
 					if(currState<stanje.size()-1)
 						++currState;
 					break;
