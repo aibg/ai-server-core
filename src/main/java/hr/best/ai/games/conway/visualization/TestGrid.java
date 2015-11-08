@@ -48,7 +48,8 @@ public class TestGrid extends JPanel {
 		this.state = cgs;
 		
 		JFrame f = new JFrame("Conway");
-		f.setSize(new Dimension(1200, 800));
+		
+		f.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		f.getContentPane().add(this);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);	

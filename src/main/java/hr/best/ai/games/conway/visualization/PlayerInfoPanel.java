@@ -2,77 +2,128 @@ package hr.best.ai.games.conway.visualization;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.io.IOException;
 
 import hr.best.ai.games.conway.ConwayGameState;
 import hr.best.ai.games.conway.ConwayGameStateConstants;
 import hr.best.ai.gl.NewStateObserver;
 import hr.best.ai.gl.State;
 
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.google.gson.JsonObject;
 
 @SuppressWarnings("serial")
-public class PlayerInfoPanel extends JPanel implements NewStateObserver{
+public class PlayerInfoPanel extends JPanel implements NewStateObserver {
 
-	private JLabel scoreLabel=new JLabel();
-	private int playerID;
-	
-	
-	public PlayerInfoPanel(int playerID,Color textColor) {
-		this.playerID=playerID;
+	private final JLabel infoLabel = new JLabel();
+	private final JLabel iterationLabel = new JLabel();
+
+	private final int playerID;
+	private final String playerName;
+	//private LogoPanel logoPanel;
+
+	public PlayerInfoPanel(int playerID, Color textColor, String playerName) {
+		this.playerID = playerID;
+		this.playerName = playerName;
 		setOpaque(false);
-		JPanel innerPanel=new JPanel();
-		innerPanel.setOpaque(false);
-		add(innerPanel,BorderLayout.CENTER);
-		innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.PAGE_AXIS));
-		
-		//adding labels
-		
-		//TODO player name??		
-		innerPanel.add(new JLabel("Player"+playerID));
-		innerPanel.add(Box.createVerticalGlue());
-		innerPanel.add(new JLabel("SCORE"));
-		innerPanel.add(scoreLabel);
-		
-		//set text color
-		for(int i=0;i<innerPanel.getComponentCount();i++){
-			innerPanel.getComponent(i).setForeground(textColor);
+
+		setLayout(new BorderLayout(0, 0));
+
+		// set up info
+		infoLabel.setHorizontalAlignment(SwingUtilities.CENTER);
+		int score = 0;
+		infoLabel.setText("<html><center><h1><b>" + playerName
+				+ "</b><h1></center>"
+				+ "<br><center><h2>score:<h2></center><br><center><h1>" + score
+				+ "</h1></center></html>");
+		add(infoLabel, BorderLayout.CENTER);
+
+		// set up iteration
+		iterationLabel.setHorizontalAlignment(SwingUtilities.CENTER);
+		int iter = 0;
+		iterationLabel.setText("<html><center><h1>Iteration:" + iter
+				+ "</h1></center></html>");
+
+		// set text color
+		infoLabel.setForeground(textColor);
+		iterationLabel.setForeground(textColor);
+
+		switch (playerID) {
+		case ConwayGameStateConstants.PLAYER1_CELL:
+			add(iterationLabel, BorderLayout.SOUTH);
+			break;
+		case ConwayGameStateConstants.PLAYER2_CELL:
+			
+			Image logo = null;
+			Dimension logoSize=new Dimension(170,100);
+			try {
+				logo = ImageIO.read(getClass().getResource("/BEST_ZG_logo.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			LogoPanel logoPanel= new LogoPanel(logo,logoSize);
+			logoPanel.setPreferredSize(logoSize);
+			logoPanel.setOpaque(false);
+			add(logoPanel, BorderLayout.SOUTH);
+					
+			break;
+		default:
+			throw new IllegalArgumentException("invalid player ID");
 		}
-		
-		
-		
+
+		Dimension dim = iterationLabel.getPreferredSize();
+		iterationLabel.setPreferredSize(dim);
+		iterationLabel.setMaximumSize(dim);
+		iterationLabel.setMinimumSize(dim);
+		//System.out.println(iterationLabel.getPreferredSize());
+		//System.exit(0);
 	}
 
 	@Override
 	public void close() throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void signalNewState(State state) {
+
+		int iter = ((ConwayGameState) state).getIteration();
+		iterationLabel.setText("<html><center><h1>Iteration:" + iter
+				+ "</h1></center></html>");
+
 		int score = 0;
 		switch (playerID) {
 		case ConwayGameStateConstants.PLAYER1_CELL:
-			score=((ConwayGameState)state).getP1Score();
+			score = ((ConwayGameState) state).getP1LiveCellcount();
 			break;
 		case ConwayGameStateConstants.PLAYER2_CELL:
-			score=((ConwayGameState)state).getP2Score();
-		break;
+			score = ((ConwayGameState) state).getP2LiveCellcount();
+			break;
 		default:
 			break;
 		}
-		scoreLabel.setText(String.valueOf(score));
+		infoLabel.setText("<html><center><h1><b>" + playerName
+				+ "</b><h1></center>"
+				+ "<br><center><h2>score:<h2></center><br><center><h1>" + score
+				+ "</h1></center></html>");
+
 	}
 
 	@Override
 	public void signalError(JsonObject message) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
