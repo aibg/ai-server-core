@@ -64,8 +64,9 @@ public class RunGame {
 			Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame.getGraphicsConfiguration());
 			Dimension frameSize=new Dimension(screenSize.width,screenSize.height-screenInsets.top);
 			
-			frame.setSize(frameSize);
-			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			frame.setSize(new Dimension(1280,800));
+			//frame.setSize(frameSize);
+			//frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			frame.setVisible(true);
 			
 			//TODO the following -1 hack must be changed

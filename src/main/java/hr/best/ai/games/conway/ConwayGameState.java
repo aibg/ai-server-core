@@ -245,7 +245,7 @@ public class ConwayGameState implements State {
 		
 	
 		for (Cell c : p2)
-			if (getCell(c.getRow(),c.getCol()) == ConwayGameStateConstants.PLAYER2_CELL) 
+			if (getCell(c.getRow(),c.getCol()) == ConwayGameStateConstants.PLAYER1_CELL) 
 				throw new IllegalArgumentException("P2 tried to activate a cell on top of other player's live cell");
 		
 

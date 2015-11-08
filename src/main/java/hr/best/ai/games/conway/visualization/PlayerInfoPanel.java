@@ -29,7 +29,7 @@ public class PlayerInfoPanel extends JPanel implements NewStateObserver {
 
 	private final int playerID;
 	private final String playerName;
-	private LogoPanel logoPanel;
+	//private LogoPanel logoPanel;
 
 	public PlayerInfoPanel(int playerID, Color textColor, String playerName) {
 		this.playerID = playerID;
@@ -62,21 +62,20 @@ public class PlayerInfoPanel extends JPanel implements NewStateObserver {
 			add(iterationLabel, BorderLayout.SOUTH);
 			break;
 		case ConwayGameStateConstants.PLAYER2_CELL:
-			/*Image logo = null;
+			
+			Image logo = null;
+			Dimension logoSize=new Dimension(170,100);
 			try {
 				logo = ImageIO.read(getClass().getResource("/BEST_ZG_logo.png"));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			add(iterationLabel, BorderLayout.SOUTH);
-			
-			
-			logoPanel = new LogoPanel(logo,iterationLabel.getPreferredSize());
-			logoPanel.setPreferredSize(new Dimension(3,200));
+			LogoPanel logoPanel= new LogoPanel(logo,logoSize);
+			logoPanel.setPreferredSize(logoSize);
+			logoPanel.setOpaque(false);
 			add(logoPanel, BorderLayout.SOUTH);
-			*/
-			
+					
 			break;
 		default:
 			throw new IllegalArgumentException("invalid player ID");
