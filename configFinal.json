@@ -24,9 +24,9 @@
   "game": {
     "rows": 24,
     "cols": 24,
-    "cellGainPerTurn": 2,
-    "maxCellCapacity": 5,
-    "startingCells": 2,
+    "cellGainPerTurn": 3,
+    "maxCellCapacity": 15,
+    "startingCells": 3,
     "maxColonisationDistance": 2,
     "maxGameIterations": 500,
     "ruleset":"diff"
