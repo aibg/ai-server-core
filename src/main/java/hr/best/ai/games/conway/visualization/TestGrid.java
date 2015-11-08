@@ -164,7 +164,7 @@ public class TestGrid extends JPanel {
             config = parser.parse(new FileReader(args[0])).getAsJsonObject();
         }
 
-		ConwayGameState cgs = initialize(config);
+		ConwayGameState cgs = (ConwayGameState) RunGame.genInitState(config);
 		if (config.get("visualization").getAsBoolean())
 			addVisualization(cgs);
 
@@ -176,50 +176,5 @@ public class TestGrid extends JPanel {
 		SwingUtilities.invokeLater(() -> {
 			new TestGrid(cgs);
 		});
-	}
-
-	private static ConwayGameState initialize(JsonObject config) {
-
-		final JsonObject gameConfig = config.getAsJsonObject("game");
-		final JsonArray players = config.getAsJsonArray("players");
-		final int port = config.get("port").getAsInt();
-
-		ConwayGameStateBuilder builder = ConwayGameStateBuilder
-				.newConwayGameStateBuilder(gameConfig.get("rows").getAsInt(),
-						gameConfig.get("cols").getAsInt())
-				.setCellGainPerTurn(
-						gameConfig.get("cellGainPerTurn").getAsInt())
-				.setMaxCellCapacity(
-						gameConfig.get("maxCellCapacity").getAsInt())
-				.setMaxColonisationDistance(
-						gameConfig.get("maxColonisationDistance").getAsInt())
-				.setMaxGameIterations(
-						gameConfig.get("maxGameIterations").getAsInt())
-				.setStartingCells(gameConfig.get("startingCells").getAsInt())
-				.setRuleset(gameConfig.get("ruleset").getAsString());
-
-		players.get(0)
-				.getAsJsonObject()
-				.getAsJsonArray("startingCells")
-				.forEach(
-						(JsonElement e) -> {
-							final JsonArray a = e.getAsJsonArray();
-							builder.setCell(a.get(0).getAsInt(), a.get(1)
-									.getAsInt(),
-									ConwayGameStateConstants.PLAYER1_CELL);
-						});
-
-		players.get(1)
-				.getAsJsonObject()
-				.getAsJsonArray("startingCells")
-				.forEach(
-						(JsonElement e) -> {
-							final JsonArray a = e.getAsJsonArray();
-							builder.setCell(a.get(0).getAsInt(), a.get(1)
-									.getAsInt(),
-									ConwayGameStateConstants.PLAYER2_CELL);
-						});
-
-		return builder.getState();
 	}
 }
