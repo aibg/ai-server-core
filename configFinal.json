@@ -7,7 +7,7 @@
         [11, 5], [11,6],[12,5],[12,6]
       ],
       "timer": {
-      	"maxLength" : 200
+      	"maxLength" : 300
       }
     },
     {
@@ -17,7 +17,7 @@
         [11, 17], [11,18],[12,17],[12,18]
       ],
       "timer": {
-        "maxLength" : 200
+        "maxLength" : 300
       }
     }
   ],
@@ -28,7 +28,7 @@
     "maxCellCapacity": 5,
     "startingCells": 2,
     "maxColonisationDistance": 2,
-    "maxGameIterations": 1000,
+    "maxGameIterations": 500,
     "ruleset":"diff"
   },
   "port": 5858,
