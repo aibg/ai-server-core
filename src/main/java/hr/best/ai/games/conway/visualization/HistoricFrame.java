@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class HistoricFrame extends JFrame{
@@ -110,6 +111,24 @@ public class HistoricFrame extends JFrame{
 		getContentPane().add(statePanel,BorderLayout.CENTER);
 	
 		
+		JLabel info=new JLabel();
+		ConwayGameState state=stanje.get(currState);
+		StringBuilder sb=new StringBuilder();
+		sb.append("<html><center>");
+		sb.append("iteration:" +state.getIteration());
+		sb.append("</center><br><center>");
+		sb.append("red player live cells:" +state.getP1LiveCellcount());
+		sb.append("</center><br><center>");
+		sb.append("blue player live cells:" +state.getP2LiveCellcount());
+		sb.append("</center><br>");
+		sb.append("</html>");					
+		info.setText(sb.toString());
+		
+		Dimension size=info.getPreferredSize();
+		info.setMinimumSize(size);
+		info.setPreferredSize(size);
+		info.setMaximumSize(size);
+		getContentPane().add(info,BorderLayout.EAST);
 		
 		
 		addKeyListener(new KeyAdapter() {
@@ -132,13 +151,24 @@ public class HistoricFrame extends JFrame{
 				default:
 					break;
 				}
+				updateInfo();
 				repaint();
 			}
 
-			
-			
-			
-			
+			private void updateInfo() {
+				ConwayGameState state=stanje.get(currState);
+				StringBuilder sb=new StringBuilder();
+				sb.append("<html><center>");
+				sb.append("iteration:" +state.getIteration());
+				sb.append("</center><br><center>");
+				sb.append("red player live cells:" +state.getP1LiveCellcount());
+				sb.append("</center><br><center>");
+				sb.append("blue player live cells:" +state.getP2LiveCellcount());
+				sb.append("</center><br>");
+				sb.append("</html>");				
+				info.setText(sb.toString());
+				System.out.println(sb.toString());
+			}
 			
 		});
 		
