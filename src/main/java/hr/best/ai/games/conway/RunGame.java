@@ -7,6 +7,7 @@ import hr.best.ai.games.conway.visualization.GameGridPanel;
 import hr.best.ai.games.conway.visualization.PlayerInfoPanel;
 import hr.best.ai.gl.AbstractPlayer;
 import hr.best.ai.gl.GameContext;
+import hr.best.ai.gl.State;
 import hr.best.ai.server.ProcessIOPlayer;
 import hr.best.ai.server.SocketIOPlayer;
 import hr.best.ai.server.TimeBucketPlayer;
@@ -144,36 +145,41 @@ public class RunGame {
         return new TimeBucketPlayer(player, timePerTurn, 5 * timePerTurn);
     }
 
-    private static GameContext initialize(JsonObject config) throws Exception{
+    public static State genInitState(JsonObject config) {
+        final JsonObject gameConfig = config.getAsJsonObject("game");
+        final JsonArray players = config.getAsJsonArray("players");
+
+        ConwayGameStateBuilder builder = ConwayGameStateBuilder.newConwayGameStateBuilder
+                (gameConfig.get("rows").getAsInt()
+                        , gameConfig.get("cols").getAsInt()
+                ).setCellGainPerTurn(gameConfig.get("cellGainPerTurn").getAsInt())
+                .setMaxCellCapacity(gameConfig.get("maxCellCapacity").getAsInt())
+                .setMaxColonisationDistance(gameConfig.get("maxColonisationDistance").getAsInt())
+                .setMaxGameIterations(gameConfig.get("maxGameIterations").getAsInt())
+                .setStartingCells(gameConfig.get("startingCells").getAsInt())
+                .setRuleset(gameConfig.get("ruleset").getAsString());
+
+        players.get(0).getAsJsonObject().getAsJsonArray("startingCells").forEach((JsonElement e) -> {
+            final JsonArray a = e.getAsJsonArray();
+            builder.setCell(a.get(0).getAsInt(), a.get(1).getAsInt(), ConwayGameStateConstants.PLAYER1_CELL);
+        });
+        p1name=players.get(0).getAsJsonObject().get("name").getAsString();
+
+        players.get(1).getAsJsonObject().getAsJsonArray("startingCells").forEach((JsonElement e) -> {
+            final JsonArray a = e.getAsJsonArray();
+            builder.setCell(a.get(0).getAsInt(), a.get(1).getAsInt(), ConwayGameStateConstants.PLAYER2_CELL);
+        });
+        p2name=players.get(1).getAsJsonObject().get("name").getAsString();
+
+        return builder.getState();
+    }
+
+    public static GameContext initializeGC(JsonObject config) throws Exception{
         try {
-            final JsonObject gameConfig = config.getAsJsonObject("game");
             final JsonArray players = config.getAsJsonArray("players");
             final int port = config.get("port").getAsInt();
 
-            ConwayGameStateBuilder builder = ConwayGameStateBuilder.newConwayGameStateBuilder
-                    (gameConfig.get("rows").getAsInt()
-                            , gameConfig.get("cols").getAsInt()
-                    ).setCellGainPerTurn(gameConfig.get("cellGainPerTurn").getAsInt())
-                    .setMaxCellCapacity(gameConfig.get("maxCellCapacity").getAsInt())
-                    .setMaxColonisationDistance(gameConfig.get("maxColonisationDistance").getAsInt())
-                    .setMaxGameIterations(gameConfig.get("maxGameIterations").getAsInt())
-                    .setStartingCells(gameConfig.get("startingCells").getAsInt())
-                    .setRuleset(gameConfig.get("ruleset").getAsString());
-            
-            players.get(0).getAsJsonObject().getAsJsonArray("startingCells").forEach((JsonElement e) -> {
-                final JsonArray a = e.getAsJsonArray();
-                builder.setCell(a.get(0).getAsInt(), a.get(1).getAsInt(), ConwayGameStateConstants.PLAYER1_CELL);
-            });
-            p1name=players.get(0).getAsJsonObject().get("name").getAsString();
-            
-            players.get(1).getAsJsonObject().getAsJsonArray("startingCells").forEach((JsonElement e) -> {
-                final JsonArray a = e.getAsJsonArray();
-                builder.setCell(a.get(0).getAsInt(), a.get(1).getAsInt(), ConwayGameStateConstants.PLAYER2_CELL);
-            });
-            p2name=players.get(1).getAsJsonObject().get("name").getAsString();
-            
-            initialState=builder.getState();
-            
+            initialState = (ConwayGameState) genInitState(config);
             GameContext gc = new GameContext(initialState, 2);
 
             for (JsonElement playerElement : players) {
@@ -211,7 +217,7 @@ public class RunGame {
             config = parser.parse(new FileReader(args[0])).getAsJsonObject();
         }
 
-        try (GameContext gc = initialize(config)) {
+        try (GameContext gc = initializeGC(config)) {
             if (config.get("visualization").getAsBoolean()) {
                 RunGame.addVisualization(gc);
                 Thread.sleep(2000);

@@ -1,7 +1,7 @@
 {
   "players": [
     {
-      "type": "tcp",
+      "type": "dummy",
       "name" : "ai-1",
       "startingCells": [
         [11, 5], [11,6],[12,5],[12,6]
@@ -11,7 +11,7 @@
       }
     },
     {
-      "type": "tcp",
+      "type": "dummy",
       "name":"ai-2",
       "startingCells": [
         [11, 17], [11,18],[12,17],[12,18]
