@@ -40,9 +40,6 @@ public class Rulesets {
                 case 2:
                 case 3:
                     return a.getRight();
-                //case -2:
-                //case -3:
-                //    return ConwayGameStateConstants.inversePlayer(a.getRight());
                 default:
                     return ConwayGameStateConstants.DEAD_CELL;
             }
