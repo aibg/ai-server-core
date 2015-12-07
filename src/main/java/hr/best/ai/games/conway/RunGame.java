@@ -66,7 +66,7 @@ public class RunGame {
 			//TODO the following -1 hack must be changed
 			Dimension gridSize=new Dimension(frame.getWidth()-frame.getInsets().left-frame.getInsets().right,frame.getHeight()-frame.getInsets().top-frame.getInsets().bottom-barHeight-1);
 			
-			GameGridPanel grid = new GameGridPanel(initialState,null,null,p1color,p2color,gridColor,gridSize);
+			GameGridPanel grid = new GameGridPanel(initialState, p1color, p2color, gridColor, gridSize);
 			PlayerInfoPanel p1info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER1_CELL,p1color,p1name);
 			PlayerInfoPanel p2info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER2_CELL,p2color,p2name);
 			
