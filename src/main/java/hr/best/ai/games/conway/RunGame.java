@@ -16,10 +16,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Insets;
-import java.awt.Toolkit;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
@@ -37,7 +34,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.kitfox.svg.app.beans.SVGPanel;
 import org.apache.log4j.Logger;
 
 
@@ -52,7 +48,7 @@ public class RunGame {
     final static Logger logger = Logger.getLogger(RunGame.class);
 
     public static void addVisualization(GameContext gc) throws Exception {
-		
+
 		Color p1color = Color.white;
 		Color p2color = new Color(248,156,16);
 		Color gridColor = new Color(200, 200, 200, 200);
@@ -62,14 +58,14 @@ public class RunGame {
 			JFrame frame = new JFrame("Conway");
 			frame.setSize(new Dimension(1280,800));
 			frame.setVisible(true);
-			
+
 			//TODO the following -1 hack must be changed
 			Dimension gridSize=new Dimension(frame.getWidth()-frame.getInsets().left-frame.getInsets().right,frame.getHeight()-frame.getInsets().top-frame.getInsets().bottom-barHeight-1);
-			
+
 			GameGridPanel grid = new GameGridPanel(initialState, p1color, p2color, gridColor, gridSize);
 			PlayerInfoPanel p1info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER1_CELL,p1color,p1name);
 			PlayerInfoPanel p2info=new PlayerInfoPanel(ConwayGameStateConstants.PLAYER2_CELL,p2color,p2name);
-			
+
 			// bar setup
 			GameBarPanel bar = new GameBarPanel(initialState,p1color, p2color);
 			bar.setPreferredSize(new Dimension(0, barHeight));
@@ -88,7 +84,7 @@ public class RunGame {
 						g.fillRect(0, 0, getWidth(), getHeight());
 						g.setColor(current);
 						g.drawImage(back, 0, 0, getWidth(), getHeight(), this);
-						
+
 					}
 				};
 			} catch (Exception e) {
@@ -96,15 +92,15 @@ public class RunGame {
                 logger.error(e);
 			}
                 background.setLayout(new BoxLayout(background, BoxLayout.LINE_AXIS));
-			
+
 				frame.getContentPane().add(background, BorderLayout.CENTER);
-				
+
 				background.add(p1info);
 				background.add(grid);
 				background.add(p2info);
-			
+
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				
+
 				frame.setVisible(true);
 
 				gc.addObserver(bar);
@@ -115,36 +111,42 @@ public class RunGame {
 
 	}
 
-
     private static ServerSocket socket = null;
 
-    private static AbstractPlayer createPlayer(JsonObject playerConfiguration, int port) throws Exception {
+    private static AbstractPlayer instantiatePlayerFromConfig(JsonObject playerConfiguration, int port) throws Exception {
         String type = playerConfiguration.get("type").getAsString();
         String name = playerConfiguration.get("name") == null ? "Unknown player" : playerConfiguration.get("name").getAsString();
+
+        AbstractPlayer player;
         switch (type) {
             case "dummy":
-                return new DoNothingPlayerDemo(name);
+                player = new DoNothingPlayerDemo(name);
+                break;
             case "tcp":
                 socket = socket != null ? socket : new ServerSocket(port, 50, null);
-                return new SocketIOPlayer(socket.accept(), name);
+                player = new SocketIOPlayer(socket.accept(), name);
+                break;
             case "process":
                 ArrayList<String> command = new ArrayList<>();
                 for (JsonElement e : playerConfiguration.getAsJsonArray("command"))
                     command.add(e.getAsString());
                 if (playerConfiguration.has("workingDirectory")) {
-                    return new ProcessIOPlayer(command, Paths.get(playerConfiguration.get("workingDirectory")
+                    player = new ProcessIOPlayer(command, Paths.get(playerConfiguration.get("workingDirectory")
                             .getAsString()), name);
                 } else {
-                    return new ProcessIOPlayer(command, name);
+                    player = new ProcessIOPlayer(command, name);
                 }
+                break;
             default:
                 throw new IllegalArgumentException("Unknown player type. Got: " + type);
         }
-    }
 
-    private static AbstractPlayer getTimeBucketedPlayer(AbstractPlayer player, JsonObject timeBucketConfig) {
-        long timePerTurn = timeBucketConfig.get("maxLength").getAsInt();
-        return new TimeBucketPlayer(player, timePerTurn, 5 * timePerTurn);
+        if (playerConfiguration.has("timer")) {
+            JsonObject timeBucketConfig = playerConfiguration.get("timer").getAsJsonObject();
+            long timePerTurn = timeBucketConfig.get("maxLength").getAsInt();
+            player = new TimeBucketPlayer(player, timePerTurn, 5 * timePerTurn);
+        }
+        return player;
     }
 
     public static State genInitState(JsonObject config) {
@@ -186,15 +188,8 @@ public class RunGame {
 
             for (JsonElement playerElement : players) {
                 JsonObject playerConfiguration = playerElement.getAsJsonObject();
-                AbstractPlayer player = createPlayer(playerConfiguration, port);
-                
-                if (playerConfiguration.has("timer"))
-                    gc.addPlayer(getTimeBucketedPlayer(
-                            player
-                            , playerConfiguration.get("timer").getAsJsonObject())
-                    );
-                else
-                    gc.addPlayer(player);
+                AbstractPlayer player = instantiatePlayerFromConfig(playerConfiguration, port);
+                gc.addPlayer(player);
             }
             return gc;
         } catch (Exception ex) {
