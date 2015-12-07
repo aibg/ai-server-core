@@ -1,6 +1,7 @@
 package hr.best.ai.demo;
 
 import hr.best.ai.games.GameContextFactory;
+import hr.best.ai.games.conway.ConwayGameState;
 import hr.best.ai.games.conway.RunGame;
 import hr.best.ai.games.conway.players.DoNothingPlayerDemo;
 import hr.best.ai.games.sum.SumDummyPlayer;
@@ -55,7 +56,7 @@ public class DebilniTest {
         GameContext gc = new GameContext(st, 2);
         gc.addPlayer(new DoNothingPlayerDemo("dummy 1"));
         gc.addPlayer(new DoNothingPlayerDemo("duumy 2"));
-        RunGame.addVisualization(gc);
+        RunGame.addVisualization(gc, (ConwayGameState) st, "dummy 1", "dummy 2");
         gc.play();
     }
 
@@ -65,15 +66,16 @@ public class DebilniTest {
         GameContext gc = new GameContext(st, 2);
         gc.addPlayer(new SocketIOPlayer(socket.accept()));
         gc.addPlayer(new DoNothingPlayerDemo("dummy"));
-        RunGame.addVisualization(gc);
+        RunGame.addVisualization(gc, (ConwayGameState) st, "dummy 1", "dummy 2");
         gc.play();
     }
 
     public static void f9() throws Exception{
-        GameContext gc = new GameContext(GameContextFactory.demoState(), 2);
+        State st = GameContextFactory.demoState();
+        GameContext gc = new GameContext(st, 2);
         gc.addPlayer(new ProcessIOPlayer(Arrays.asList("/home/lpp/Documents/BEST/AI/python-bindings/main.py")));
         gc.addPlayer(new DoNothingPlayerDemo("dummy 2"));
-        RunGame.addVisualization(gc);
+        RunGame.addVisualization(gc, (ConwayGameState) st, "Process 1", "dummy 2");
         gc.play();
     }
 

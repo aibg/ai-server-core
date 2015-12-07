@@ -3,7 +3,6 @@ package hr.best.ai.games.conway.visualization;
 import hr.best.ai.games.conway.Cell;
 import hr.best.ai.games.conway.Cells;
 import hr.best.ai.games.conway.ConwayGameState;
-import hr.best.ai.games.conway.ConwayGameStateBuilder;
 import hr.best.ai.games.conway.ConwayGameStateConstants;
 import hr.best.ai.games.conway.Rulesets;
 import hr.best.ai.games.conway.RunGame;
@@ -27,10 +26,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import hr.best.ai.server.ConfigUtilities;
 
 @SuppressWarnings("serial")
 public class TestGrid extends JPanel {
@@ -164,7 +162,7 @@ public class TestGrid extends JPanel {
             config = parser.parse(new FileReader(args[0])).getAsJsonObject();
         }
 
-		ConwayGameState cgs = (ConwayGameState) RunGame.genInitState(config);
+		ConwayGameState cgs = (ConwayGameState) ConfigUtilities.genInitState(config);
 		if (config.get("visualization").getAsBoolean())
 			addVisualization(cgs);
 
