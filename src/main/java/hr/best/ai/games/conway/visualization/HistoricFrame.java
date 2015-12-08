@@ -1,15 +1,14 @@
 package hr.best.ai.games.conway.visualization;
 
-import hr.best.ai.games.conway.Cell;
-import hr.best.ai.games.conway.Cells;
-import hr.best.ai.games.conway.ConwayGameState;
-import hr.best.ai.games.conway.ConwayGameStateConstants;
+import hr.best.ai.games.conway.gamestate.Cell;
+import hr.best.ai.games.conway.gamestate.Cells;
+import hr.best.ai.games.conway.gamestate.ConwayGameState;
+import hr.best.ai.games.conway.gamestate.ConwayGameStateConstants;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.RenderingHints.Key;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;

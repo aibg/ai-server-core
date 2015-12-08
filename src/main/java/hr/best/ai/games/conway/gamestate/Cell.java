@@ -1,4 +1,4 @@
-package hr.best.ai.games.conway;
+package hr.best.ai.games.conway.gamestate;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

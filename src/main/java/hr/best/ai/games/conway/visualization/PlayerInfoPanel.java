@@ -3,18 +3,15 @@ package hr.best.ai.games.conway.visualization;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.io.IOException;
 
-import hr.best.ai.games.conway.ConwayGameState;
-import hr.best.ai.games.conway.ConwayGameStateConstants;
+import hr.best.ai.games.conway.gamestate.ConwayGameState;
+import hr.best.ai.games.conway.gamestate.ConwayGameStateConstants;
 import hr.best.ai.gl.NewStateObserver;
 import hr.best.ai.gl.State;
 
 import javax.imageio.ImageIO;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;

@@ -1,4 +1,4 @@
-package hr.best.ai.games.conway;
+package hr.best.ai.games.conway.gamestate;
 
 import java.util.function.Function;
 

@@ -1,7 +1,7 @@
 package hr.best.ai.demo;
 
 import hr.best.ai.games.GameContextFactory;
-import hr.best.ai.games.conway.ConwayGameState;
+import hr.best.ai.games.conway.gamestate.ConwayGameState;
 import hr.best.ai.games.conway.RunGame;
 import hr.best.ai.games.conway.players.DoNothingPlayerDemo;
 import hr.best.ai.games.sum.SumDummyPlayer;
@@ -13,7 +13,6 @@ import hr.best.ai.server.ProcessIOPlayer;
 import hr.best.ai.server.SocketIOPlayer;
 
 import java.net.ServerSocket;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

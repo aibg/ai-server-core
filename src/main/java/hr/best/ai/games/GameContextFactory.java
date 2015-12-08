@@ -1,8 +1,8 @@
 package hr.best.ai.games;
 
-import hr.best.ai.games.conway.ConwayGameStateBuilder;
-import hr.best.ai.games.conway.ConwayGameStateConstants;
-import hr.best.ai.games.conway.Rulesets.*;
+import hr.best.ai.games.conway.gamestate.ConwayGameStateBuilder;
+import hr.best.ai.games.conway.gamestate.ConwayGameStateConstants;
+import hr.best.ai.games.conway.gamestate.Rulesets.*;
 import hr.best.ai.games.sum.SumState;
 import hr.best.ai.gl.GameContext;
 import hr.best.ai.gl.State;

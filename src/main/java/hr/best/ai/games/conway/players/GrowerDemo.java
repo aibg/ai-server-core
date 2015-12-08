@@ -1,8 +1,8 @@
 package hr.best.ai.games.conway.players;
 
 import hr.best.ai.exceptions.InvalidActionException;
-import hr.best.ai.games.conway.Cell;
-import hr.best.ai.games.conway.Cells;
+import hr.best.ai.games.conway.gamestate.Cell;
+import hr.best.ai.games.conway.gamestate.Cells;
 import hr.best.ai.gl.AbstractPlayer;
 
 import java.io.IOException;

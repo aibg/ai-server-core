@@ -1,4 +1,4 @@
-package hr.best.ai.games.conway;
+package hr.best.ai.games.conway.gamestate;
 
 /**
  * Created by lpp on 10/27/15.

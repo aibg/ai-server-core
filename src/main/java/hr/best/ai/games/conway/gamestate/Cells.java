@@ -1,8 +1,7 @@
-package hr.best.ai.games.conway;
+package hr.best.ai.games.conway.gamestate;
 
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

@@ -2,6 +2,8 @@ package hr.best.ai.games.conway;
 
 import com.google.gson.JsonObject;
 
+import hr.best.ai.games.conway.gamestate.ConwayGameState;
+import hr.best.ai.games.conway.gamestate.Rulesets;
 import hr.best.ai.games.conway.visualization.HistoricFrame;
 import hr.best.ai.gl.*;
 
@@ -35,6 +37,7 @@ public class HistoricRunGame extends JPanel {
         final List<ConwayGameState> stanje = new ArrayList<>();
 
         try(GameContext gc = new GameContext(initialState, 2)) {
+            players.forEach(gc::addPlayer);
             logger.debug("Starting game simulation");
             gc.addObserver(new NewStateObserver() {
                 @Override
