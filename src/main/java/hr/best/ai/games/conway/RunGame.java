@@ -84,9 +84,9 @@ public class RunGame {
 
 				frame.getContentPane().add(background, BorderLayout.CENTER);
 
-				background.add(p1info);
-				background.add(grid);
-				background.add(p2info);
+				background.add(p1info, BorderLayout.WEST);
+				background.add(grid, BorderLayout.CENTER);
+				background.add(p2info, BorderLayout.EAST);
 
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
