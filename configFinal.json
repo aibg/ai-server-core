@@ -1,14 +1,17 @@
 {
   "players": [
     {
-      "type": "dummy",
+      "type": "process",
       "name" : "ai-1",
       "startingCells": [
         [11, 5], [11,6],[12,5],[12,6]
       ],
       "timer": {
       	"maxLength" : 300
-      }
+      },
+      "command": [
+        "/data/Documents/BEST/AI/cpp-bindings/run"
+      ]
     },
     {
       "type": "dummy",
@@ -28,7 +31,7 @@
     "maxCellCapacity": 15,
     "startingCells": 3,
     "maxColonisationDistance": 2,
-    "maxGameIterations": 500,
+    "maxGameIterations": 5,
     "ruleset":"diff"
   },
   "port": 5858,

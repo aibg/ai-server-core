@@ -50,35 +50,6 @@ public class DebilniTest {
         runGameContext(GameContextFactory.getSumGameInstance(), p1, p2);
 	}
 
-    public static void f7() throws Exception {
-        State st = GameContextFactory.demoState();
-        GameContext gc = new GameContext(st, 2);
-        gc.addPlayer(new DoNothingPlayerDemo("dummy 1"));
-        gc.addPlayer(new DoNothingPlayerDemo("duumy 2"));
-        RunGame.addVisualization(gc, (ConwayGameState) st, "dummy 1", "dummy 2");
-        gc.play();
-    }
-
-    public static void f8() throws Exception {
-        State st = GameContextFactory.demoState();
-        ServerSocket socket = new ServerSocket(port, 50, null);
-        GameContext gc = new GameContext(st, 2);
-        gc.addPlayer(new SocketIOPlayer(socket.accept()));
-        gc.addPlayer(new DoNothingPlayerDemo("dummy"));
-        RunGame.addVisualization(gc, (ConwayGameState) st, "dummy 1", "dummy 2");
-        gc.play();
-    }
-
-    public static void f9() throws Exception{
-        State st = GameContextFactory.demoState();
-        GameContext gc = new GameContext(st, 2);
-        gc.addPlayer(new ProcessIOPlayer(Arrays.asList("/home/lpp/Documents/BEST/AI/python-bindings/main.py")));
-        gc.addPlayer(new DoNothingPlayerDemo("dummy 2"));
-        RunGame.addVisualization(gc, (ConwayGameState) st, "Process 1", "dummy 2");
-        gc.play();
-    }
-
     public static void main(String[] args) throws Exception {
-		f9();
 	}
 }

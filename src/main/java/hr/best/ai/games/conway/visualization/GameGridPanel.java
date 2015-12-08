@@ -28,7 +28,7 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 	private final Color gridColor;
 
 	public GameGridPanel(ConwayGameState initialState, Color player1Color, Color player2Color,
-			Color gridColor, Dimension containterDimension) {
+			Color gridColor) {
 
 		this.state = initialState;
 
@@ -36,14 +36,13 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 		this.player2Color = player2Color;
 		this.gridColor = gridColor;
 
-		setSizes(containterDimension);
 
 		setOpaque(false);
 		setVisible(true);
 		
 	}
 
-	private void setSizes(Dimension drawSpace) {
+	public void setComponentSize(Dimension drawSpace) {
 		double blockWidth = drawSpace.width / this.state.getCols();
 		double blockHeight = drawSpace.height / this.state.getRows();
 
@@ -74,7 +73,7 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 		if (state == null)
 			return;
 
-		setSizes(getParent().getBounds().getSize());
+		setComponentSize(getParent().getBounds().getSize());
 		drawCurrentActions(g, state.getPlayer1Actions(), player1Color.darker().darker().darker());
 		drawCurrentActions(g, state.getPlayer2Actions(), player2Color.darker().darker().darker());
 		
