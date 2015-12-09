@@ -209,7 +209,7 @@ public class ConwayGameState implements State {
 	}
 
 	@Override
-	public State nextState(List<Action> actionList) {
+	public ConwayGameState nextState(List<Action> actionList) {
 
 		Cells p1 = (Cells) actionList.get(0);
 		Cells p2 = (Cells) actionList.get(1);

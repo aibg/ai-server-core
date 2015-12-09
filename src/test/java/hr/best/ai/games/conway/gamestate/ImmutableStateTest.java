@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import hr.best.ai.gl.Action;
@@ -12,14 +13,28 @@ import hr.best.ai.gl.State;
 
 public class ImmutableStateTest {
 
-	private State defaultTestStateSetup() {
-		return ConwayGameStateBuilder.newConwayGameStateBuilder(10, 10).setRuleset("diff")
-				.setCell(4, 4, ConwayGameStateConstants.PLAYER1_CELL)
-				.setCell(4, 5, ConwayGameStateConstants.PLAYER1_CELL)
-				.setCell(5, 4, ConwayGameStateConstants.PLAYER1_CELL)
-				.setCell(5, 5, ConwayGameStateConstants.PLAYER1_CELL).getState();
+    private ConwayGameState state;
 
-	}
+    @Before
+    public void setUp() throws Exception {
+        /**
+         * ..........
+         * ..........
+         * ..........
+         * ..........
+         * ....##....
+         * ....##....
+         * ..........
+         * ..........
+         * ..........
+         * ..........
+         */
+        state = ConwayGameStateBuilder.newConwayGameStateBuilder(10, 10).setRuleset("diff")
+                .setCell(4, 4, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(4, 5, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(5, 4, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(5, 5, ConwayGameStateConstants.PLAYER1_CELL).getState();
+    }
 
 	private List<Action> defaultTestActionsSetup() {
 		List<Action> actions = new ArrayList<>();
@@ -34,23 +49,69 @@ public class ImmutableStateTest {
 
 	@Test
 	public void immutableNextStateTest() {
-
-		State state = defaultTestStateSetup();
 		List<Action> actions = defaultTestActionsSetup();
 
 		state.nextState(actions);
 		state.nextState(actions);
+        System.err.println(state);
+        System.err.println(actions);
+        System.err.println(state.nextState(actions));
 
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void nextStateExceptionTest() {
-
-		State state = defaultTestStateSetup();
 		List<Action> actions = defaultTestActionsSetup();
 
 		state.nextState(actions).nextState(actions);
 
 	}
+
+    @Test
+    public void properSurroundingCellTest() {
+
+        /**
+         * x are action fields
+         *
+         * ..........
+         * ..........
+         * ..........
+         * ....xx....
+         * ....##....
+         * ....##....
+         * ..........
+         * ..........
+         * ..........
+         * ..........
+         */
+
+        ConwayGameState nState = state.nextState(defaultTestActionsSetup());
+
+        /**
+         * expected to get
+         *
+         * ..........
+         * ..........
+         * ..........
+         * ....##....
+         * ...#..#...
+         * ....##....
+         * ..........
+         * ..........
+         * ..........
+         * ..........
+         */
+
+        assertEquals(nState.getCell(3, 4), ConwayGameStateConstants.PLAYER1_CELL);
+        assertEquals(nState.getCell(3,5), ConwayGameStateConstants.PLAYER1_CELL);
+
+        assertEquals(nState.getCell(4,3), ConwayGameStateConstants.PLAYER1_CELL);
+        assertEquals(nState.getCell(4,4), ConwayGameStateConstants.DEAD_CELL);
+        assertEquals(nState.getCell(4,5), ConwayGameStateConstants.DEAD_CELL);
+        assertEquals(nState.getCell(4,6), ConwayGameStateConstants.PLAYER1_CELL);
+
+        assertEquals(nState.getCell(5,4), ConwayGameStateConstants.PLAYER1_CELL);
+        assertEquals(nState.getCell(5,5), ConwayGameStateConstants.PLAYER1_CELL);
+    }
 
 }
