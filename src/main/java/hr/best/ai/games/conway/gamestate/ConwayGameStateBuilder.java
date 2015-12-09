@@ -6,16 +6,29 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
 /**
- * Created by lpp on 10/27/15.
+ * Builder for ConwayGameState. Decided to use a builder because ConwayGameState has lots of parameters and 
+ * some are often left on some default values.
  */
 public class ConwayGameStateBuilder {
 
+	/**
+	 * Only required parameters are rows and columns.
+	 * @param rows field rows
+	 * @param cols field columns
+	 */
     private ConwayGameStateBuilder(int rows, int cols){
         field = new int[rows][cols];
         for (int i = 0; i < rows; ++i)
             for (int j = 0; j < cols; ++j)
                 field[i][j] = ConwayGameStateConstants.DEAD_CELL;
     }
+    
+    /**
+     * Static factory method. 
+     * @param rows field rows
+     * @param cols field columns
+     * @return builder which has field with dimension rows*cols
+     */
     public static ConwayGameStateBuilder newConwayGameStateBuilder(int rows, int cols) {
         return new ConwayGameStateBuilder(rows, cols);
     }
@@ -83,7 +96,6 @@ public class ConwayGameStateBuilder {
     }
 
     /**
-     *
      * @param fromEmpty function which takes #neighbouring P1 cells, #neigbouring P2 cells and returns resulting cell
      */
     public ConwayGameStateBuilder setFromEmpty(Function<Pair<Integer, Integer>, Integer> fromEmpty) {
@@ -92,15 +104,16 @@ public class ConwayGameStateBuilder {
     }
 
     /**
-     *
      * @param fromOccupied function which takes #neighbouring a cells, #neigbouring b cells and returns resulting cell.
-     * @return
      */
     public ConwayGameStateBuilder setFromOccupied(Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied) {
         this.fromOccupied = fromOccupied;
         return this;
     }
-
+    /**
+     * Sets one of the rulesets, currently supported are "diff" and "classic"(these are ruleset names), check Rulesets class for more info.
+     * @param name ruleset name
+     */
     public ConwayGameStateBuilder setRuleset(String name) {
         if (!Rulesets.fromEmpty.containsKey(name)) {
             throw new IllegalArgumentException(name + " is not recognized game ruleset. Supported ones are: " +
@@ -119,7 +132,9 @@ public class ConwayGameStateBuilder {
         return field[0].length;
     }
 
-
+    /** 
+     * @return built ConwayGameState
+     */
     public ConwayGameState getState() {
         return new ConwayGameState
                 ( cellGainPerTurn
