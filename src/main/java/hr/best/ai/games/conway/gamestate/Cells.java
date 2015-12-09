@@ -12,7 +12,14 @@ import hr.best.ai.gl.Action;
  * @author nmiculinic
  */
 public class Cells extends ArrayList<Cell> implements Action {
-
+	
+	/**
+	 * Constructs cells object from json array named "cells". Each cell is
+	 * represented as an json array inside "cells" json array.
+	 * 
+	 * @param object json object
+	 * @return cells object
+	 */
     public static Cells fromJsonObject (JsonObject object) {
         JsonArray array = object.get("cells").getAsJsonArray();
         Cells actions = new Cells();
