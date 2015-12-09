@@ -63,8 +63,8 @@ public class RunGame {
                                 , bar
                         );
                     });
+                    Thread.sleep(1000);
                 }
-                Thread.sleep(1000);
                 gc.play();
             }
 
