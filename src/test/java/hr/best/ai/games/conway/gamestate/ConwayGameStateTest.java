@@ -11,7 +11,7 @@ import org.junit.Test;
 import hr.best.ai.gl.Action;
 import hr.best.ai.gl.State;
 
-public class ImmutableStateTest {
+public class ConwayGameStateTest {
 
     private ConwayGameState state;
 
@@ -44,19 +44,13 @@ public class ImmutableStateTest {
 		actions.add(cells);
 		actions.add(new Cells());
 		return actions;
-
 	}
 
 	@Test
 	public void immutableNextStateTest() {
 		List<Action> actions = defaultTestActionsSetup();
-
 		state.nextState(actions);
 		state.nextState(actions);
-        System.err.println(state);
-        System.err.println(actions);
-        System.err.println(state.nextState(actions));
-
 	}
 
 	@Test(expected=IllegalArgumentException.class)
