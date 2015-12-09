@@ -117,7 +117,11 @@ public class ConwayGameState implements State {
 	}
 
 	public int getCell(int row, int col) {
-		return field[Math.floorMod(row, field.length)][Math.floorMod(col, field[0].length)];
+		return torus(row, col,field);
+	}
+	
+	public int torus(int row, int col,int[][] array) {
+		return array[Math.floorMod(row, array.length)][Math.floorMod(col, array[0].length)];
 	}
 
 	/**
@@ -203,7 +207,7 @@ public class ConwayGameState implements State {
 		int dc[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
 		int sol = 0;
 		for (int i = 0; i < dr.length; ++i) {
-			sol += getCell(row + dr[i], col + dc[i]) == cell_type ? 1 : 0;
+			sol += torus(row + dr[i], col + dc[i],array) == cell_type ? 1 : 0;
 		}
 		return sol;
 	}
