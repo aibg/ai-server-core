@@ -23,8 +23,8 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 	private volatile ConwayGameState state;
 	private int blockSize;
 
-	private final Color player1Color;
-	private final Color player2Color;
+	protected final Color player1Color;
+	protected final Color player2Color;
 	private final Color gridColor;
 
 	public GameGridPanel(ConwayGameState initialState, Color player1Color, Color player2Color,
@@ -103,7 +103,7 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 		}
 	}
 
-    private void paintCell(Graphics g, int row, int col, Color color) {
+    protected void paintCell(Graphics g, int row, int col, Color color) {
         g.setColor(color);
         g.fillRect(blockSize * col, blockSize * row, blockSize, blockSize);
     }

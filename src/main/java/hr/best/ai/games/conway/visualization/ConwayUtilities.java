@@ -72,6 +72,10 @@ public class ConwayUtilities {
         return new GameGridPanel(initialState, p1color, p2color, gridColor);
     }
 
+    public static GameGridWithActionsPanel getGameGridWithActionsPanel(ConwayGameState initialState) {
+        return new GameGridWithActionsPanel(initialState, p1color, p2color, gridColor);
+    }
+
     public static PlayerInfoPanel getP2DefaultInfoPanel(String p2name) {
         return new PlayerInfoPanel(ConwayGameStateConstants.PLAYER2_CELL, p2color,p2name);
     }
