@@ -31,8 +31,6 @@ public class ConwayGameState implements State {
 	private final Cells lastTurnP2;
 	private final Function<Pair<Integer, Integer>, Integer> fromEmpty;
 	private final Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied;
-	private final int p1score;
-	private final int p2score;
 	private final int p1count;
 	private final int p2count;
 
@@ -48,8 +46,8 @@ public class ConwayGameState implements State {
 			int p2_cells,
 			Cells lastTurnP2,
 			Function<Pair<Integer, Integer>, Integer> fromEmpty,
-			Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied,
-			int p1score, int p2score) {
+			Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied
+			) {
 		this.cellGainPerTurn = cellGainPerTurn;
 		this.maxCellCapacity = maxCellCapacity;
 		this.maxColonisationDistance = maxColonisationDistance;
@@ -62,8 +60,6 @@ public class ConwayGameState implements State {
 		this.lastTurnP2 = lastTurnP2;
 		this.fromEmpty = fromEmpty;
 		this.fromOccupied = fromOccupied;
-		this.p1score = p1score;
-		this.p2score = p2score;
 		this.p1count=countCells(ConwayGameStateConstants.PLAYER1_CELL);
 		this.p2count=countCells(ConwayGameStateConstants.PLAYER2_CELL);
 
@@ -107,14 +103,6 @@ public class ConwayGameState implements State {
 
 	public int getP2LiveCellcount() {
 		return p2count;
-	}
-
-	public int getP1Score() {
-		return p1score;
-	}
-
-	public int getP2Score() {
-		return p2score;
 	}
 
 	public int getRows() {
@@ -245,12 +233,6 @@ public class ConwayGameState implements State {
 		p2_cells_new = Math
 				.min(maxCellCapacity, p2_cells_new + cellGainPerTurn);
 
-		// calculate score
-
-		int p1score_new = p1score + p1count;
-		int p2score_new = p2score + p2count;
-
-
 		//check if activating living cells
 		for (Cell c : p1)
 			if (ConwayGameStateConstants.isPlayer(getCell(c.getRow(), c.getCol())))
@@ -330,16 +312,16 @@ public class ConwayGameState implements State {
 		return new ConwayGameState(cellGainPerTurn, maxCellCapacity,
 				maxColonisationDistance, currIteration + 1, maxGameIterations,
 				sol, p1_cells_new, p1, p2_cells_new, p2, fromEmpty,
-				fromOccupied, p1score_new, p2score_new);
+				fromOccupied);
 	}
 
     @Override
     public int getWinner() {
         if (!this.isFinal())
             throw new IllegalStateException("Cannot get winner while game is running.");
-        if (p1score > p2score)
+        if (p1count > p2count)
             return ConwayGameStateConstants.PLAYER1_CELL;
-        if (p1score == p2score)
+        if (p1count == p2count)
             return -1;
         return ConwayGameStateConstants.PLAYER2_CELL;
     }
