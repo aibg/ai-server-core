@@ -120,8 +120,8 @@ public class ConwayGameState implements State {
 		return torus(row, col, field);
 	}
 
-	public int torus(int row, int col,int[][] array) {
-		return array[Math.floorMod(row, array.length)][Math.floorMod(col, array[0].length)];
+	private static int torus(int row, int col, int[][] gameField) {
+		return gameField[Math.floorMod(row, gameField.length)][Math.floorMod(col, gameField[0].length)];
 	}
 
 	/**
@@ -201,13 +201,13 @@ public class ConwayGameState implements State {
 		return distance;
 	}
 
-	private int getSurroundingCellCount(int row, int col,int cell_type, int[][] array) {
+	private static int getSurroundingCellCount(int row, int col,int cell_type, int[][] gameField) {
 
 		int dr[] = { -1, -1, -1, 0, 0, 1, 1, 1 };
 		int dc[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
 		int sol = 0;
 		for (int i = 0; i < dr.length; ++i) {
-			sol += torus(row + dr[i], col + dc[i],array) == cell_type ? 1 : 0;
+			sol += torus(row + dr[i], col + dc[i],gameField) == cell_type ? 1 : 0;
 		}
 		return sol;
 	}
@@ -244,23 +244,14 @@ public class ConwayGameState implements State {
 
 		//check if activating living cells
 		for (Cell c : p1)
-			if (getCell(c.getRow(),c.getCol()) == ConwayGameStateConstants.PLAYER2_CELL)
-				throw new IllegalArgumentException("P1 tried to activate a cell on top of other player's living cell");
-
+			if (ConwayGameStateConstants.isPlayer(getCell(c.getRow(), c.getCol())))
+				throw new IllegalArgumentException("P1 tried to activate a living cell");
 
 		for (Cell c : p2)
-			if (getCell(c.getRow(),c.getCol()) == ConwayGameStateConstants.PLAYER1_CELL)
-				throw new IllegalArgumentException("P2 tried to activate a cell on top of other player's living cell");
+            if (ConwayGameStateConstants.isPlayer(getCell(c.getRow(), c.getCol())))
+                throw new IllegalArgumentException("P1 tried to activate a living cell");
 
-		for (Cell c : p1)
-				if (getCell(c.getRow(),c.getCol()) == ConwayGameStateConstants.PLAYER1_CELL)
-					throw new IllegalArgumentException("P1 tried to activate his own living cell");
-		for (Cell c : p2)
-				if (getCell(c.getRow(),c.getCol()) == ConwayGameStateConstants.PLAYER2_CELL)
-					throw new IllegalArgumentException("P2 tried to activate his own living cell");
-
-
-				/**
+        /**
 		 * Distance checks
 		 */
 		for (Cell c : p1) {
@@ -306,19 +297,25 @@ public class ConwayGameState implements State {
 		int[][] sol = new int[getRows()][getCols()];
 		for (int i = 0; i < getRows(); ++i)
 			for (int j = 0; j < getCols(); ++j) {
-				if (ConwayGameStateConstants.isPlayer(fieldCopy[i][j])) {
-					sol[i][j] = fromOccupied.apply(Triple.of(
-							getSurroundingCellCount(i, j, fieldCopy[i][j], fieldCopy),
-							getSurroundingCellCount(i, j,
-									ConwayGameStateConstants
-											.inversePlayer(fieldCopy[i][j]), fieldCopy),
-							fieldCopy[i][j]));
+                final int currentCell = fieldCopy[i][j];
+                if (ConwayGameStateConstants.isPlayer(currentCell)) {
+                    final int friendlyCellCount = getSurroundingCellCount(i, j, currentCell, fieldCopy);
+                    final int enemyCellCount = getSurroundingCellCount(i, j, ConwayGameStateConstants
+                                    .inversePlayer(currentCell), fieldCopy);
+                    sol[i][j] = fromOccupied.apply(Triple.of(
+                            friendlyCellCount
+                            , enemyCellCount
+                            , currentCell)
+                    );
 				} else {
-					sol[i][j] = fromEmpty.apply(Pair.of(
-							getSurroundingCellCount(i, j,
-									ConwayGameStateConstants.PLAYER1_CELL, fieldCopy),
-							getSurroundingCellCount(i, j,
-									ConwayGameStateConstants.PLAYER2_CELL, fieldCopy)));
+                    final int p1CellCount = getSurroundingCellCount(i, j,
+                            ConwayGameStateConstants.PLAYER1_CELL, fieldCopy);
+                    final int p2CellCount = getSurroundingCellCount(i, j,
+                            ConwayGameStateConstants.PLAYER2_CELL, fieldCopy);
+                    sol[i][j] = fromEmpty.apply(Pair.of(
+                            p1CellCount
+                            , p2CellCount
+                    ));
 				}
 			}
 		return new ConwayGameState(cellGainPerTurn, maxCellCapacity,
