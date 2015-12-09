@@ -120,8 +120,8 @@ public class ConwayGameState implements State {
 		return torus(row, col, field);
 	}
 
-	private static int torus(int row, int col, int[][] gameField) {
-		return gameField[Math.floorMod(row, gameField.length)][Math.floorMod(col, gameField[0].length)];
+	public int torus(int row, int col,int[][] array) {
+		return array[Math.floorMod(row, array.length)][Math.floorMod(col, array[0].length)];
 	}
 
 	/**
@@ -201,13 +201,13 @@ public class ConwayGameState implements State {
 		return distance;
 	}
 
-	private static int getSurroundingCellCount(int row, int col,int cell_type, int[][] gameField) {
+	private int getSurroundingCellCount(int row, int col,int cell_type, int[][] array) {
 
 		int dr[] = { -1, -1, -1, 0, 0, 1, 1, 1 };
 		int dc[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
 		int sol = 0;
 		for (int i = 0; i < dr.length; ++i) {
-			sol += torus(row + dr[i], col + dc[i], gameField) == cell_type ? 1 : 0;
+			sol += torus(row + dr[i], col + dc[i],array) == cell_type ? 1 : 0;
 		}
 		return sol;
 	}
@@ -244,14 +244,23 @@ public class ConwayGameState implements State {
 
 		//check if activating living cells
 		for (Cell c : p1)
-			if (ConwayGameStateConstants.isPlayer(this.getCell(c.getRow(), c.getCol())))
-				throw new IllegalArgumentException("P1 tried to activate a living cell");
+			if (getCell(c.getRow(),c.getCol()) == ConwayGameStateConstants.PLAYER2_CELL)
+				throw new IllegalArgumentException("P1 tried to activate a cell on top of other player's living cell");
+
 
 		for (Cell c : p2)
-            if (ConwayGameStateConstants.isPlayer(this.getCell(c.getRow(), c.getCol())))
-				throw new IllegalArgumentException("P2 tried to activate a living cell");
+			if (getCell(c.getRow(),c.getCol()) == ConwayGameStateConstants.PLAYER1_CELL)
+				throw new IllegalArgumentException("P2 tried to activate a cell on top of other player's living cell");
 
-        /**
+		for (Cell c : p1)
+				if (getCell(c.getRow(),c.getCol()) == ConwayGameStateConstants.PLAYER1_CELL)
+					throw new IllegalArgumentException("P1 tried to activate his own living cell");
+		for (Cell c : p2)
+				if (getCell(c.getRow(),c.getCol()) == ConwayGameStateConstants.PLAYER2_CELL)
+					throw new IllegalArgumentException("P2 tried to activate his own living cell");
+
+
+				/**
 		 * Distance checks
 		 */
 		for (Cell c : p1) {
