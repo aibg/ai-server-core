@@ -23,12 +23,12 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 	private volatile ConwayGameState state;
 	private int blockSize;
 
-	private final Color player1Color;
-	private final Color player2Color;
+	protected final Color player1Color;
+	protected final Color player2Color;
 	private final Color gridColor;
 
 	public GameGridPanel(ConwayGameState initialState, Color player1Color, Color player2Color,
-			Color gridColor, Dimension containterDimension) {
+			Color gridColor) {
 
 		this.state = initialState;
 
@@ -36,20 +36,17 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 		this.player2Color = player2Color;
 		this.gridColor = gridColor;
 
-		setSizes(containterDimension);
-
 		setOpaque(false);
 		setVisible(true);
-		
 	}
 
-	private void setSizes(Dimension drawSpace) {
+	public void setComponentSize(Dimension drawSpace) {
 		double blockWidth = drawSpace.width / this.state.getCols();
 		double blockHeight = drawSpace.height / this.state.getRows();
 
 		blockSize = Math.toIntExact(Math.round(Math.floor(Math.min(blockWidth,
 				blockHeight))));
-		
+
 		int width = blockSize * this.state.getCols() + 1;
 		int height = blockSize * this.state.getRows() + 1;
 		Dimension newSize = new Dimension(width, height);
@@ -74,10 +71,8 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 		if (state == null)
 			return;
 
-		setSizes(getParent().getBounds().getSize());
-		drawCurrentActions(g, state.getPlayer1Actions(), player1Color.darker().darker().darker());
-		drawCurrentActions(g, state.getPlayer2Actions(), player2Color.darker().darker().darker());
-		
+		setComponentSize(getParent().getBounds().getSize());
+
 		// draw grid
 		g.setColor(gridColor);
 		// horizontal lines
@@ -91,17 +86,15 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 					* blockSize);
 		}
 
-		// draw images (or player color squares)
+		// draw player color squares
 		for (int i = 0; i < state.getRows(); i++) {
 			for (int j = 0; j < state.getCols(); j++) {
 				switch (state.getCell(i, j)) {
 				case ConwayGameStateConstants.PLAYER1_CELL:
-                    g.setColor(player1Color);
-                    g.fillRect(blockSize * j, blockSize * i, blockSize, blockSize);
+                    paintCell(g, i, j, player1Color);
 					break;
 				case ConwayGameStateConstants.PLAYER2_CELL:
-                    g.setColor(player2Color);
-                    g.fillRect(blockSize * j, blockSize * i, blockSize, blockSize);
+                    paintCell(g, i, j, player2Color);
                     break;
 				case ConwayGameStateConstants.DEAD_CELL:
 					continue;
@@ -110,26 +103,10 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 		}
 	}
 
-	/**
-	 * TODO
-	 * 
-	 * @param g
-	 * @param actions
-	 * @param color
-	 */
-	private void drawCurrentActions(Graphics g, Cells actions, Color color) {
-
-		// initial state doesn't have actions
-		if (actions == null)
-			return;
-		g.setColor(color);
-		for (int i = 0; i < actions.size(); i++) {
-			Cell c = actions.get(i);
-			g.fillRect(blockSize * c.getCol(), blockSize * c.getRow(),
-					blockSize, blockSize);
-		}
-		g.setColor(gridColor);
-	}
+    protected void paintCell(Graphics g, int row, int col, Color color) {
+        g.setColor(color);
+        g.fillRect(blockSize * col, blockSize * row, blockSize, blockSize);
+    }
 
 	@Override
 	public void close() throws Exception {
