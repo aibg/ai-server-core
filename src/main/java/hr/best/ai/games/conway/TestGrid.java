@@ -1,177 +1,116 @@
 package hr.best.ai.games.conway;
 
+import com.google.gson.JsonObject;
 import hr.best.ai.games.conway.gamestate.Cell;
-import hr.best.ai.games.conway.gamestate.Cells;
 import hr.best.ai.games.conway.gamestate.ConwayGameState;
-import hr.best.ai.games.conway.gamestate.ConwayGameStateConstants;
 import hr.best.ai.games.conway.gamestate.Rulesets;
-import hr.best.ai.gl.Action;
+import hr.best.ai.games.conway.visualization.ConwayUtilities;
+import hr.best.ai.games.conway.visualization.GameBarPanel;
+import hr.best.ai.games.conway.visualization.GameGridWithActionsPanel;
+import hr.best.ai.games.conway.visualization.PlayerInfoPanel;
+import hr.best.ai.gl.NewStateObserver;
+import hr.best.ai.server.ConfigUtilities;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import hr.best.ai.server.ConfigUtilities;
-
-@SuppressWarnings("serial")
+/**
+ * Conway game runner with player input. It loads configuration from command line, like other runGames. With it rules
+ * are initialized. Controls are simple -> Left mouse button (BUTTON1) for adding P1 cell, Right mouse button
+ * (BUTTON3) for adding P2 cell in next turn. Selection can be cleared with middle mouse button (BUTTON2).
+ * <p>
+ * Press ENTER to iterate into further game state.
+ *
+ * @author Neven Miculinic
+ */
 public class TestGrid extends JPanel {
 
-	private final Color p1color = new Color(160,0,0);
-	private final Color p2color = new Color(0,0,160);
-	private final Color gridColor = Color.black;
+    public static void main(String[] args) throws Exception {
+        Rulesets.getInstance(); // loading the class static part into JVM
+        JsonObject config = ConfigUtilities.configFromCMDArgs(args);
 
-	private int blockSize;
+        final StateWrapper stateWrapper = new StateWrapper();
 
-	private ConwayGameState state;
-	private Cells p1actions=new Cells();
-	private Cells p2actions=new Cells();
+        stateWrapper.state = (ConwayGameState) ConfigUtilities.genInitState(config);
 
-	public TestGrid(ConwayGameState cgs) {
-		this.state = cgs;
-		
-		JFrame f = new JFrame("Conway");
-		
-		f.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		f.getContentPane().add(this);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setVisible(true);	
+        SwingUtilities.invokeAndWait(() -> {
+            PlayerInfoPanel p1info = ConwayUtilities.getP1DefaultInfoPanel("Player 1");
+            PlayerInfoPanel p2info = ConwayUtilities.getP2DefaultInfoPanel("Player 2");
+            GameBarPanel bar = ConwayUtilities.getDefaultGameBarPanel(stateWrapper.state);
 
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					p1actions.add(toCell(e.getPoint()));
-				} else if (e.getButton() == MouseEvent.BUTTON3) {
-					p2actions.add(toCell(e.getPoint()));
-				}
-				repaint();
-			}
+            final GameGridWithActionsPanel grid = ConwayUtilities.getGameGridWithActionsPanel(stateWrapper.state);
 
-			private Cell toCell(Point point) {
-				return new Cell(point.y / blockSize, point.x / blockSize);
-			}
-		});
-		f.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					List<Action> actions = new ArrayList<Action>();
-					actions.add(p1actions);
-					actions.add(p2actions);
+            grid.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    Cell clickedCell = grid.fromPoint(e.getPoint());
+                    switch (e.getButton()) {
+                        case MouseEvent.BUTTON1:
+                            grid.getP1Actions().add(clickedCell);
+                            grid.getP2Actions().remove(clickedCell);
+                            break;
+                        case MouseEvent.BUTTON2:
+                            grid.getP1Actions().remove(clickedCell);
+                            grid.getP2Actions().remove(clickedCell);
+                            break;
+                        case MouseEvent.BUTTON3:
+                            grid.getP1Actions().remove(clickedCell);
+                            grid.getP2Actions().add(clickedCell);
+                            break;
+                        default:
+                            System.err.println(e.getButton());
+                            break;
+                    }
+                    grid.repaint();
+                }
+            });
 
-					state = (ConwayGameState) state.nextState(actions);
-					p1actions.clear();
-					p2actions.clear();
-					repaint();
-				}
-			}
-		});
+            final List<NewStateObserver> GUIObservers = Arrays.asList(grid, p1info, p2info, bar);
 
-	}
+            final JFrame frame = ConwayUtilities.composeVisualization(
+                    new Dimension(1280, 800)
+                    , grid
+                    , p1info
+                    , p2info
+                    , bar
+            );
 
-	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
+            frame.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    switch (e.getKeyCode()) {
+                        case KeyEvent.VK_ENTER:
+                            stateWrapper.state = stateWrapper.state.nextState(Arrays.asList(
+                                    grid.getP1Actions()
+                                    , grid.getP2Actions()
+                            ));
+                            grid.getP1Actions().clear();
+                            grid.getP2Actions().clear();
+                            GUIObservers.forEach(x -> x.signalNewState(stateWrapper.state));
+                            System.out.println("Player 1 has " + stateWrapper.state.getP1Remainingcells() + " cells " +
+                                    "left.");
+                            System.out.println("Player 2 has " + stateWrapper.state.getP2Remainingcells() + " cells " +
+                                    "left.");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        });
+    }
 
-		double blockWidth = (double) getParent().getBounds().width
-				/ this.state.getCols();
-		double blockHeight = (double) getParent().getBounds().height
-				/ this.state.getRows();
-
-		blockSize = Math.toIntExact(Math.round(Math.floor(Math.min(blockWidth,
-				blockHeight))));
-
-		int width = blockSize * this.state.getCols() + 1;
-		int height = blockSize * this.state.getRows() + 1;
-		Dimension newSize = new Dimension(width, height);
-		setPreferredSize(newSize);
-
-		// draw grid
-
-		g.setColor(gridColor);
-		// horizontal lines
-		for (int i = 0; i <= state.getRows(); i++) {
-			g.drawLine(0, i * blockSize, state.getCols() * blockSize, i
-					* blockSize);
-		}
-		// vertical lines
-		for (int i = 0; i <= state.getCols(); i++) {
-			g.drawLine(i * blockSize, 0, i * blockSize, state.getCols()
-					* blockSize);
-		}
-
-		drawCurrentActions(g, p1actions, p1color.brighter().brighter().brighter());
-		drawCurrentActions(g, p2actions, p2color.brighter().brighter().brighter());
-		// draw live cells
-		for (int i = 0; i < state.getRows(); i++) {
-			for (int j = 0; j < state.getCols(); j++) {
-				switch (state.getCell(i, j)) {
-				case ConwayGameStateConstants.PLAYER1_CELL:
-					g.setColor(p1color);
-					break;
-				case ConwayGameStateConstants.PLAYER2_CELL:
-					g.setColor(p2color);
-					break;
-				case ConwayGameStateConstants.DEAD_CELL:
-					continue;
-				}
-				g.fillRect(blockSize * j, blockSize * i, blockSize, blockSize);
-
-			}
-		}
-
-	}
-
-	private void drawCurrentActions(Graphics g, Cells actions, Color color) {
-
-		g.setColor(color);
-		for (int i = 0; i < actions.size(); i++) {
-			Cell c = actions.get(i);
-			g.fillRect(blockSize * c.getCol(), blockSize * c.getRow(),
-					blockSize, blockSize);
-		}
-		g.setColor(gridColor);
-	}
-
-	public static void main(String[] args) throws Exception {
-		Rulesets.getInstance(); // loading the class static part into JVM
-        JsonParser parser = new JsonParser();
-        JsonObject config;
-        if (args.length == 0) {
-            System.out.println("Falling back to default game configuration.");
-            config = parser.parse(new InputStreamReader(RunGame.class.getClassLoader().getResourceAsStream("defaultConfig.json"), StandardCharsets.UTF_8)).getAsJsonObject();
-        } else {
-            System.out.println("Using " + args[0] + " configuration file");
-            config = parser.parse(new FileReader(args[0])).getAsJsonObject();
-        }
-
-		ConwayGameState cgs = (ConwayGameState) ConfigUtilities.genInitState(config);
-		if (config.get("visualization").getAsBoolean())
-			addVisualization(cgs);
-
-	}
-
-	private static void addVisualization(ConwayGameState cgs) {
-		
-
-		SwingUtilities.invokeLater(() -> {
-			new TestGrid(cgs);
-		});
-	}
+    /**
+     * Simple wrapper around game state to make possible to have final reference
+     * to game state
+     */
+    private static class StateWrapper {
+        public volatile ConwayGameState state;
+    }
 }

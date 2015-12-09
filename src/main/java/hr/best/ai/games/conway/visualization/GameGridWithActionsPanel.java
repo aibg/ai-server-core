@@ -33,6 +33,12 @@ public class GameGridWithActionsPanel extends GameGridPanel{
         this.p2Actions = p2Actions;
     }
 
+    public Cell fromPoint(Point screenPoint) {
+        return new Cell
+                ( screenPoint.y / blockSize
+                , screenPoint.x / blockSize);
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

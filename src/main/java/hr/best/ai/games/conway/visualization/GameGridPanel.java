@@ -21,7 +21,7 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 
 	final static Logger logger = Logger.getLogger(GameGridPanel.class);
 	private volatile ConwayGameState state;
-	private int blockSize;
+	protected int blockSize;
 
 	protected final Color player1Color;
 	protected final Color player2Color;
