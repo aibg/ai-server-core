@@ -127,7 +127,7 @@ public class ConwayGameState implements State {
 	 */
 	@Override
 	public JsonObject toJSONObject() {
-		JsonObject json = toJSONObjectAsPlayer(ConwayGameStateConstants.PLAYER1_CELL);
+		JsonObject json = toJSONObjectAsPlayer(ConwayGameStateConstants.PLAYER1_ID);
 		json.remove("cellsRemaining");
 		json.addProperty("cellsRemainingP1", p1_cells);
 		json.addProperty("cellsRemainingP2", p2_cells);

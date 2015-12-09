@@ -25,15 +25,21 @@ public class ConwayGameStateTest {
          * ....##....
          * ....##....
          * ..........
-         * ..........
-         * ..........
-         * ..........
+         * ......OO..
+         * ......O.O.
+         * .......O..
          */
         state = ConwayGameStateBuilder.newConwayGameStateBuilder(10, 10).setRuleset("diff")
                 .setCell(4, 4, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(4, 5, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(5, 4, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(5, 5, ConwayGameStateConstants.PLAYER1_CELL).getState();
+                .setCell(5, 5, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(7, 6, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(7, 7, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(8, 6, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(9, 7, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(8, 8, ConwayGameStateConstants.PLAYER2_CELL)
+                .getState();
     }
 
 	private List<Action> defaultTestActionsSetup() {
@@ -74,9 +80,9 @@ public class ConwayGameStateTest {
          * ....##....
          * ....##....
          * ..........
-         * ..........
-         * ..........
-         * ..........
+         * ......OO..
+         * ......O.O.
+         * .......O..
          */
 
         ConwayGameState nState = state.nextState(defaultTestActionsSetup());
@@ -91,9 +97,9 @@ public class ConwayGameStateTest {
          * ...#..#...
          * ....##....
          * ..........
-         * ..........
-         * ..........
-         * ..........
+         * ......OO..
+         * ......O.O.
+         * .......O..
          */
 
         assertEquals(nState.getCell(3, 4), ConwayGameStateConstants.PLAYER1_CELL);
@@ -107,5 +113,12 @@ public class ConwayGameStateTest {
         assertEquals(nState.getCell(5,4), ConwayGameStateConstants.PLAYER1_CELL);
         assertEquals(nState.getCell(5,5), ConwayGameStateConstants.PLAYER1_CELL);
     }
-
+    
+    @Test
+    public void toJsonObjectAsPlayerTest() {
+    	
+    	
+    	
+    	
+    }
 }
