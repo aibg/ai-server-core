@@ -36,10 +36,8 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 		this.player2Color = player2Color;
 		this.gridColor = gridColor;
 
-
 		setOpaque(false);
 		setVisible(true);
-		
 	}
 
 	public void setComponentSize(Dimension drawSpace) {
@@ -48,7 +46,7 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 
 		blockSize = Math.toIntExact(Math.round(Math.floor(Math.min(blockWidth,
 				blockHeight))));
-		
+
 		int width = blockSize * this.state.getCols() + 1;
 		int height = blockSize * this.state.getRows() + 1;
 		Dimension newSize = new Dimension(width, height);
@@ -74,9 +72,7 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 			return;
 
 		setComponentSize(getParent().getBounds().getSize());
-		drawCurrentActions(g, state.getPlayer1Actions(), player1Color.darker().darker().darker());
-		drawCurrentActions(g, state.getPlayer2Actions(), player2Color.darker().darker().darker());
-		
+
 		// draw grid
 		g.setColor(gridColor);
 		// horizontal lines
@@ -90,17 +86,15 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 					* blockSize);
 		}
 
-		// draw images (or player color squares)
+		// draw player color squares
 		for (int i = 0; i < state.getRows(); i++) {
 			for (int j = 0; j < state.getCols(); j++) {
 				switch (state.getCell(i, j)) {
 				case ConwayGameStateConstants.PLAYER1_CELL:
-                    g.setColor(player1Color);
-                    g.fillRect(blockSize * j, blockSize * i, blockSize, blockSize);
+                    paintCell(g, i, j, player1Color);
 					break;
 				case ConwayGameStateConstants.PLAYER2_CELL:
-                    g.setColor(player2Color);
-                    g.fillRect(blockSize * j, blockSize * i, blockSize, blockSize);
+                    paintCell(g, i, j, player2Color);
                     break;
 				case ConwayGameStateConstants.DEAD_CELL:
 					continue;
@@ -109,26 +103,10 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 		}
 	}
 
-	/**
-	 * TODO
-	 * 
-	 * @param g
-	 * @param actions
-	 * @param color
-	 */
-	private void drawCurrentActions(Graphics g, Cells actions, Color color) {
-
-		// initial state doesn't have actions
-		if (actions == null)
-			return;
-		g.setColor(color);
-		for (int i = 0; i < actions.size(); i++) {
-			Cell c = actions.get(i);
-			g.fillRect(blockSize * c.getCol(), blockSize * c.getRow(),
-					blockSize, blockSize);
-		}
-		g.setColor(gridColor);
-	}
+    private void paintCell(Graphics g, int row, int col, Color color) {
+        g.setColor(color);
+        g.fillRect(blockSize * col, blockSize * row, blockSize, blockSize);
+    }
 
 	@Override
 	public void close() throws Exception {

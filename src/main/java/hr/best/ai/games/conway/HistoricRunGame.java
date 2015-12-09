@@ -39,10 +39,6 @@ public class HistoricRunGame extends JPanel {
 
         ConwayGameState initialState = (ConwayGameState) ConfigUtilities.genInitState(config);
         final List<ConwayGameState> stateList = Collections.synchronizedList(new ArrayList<>());
-        stateList.add(initialState);
-        logger.info(initialState);
-
-        System.err.println(stateList);
 
         // Simulate the game
         try(GameContext gc = new GameContext(initialState, 2)) {
@@ -51,10 +47,7 @@ public class HistoricRunGame extends JPanel {
             gc.addObserver(new NewStateObserver() {
                 @Override
                 public void signalNewState(State state) {
-                    System.err.println("WTF");
-                    System.err.println(stateList);
                     stateList.add((ConwayGameState) state);
-                    System.err.println(stateList);
                 }
 
                 @Override
@@ -71,8 +64,6 @@ public class HistoricRunGame extends JPanel {
                 }
             });
             gc.play();
-
-            System.err.println(stateList);
 
             SwingUtilities.invokeAndWait(() -> {
                 GameGridPanel grid = ConwayUtilities.getDefaultGameGridPanel(initialState);
@@ -107,7 +98,6 @@ public class HistoricRunGame extends JPanel {
                         }
 
                         GUIObservers.forEach(x -> x.signalNewState(stateList.get(currState)));
-                        logger.debug(stateList.get(currState));
                     }
                 });
             });
