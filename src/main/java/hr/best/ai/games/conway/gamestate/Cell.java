@@ -26,14 +26,19 @@ public class Cell {
 	public int getCol() {
 		return col;
 	}
-
+	/**
+	* Cell json array with row and column as json primitives.
+	*/
     public JsonElement toJSON() {
         JsonArray sol = new JsonArray();
         sol.add(new JsonPrimitive(row));
         sol.add(new JsonPrimitive(col));
         return sol;
     }
-
+    
+    /**
+     * Json string.
+     */
 	@Override
 	public String toString() {
         return toJSON().toString();
