@@ -72,6 +72,15 @@ public class ConwayGameState implements State {
 	public int getIteration() {
 		return currIteration;
 	}
+
+    public int getP1Remainingcells() {
+        return p1_cells;
+    }
+
+    public int getP2Remainingcells() {
+        return p2_cells;
+    }
+
 	public Cells getPlayer1Actions() {
 		return lastTurnP1;
 	}
@@ -207,7 +216,7 @@ public class ConwayGameState implements State {
 		int dc[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
 		int sol = 0;
 		for (int i = 0; i < dr.length; ++i) {
-			sol += torus(row + dr[i], col + dc[i],gameField) == cell_type ? 1 : 0;
+			sol += torus(row + dr[i], col + dc[i], gameField) == cell_type ? 1 : 0;
 		}
 		return sol;
 	}
