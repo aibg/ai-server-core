@@ -1,18 +1,32 @@
 {
   "players": [
     {
-      "type": "dummy",
-      "name" : "p1-dummy",
+      "type": "process",
+      "name":"ai-1",
       "startingCells": [
-        [11, 5], [11,6],[12,5],[12,6]
-      ]
+        [10, 10], [11,10],[11,11],[10,11]
+      ],
+      "command": [
+        "java", "-jar", "target/java-bot.jar"
+      ],
+      "workingDirectory" : "C:/Users/andrej/git/java-bindings/",
+      "timer": {
+        "maxLength" : 200
+      }
     },
     {
-      "type": "dummy",
-      "name":"p2-dummy",
+      "type": "process",
+      "name":"ai-2",
       "startingCells": [
-        [11, 17], [11,18],[12,17],[12,18]
-      ]
+        [4, 4], [4,5],[5,4],[5,5]
+      ],
+      "command": [
+        "java", "-jar", "target/java-bot.jar"
+      ],
+      "workingDirectory" : "C:/Users/andrej/git/java-bindings/",
+      "timer": {
+        "maxLength" : 200
+      }
     }
   ],
   "game": {
