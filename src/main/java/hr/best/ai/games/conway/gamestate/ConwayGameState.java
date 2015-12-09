@@ -197,7 +197,8 @@ public class ConwayGameState implements State {
 		return distance;
 	}
 
-	private int getSurroundingCellCount(int row, int col, int cell_type) {
+	private int getSurroundingCellCount(int row, int col,int cell_type, int[][] array) {
+		
 		int dr[] = { -1, -1, -1, 0, 0, 1, 1, 1 };
 		int dc[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
 		int sol = 0;
@@ -277,7 +278,10 @@ public class ConwayGameState implements State {
 		p1.removeAll(p2);
 		p2.removeAll(p1);
 
-		int[][] fieldCopy=field.clone();
+		int[][] fieldCopy=new int[getRows()][getCols()];
+		for(int i=0;i<getRows();i++)
+			for(int j=0;j<getCols();j++)
+				fieldCopy[i][j]=field[i][j];
 		
 		/**
 		 * Appending to field
@@ -300,17 +304,17 @@ public class ConwayGameState implements State {
 			for (int j = 0; j < getCols(); ++j) {
 				if (ConwayGameStateConstants.isPlayer(fieldCopy[i][j])) {
 					sol[i][j] = fromOccupied.apply(Triple.of(
-							getSurroundingCellCount(i, j, fieldCopy[i][j]),
+							getSurroundingCellCount(i, j, fieldCopy[i][j],fieldCopy),
 							getSurroundingCellCount(i, j,
 									ConwayGameStateConstants
-											.inversePlayer(fieldCopy[i][j])),
+											.inversePlayer(fieldCopy[i][j]),fieldCopy),
 							fieldCopy[i][j]));
 				} else {
 					sol[i][j] = fromEmpty.apply(Pair.of(
 							getSurroundingCellCount(i, j,
-									ConwayGameStateConstants.PLAYER1_CELL),
+									ConwayGameStateConstants.PLAYER1_CELL,fieldCopy),
 							getSurroundingCellCount(i, j,
-									ConwayGameStateConstants.PLAYER2_CELL)));
+									ConwayGameStateConstants.PLAYER2_CELL,fieldCopy)));
 				}
 			}
 		return new ConwayGameState(cellGainPerTurn, maxCellCapacity,
