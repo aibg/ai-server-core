@@ -78,12 +78,19 @@ public class ConwayGameState implements State {
 	private final Cells lastTurnP2;
 	
 	/**
-	 * functions used to calculate which cell gets activated or died depending
+	 * Functions used to calculate which cell gets activated or died depending
 	 * on the game rules. fromEmpty determines whether an inactive cell should
-	 * be activated, and fromOccupied determines whether an active cell should
-	 * stay active TODO
+	 * be activated.
+	 * See {@link Rulesets} for more info
 	 */
 	private final Function<Pair<Integer, Integer>, Integer> fromEmpty;
+	
+	/**
+	 * Functions used to calculate which cell gets activated or died depending
+	 * on the game rules. fromOccupied determines whether an active cell should
+	 * stay active.
+	 * See {@link Rulesets} for more info
+	 */
 	private final Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied;
 
 	/**
@@ -99,6 +106,7 @@ public class ConwayGameState implements State {
 	/**
 	 * Only existing constructor. Completely determines the state. Most of the parameters 
 	 * are self-explanatory, check the class implementation for explanations about the rest.
+	 * It's recommended to construct it with {@link ConwayGameStateBuilder}
 	 */
 	public ConwayGameState(
 			int cellGainPerTurn,
@@ -224,7 +232,7 @@ public class ConwayGameState implements State {
 	 *         PLAYER1_CELL, or PLAYER2_CELL
 	 */
 	public int getCell(int row, int col) {
-		return torus(row, col, field);
+		return getCellOnTorus(row, col, field);
 	}
 	
 	/**
@@ -235,7 +243,7 @@ public class ConwayGameState implements State {
 	 * @param gameField the two-dim integer array
 	 * @return cell value on that position(row,col) on a torus
 	 */
-	private static int torus(int row, int col, int[][] gameField) {
+	private static int getCellOnTorus(int row, int col, int[][] gameField) {
 		return gameField[Math.floorMod(row, gameField.length)][Math.floorMod(col, gameField[0].length)];
 	}
 
@@ -253,7 +261,7 @@ public class ConwayGameState implements State {
 	}
 
 	/**
-	 * Player 1 has ID 0, player 2 has ID 1 TODO
+	 * Player 1 has ID 0, player 2 has ID 1
 	 * 
 	 * Creates personalized json object from this state ready to be sent to
 	 * players. Object contains following json elements:<br>
@@ -267,7 +275,17 @@ public class ConwayGameState implements State {
 	 * 
 	 * field array is array of length getRows() and each array element is a
 	 * string representing one field row. In each row, '.' represents a dead
-	 * cell, '#' represents friendly cell, and '0' enemy cell
+	 * cell, '#' represents friendly cell, and 'O' enemy cell<br>
+	 * 
+	 * Example:<br><code>
+	 * "field":<br>
+	 * ["........##......"<br>
+	 * ,".........#.#...."<br>
+	 * ,"........#.....#."<br>
+	 * ,"....O....##....."<br>
+	 * ,"..O...O..#####.."<br>
+	 * ,"..O...O........."]</code>
+	 * 
 	 */
 	@Override
 	public JsonObject toJSONObjectAsPlayer(int playerId) {
@@ -304,6 +322,8 @@ public class ConwayGameState implements State {
 		json.addProperty("maxColonisationDistance", maxColonisationDistance);
 		json.addProperty("currIteration", currIteration);
 		json.addProperty("maxGameIterations", maxGameIterations);
+		
+		System.out.println(json.toString());
 		return json;
 	}
 
@@ -369,7 +389,7 @@ public class ConwayGameState implements State {
 		int dc[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
 		int sol = 0;
 		for (int i = 0; i < dr.length; ++i) {
-			sol += torus(row + dr[i], col + dc[i], gameField) == cell_type ? 1 : 0;
+			sol += getCellOnTorus(row + dr[i], col + dc[i], gameField) == cell_type ? 1 : 0;
 		}
 		return sol;
 	}
