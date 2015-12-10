@@ -11,9 +11,11 @@ public class ConwayGameStateConstants {
     //TODO change to 2?
     public static final int PLAYER2_CELL = 10;
     
+    public static final int PLAYER1_ID = 0;
+    public static final int PLAYER2_ID = 1;
+    
     /**
-     * @param player
-     *            player constant
+     * @param player player constant
      * @return other player constant
      */
     public static int inversePlayer(int player) {
@@ -28,11 +30,11 @@ public class ConwayGameStateConstants {
                 throw new IllegalArgumentException();
         }
     }
+    
     /**
      * Checks if cell is alive or dead.
      * 
-     * @param value
-     *            cell value
+     * @param value cell value
      * @return <code>true</code> if its alive, <code>false</code> otherwise
      */
     public static boolean isPlayer(int value) {
