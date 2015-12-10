@@ -8,12 +8,40 @@ import hr.best.ai.gl.AbstractPlayer;
 
 import java.io.IOException;
 
+/**
+ * Abstract player wrapper. Player with time limit for signalNewState method.
+ */
 public class TimeBucketPlayer extends AbstractPlayer {
+	
+	/**
+	 * TimeBucketPlayer delegates signalNewState to this player
+	 * while taking care of time constraints.
+	 */
     private final AbstractPlayer  player;
+    
+    /**
+     * Number of milliseconds gained on each signalNewState()
+     */
     private final long gainPerTurn;
+    
+    /**
+     * Maximum number of milliseconds allowed to spend on one signalNewState()
+     */
     private final long maxTime;
+    
+    /**
+     * Current amount of milliseconds to spend.
+     */
     private long currTimeBucket;
 
+    /**
+     * Wraps player.
+     * 
+     * @param gainPerTurn
+     *            amount of milliseconds gained per turn
+     * @param maxTime
+     *            maximum amount of milliseconds available in a single turn
+     */
     public TimeBucketPlayer(AbstractPlayer player, long gainPerTurn, long maxTime) {
         super(player.getName());
         this.player = player;
@@ -27,6 +55,10 @@ public class TimeBucketPlayer extends AbstractPlayer {
         player.sendError(message);
     }
 
+    /**
+     * @throws TimeLimitException
+     *             if player takes more time than he has in the "bucket".
+     */
     @Override
     public JsonObject signalNewState(JsonObject state) throws IOException, InvalidActionException {
         long t0 = System.currentTimeMillis();
