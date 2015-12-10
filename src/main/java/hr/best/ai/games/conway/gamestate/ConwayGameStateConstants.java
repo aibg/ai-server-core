@@ -7,6 +7,10 @@ public class ConwayGameStateConstants {
     public static final int DEAD_CELL = 0;
     public static final int PLAYER1_CELL = 1;
     public static final int PLAYER2_CELL = 10;
+    
+    public static final int PLAYER1_ID = 0;
+    public static final int PLAYER2_ID = 1;
+    
     public static int inversePlayer(int p) {
         switch (p) {
             case PLAYER1_CELL:
