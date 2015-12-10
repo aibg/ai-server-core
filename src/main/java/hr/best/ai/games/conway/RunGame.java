@@ -22,12 +22,20 @@ import org.apache.log4j.Logger;
 
 
 /**
- * Created by lpp on 10/31/15.
+ * Class used as a main application entry point.
  */
 public class RunGame {
 
     final static Logger logger = Logger.getLogger(RunGame.class);
 
+    /**
+     * Sets up initial state and game context, adds visualization if needed, and runs the
+     * game. Reads desired config file or the default one if no path is provided.
+     * 
+     * @param args
+     *            path to config file
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         try {
             Rulesets.getInstance(); // loading the class static part into JVM
