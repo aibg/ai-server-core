@@ -323,7 +323,6 @@ public class ConwayGameState implements State {
 		json.addProperty("currIteration", currIteration);
 		json.addProperty("maxGameIterations", maxGameIterations);
 		
-		System.out.println(json.toString());
 		return json;
 	}
 

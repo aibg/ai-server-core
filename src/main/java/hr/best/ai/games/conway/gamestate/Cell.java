@@ -28,6 +28,7 @@ public class Cell {
 	}
 	/**
 	* Cell json array with row and column as json primitives.
+	* Example: [1,4]
 	*/
     public JsonElement toJSON() {
         JsonArray sol = new JsonArray();
