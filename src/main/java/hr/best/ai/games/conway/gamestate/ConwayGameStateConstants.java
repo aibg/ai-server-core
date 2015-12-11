@@ -6,7 +6,7 @@ package hr.best.ai.games.conway.gamestate;
 public class ConwayGameStateConstants {
     public static final int DEAD_CELL = 0;
     public static final int PLAYER1_CELL = 1;
-    public static final int PLAYER2_CELL = 10;
+    public static final int PLAYER2_CELL = 2;
     
     public static final int PLAYER1_ID = 0;
     public static final int PLAYER2_ID = 1;
