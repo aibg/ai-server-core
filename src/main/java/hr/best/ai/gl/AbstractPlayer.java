@@ -7,7 +7,10 @@ import java.io.IOException;
 import com.google.gson.JsonObject;
 
 /**
- * Most generalized player class.
+ * Most generalized player class. Players are added to GameContext which 
+ * manages their communication with the game. They could be for example 
+ * local processes, communicate with the game through TCP protocol or 
+ * something else.
  */
 public abstract class AbstractPlayer implements AutoCloseable {
 

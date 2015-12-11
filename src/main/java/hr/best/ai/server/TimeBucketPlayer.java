@@ -9,14 +9,15 @@ import hr.best.ai.gl.AbstractPlayer;
 import java.io.IOException;
 
 /**
- * Abstract player wrapper. Player with time limit for signalNewState method.
+ * Player wrapper with limited time for signalNewState method. Exception is 
+ * thrown if player crosses the time limit.
  */
 public class TimeBucketPlayer extends AbstractPlayer {
 	
-	/**
-	 * TimeBucketPlayer delegates signalNewState to this player
-	 * while taking care of time constraints.
-	 */
+    /**
+     * TimeBucketPlayer delegates signalNewState to this player
+     * while taking care of time constraints.
+     */
     private final AbstractPlayer  player;
     
     /**
