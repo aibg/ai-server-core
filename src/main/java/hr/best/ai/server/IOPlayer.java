@@ -13,7 +13,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Abstract player based on input & output streams.
+ * Abstract player which communicates with clients via 
+ * input and output stream supplied in constructor. .
  */
 public abstract class IOPlayer extends AbstractPlayer{
 
