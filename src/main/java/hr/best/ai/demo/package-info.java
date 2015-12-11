@@ -1,4 +1,4 @@
 /**
- * Package used for usage examples. "Debilni" means dummy on Croatian. :D
+ * Package used for usage examples.
  */
 package hr.best.ai.demo;

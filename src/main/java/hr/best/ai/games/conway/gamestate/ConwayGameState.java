@@ -105,8 +105,7 @@ public class ConwayGameState implements State {
 
 	/**
 	 * Only existing constructor. Completely determines the state. Most of the parameters 
-	 * are self-explanatory, check the class implementation for explanations about the rest.
-	 * It's recommended to construct it with {@link ConwayGameStateBuilder}
+	 * are self-explanatory, check the class implementation for explanations about the rest
 	 */
 	public ConwayGameState(
 			int cellGainPerTurn,
@@ -394,8 +393,7 @@ public class ConwayGameState implements State {
 	}
 	
 	/**
-	 * nextState(actions) creates and returns a new ConwayGameState object based on players actions
-	 * (new field is calculated based on fromEmpty and fromOccupied functions).
+	 * creates and returns next game state(new ConwayGameState object) based on players actions
 	 */
 	@Override
 	public ConwayGameState nextState(List<Action> actionList) {

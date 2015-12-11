@@ -27,8 +27,10 @@ public class Cell {
 		return col;
 	}
 	/**
-	* Cell json array with row and column as json primitives.
-	* Example: [1,4]
+	* Cell json array with row and column as json primitives.<br>
+	* Example:<br>
+	* Cell in 1st row and t4th column is serialized as: [1,4].<br> 
+	* Note that row and column indexing is 0-based.
 	*/
     public JsonElement toJSON() {
         JsonArray sol = new JsonArray();
