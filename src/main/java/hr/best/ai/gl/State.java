@@ -10,11 +10,11 @@ import java.util.List;
  * player actions as input.
  */
 public interface State {
-	/**
-	 * Checks if game is finished (final state reached)
-	 * 
-	 * @return <code>true</code> if state is final
-	 */
+    /**
+     * Checks if game is finished (final state reached)
+     * 
+     * @return <code>true</code> if state is final
+     */
     public boolean isFinal();
 
     /**
@@ -26,7 +26,7 @@ public interface State {
      * Returns state as a personalized json object for player with id playerID
      * 
      * @param playerId
-     *            player position in player list of game context TODO
+     *            player position in player list of game context
      * @return state as json object
      */
     public JsonObject toJSONObjectAsPlayer(int playerId);
@@ -36,7 +36,7 @@ public interface State {
      * 
      * @param actionList
      *            player actions (actions of player with id playerID are
-     *            actionList.get(playerID))TODO
+     *            actionList.get(playerID))
      * @return next state
      */
     public State nextState(List<Action> actionList);

@@ -7,16 +7,16 @@ import com.google.gson.JsonObject;
  */
 public interface NewStateObserver extends AutoCloseable {
 	
-	/**
-	 * Signals a new state is computed.
-	 * 
-	 * @param state
-	 *            new state sent to observer
-	 */
+    /**
+     * Signals a new state is computed.
+     * 
+     * @param state
+     *            new state sent to observer
+     */
     public void signalNewState(State state);
     
     /**
-     * Sends error message
+     * Notifies observer of error message.
      * 
      * @param message
      *            massage as a json object
