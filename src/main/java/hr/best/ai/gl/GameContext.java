@@ -21,14 +21,13 @@ import java.util.concurrent.Future;
  * move back to initial state. In it dedicated thread is periodically checking
  * what's going on with the game, stopping it entirely if necessary(for example
  * players fail to respond under given time limit). From PLAY game state can
- * move to STOP. From PAUSE it's possible to come back to PLAY, however once
- * STOP there's no coming back. TODO remove PAUSE?
+ * move to STOP. From STOP there's no coming back.
  */
 public class GameContext implements AutoCloseable {
 
-	/**
-	 * Three possible game states
-	 */
+    /**
+     * Three possible game states
+     */
 	public static enum GS {
 		INIT, STOP, PLAY
 	}
@@ -37,9 +36,9 @@ public class GameContext implements AutoCloseable {
 	
 	private final List<AbstractPlayer> players = new ArrayList<>();
 	
-	/**
-	 * List of observers (for example, they could be visualization elements)
-	 */
+    /**
+     * List of observers (for example, they could be visualization elements)
+     */
 	private final List<NewStateObserver> observers = new ArrayList<>();
 	
 	private final int maxPlayers;
@@ -48,40 +47,40 @@ public class GameContext implements AutoCloseable {
 	private State state;
 	private GS gamestate = GS.INIT;
 
-	/**
-	 * Creates game context with initial state and different minimum and maximum
-	 * number of players required.
-	 * 
-	 * @param state initial game state
-	 * @param minPlayers minimum number of players
-	 * @param maxPlayers maximum number of players
-	 */
+    /**
+     * Creates game context with initial state and different minimum and maximum
+     * number of players required.
+     * 
+     * @param state initial game state
+     * @param minPlayers minimum number of players
+     * @param maxPlayers maximum number of players
+     */
 	public GameContext(State state, int minPlayers, int maxPlayers) {
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
         this.state = state;
     }
 
-	/**
-	 * Creates game context with initial state and exact number of players
-	 * required.
-	 * 
-	 * @param state initial game state
-	 * @param noPlayers exact numbe of players
-	 */
+    /**
+     * Creates game context with initial state and exact number of players
+     * required.
+     * 
+     * @param state initial game state
+     * @param noPlayers exact numbe of players
+     */
     public GameContext(State state, int noPlayers) {
         this(state, noPlayers, noPlayers);
     }
 
-	/**
-	 * Register a player to game context. Returns player ID which is used in all
-	 * subsequent calls to this Game Context. Allowed only in INIT state.
-	 *
-	 * @param client player you wish to register
-	 * @throws IllegalStateException
-	 *             if trying to add more players than allowed or not in INIT
-	 *             state
-	 */
+    /**
+     * Register a player to game context. Returns player ID which is used in all
+     * subsequent calls to this Game Context. Allowed only in INIT state.
+     *
+     * @param client player you wish to register
+     * @throws IllegalStateException
+     *             if trying to add more players than allowed or not in INIT
+     *             state
+     */
 	public synchronized void addPlayer(AbstractPlayer client) {
 		if (gamestate != GS.INIT)
 			throw new IllegalStateException(
@@ -92,13 +91,13 @@ public class GameContext implements AutoCloseable {
 		players.add(client);
 	}
 
-	/**
-	 * Registers an observer to game context.Allowed only in INIT state.
-	 * 
-	 * @param observer
-	 * @throws IllegalStateException
-	 *             if not in INIT state
-	 */
+    /**
+     * Registers an observer to game context.Allowed only in INIT state.
+     * 
+     * @param observer
+     * @throws IllegalStateException
+     *             if not in INIT state
+     */
 	public synchronized void addObserver(NewStateObserver observer) {
 		if (gamestate != GS.INIT)
 			throw new IllegalStateException(
@@ -106,18 +105,18 @@ public class GameContext implements AutoCloseable {
 		this.observers.add(observer);
 	}
 
-	/**
-	 * @return list of players
-	 */
+    /**
+     * @return list of players
+     */
 	public synchronized List<AbstractPlayer> getPlayers() {
 		return players;
 	}
 
-	/**
-	 * Runs the game. On every iteration sends game states to players, receives
-	 * their actions, measures how long it took and sends states to observers.
-	 * Stops when final state is reached.
-	 */
+    /**
+     * Runs the game. On every iteration sends game states to players, receives
+     * their actions, measures how long it took and sends states to observers.
+     * Stops when final state is reached.
+     */
 	public synchronized void play() throws Exception {
         if (players.size() < this.minPlayers || players.size() > this.maxPlayers)
             throw new IllegalStateException(
@@ -153,9 +152,9 @@ public class GameContext implements AutoCloseable {
 				observers.forEach(cl -> threadPool.submit(() -> cl
 						.signalNewState(state)));
 
-				/**
-				 * Retrieves actions.
-				 */
+                /**
+                 * Retrieves actions.
+                 */
 				List<Action> actions = new ArrayList<>();
                 final ArrayList<Pair<Integer, Exception>> playerErrors = new ArrayList<>();
 				for (int i = 0; i < players.size(); ++i) {
@@ -172,9 +171,9 @@ public class GameContext implements AutoCloseable {
 					}
 				}
 
-				/**
-				 * Gets next state
-				 */
+                /**
+                 * Gets next state
+                 */
                 if (playerErrors.isEmpty()) {
                     long t = System.currentTimeMillis();
                     state = state.nextState(actions);
@@ -201,9 +200,9 @@ public class GameContext implements AutoCloseable {
 		}
 	}
 
-	/**
-	 * Closes players and observers.
-	 */
+    /**
+     * Closes players and observers.
+     */
 	@Override
 	public void close() throws Exception {
 		this.gamestate = GS.STOP;
