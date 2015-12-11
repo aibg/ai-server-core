@@ -5,8 +5,6 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Generated;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,7 +12,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import hr.best.ai.gl.Action;
-import hr.best.ai.gl.State;
 
 public class ConwayGameStateTest {
 
@@ -34,7 +31,7 @@ public class ConwayGameStateTest {
          * ......O.O.
          * .......O..
          */
-        state = ConwayGameStateBuilder.newConwayGameStateBuilder(10, 10).setRuleset("diff")
+        state = ConwayGameState.Builder.newBuilder(10, 10).setRuleset("diff")
                 .setCell(4, 4, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(4, 5, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(5, 4, ConwayGameStateConstants.PLAYER1_CELL)

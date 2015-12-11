@@ -1,6 +1,6 @@
 package hr.best.ai.games;
 
-import hr.best.ai.games.conway.gamestate.ConwayGameStateBuilder;
+import hr.best.ai.games.conway.gamestate.ConwayGameState;
 import hr.best.ai.games.conway.gamestate.ConwayGameStateConstants;
 import hr.best.ai.games.conway.gamestate.Rulesets.*;
 import hr.best.ai.games.sum.SumState;
@@ -20,8 +20,8 @@ public class GameContextFactory {
     public static GameContext getSumGameInstance() {
         return new GameContext(new SumState(0), 2);
     }
-    public static ConwayGameStateBuilder getBasicGrid() {
-        return ConwayGameStateBuilder.newConwayGameStateBuilder(10,15)
+    public static ConwayGameState.Builder getBasicGrid() {
+        return ConwayGameState.Builder.newBuilder(10,15)
                 .setCell(4,5, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(5,5, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(5,4, ConwayGameStateConstants.PLAYER1_CELL)
@@ -31,7 +31,7 @@ public class GameContextFactory {
     }
 
     public static State demoState() {
-        return ConwayGameStateBuilder.newConwayGameStateBuilder(12, 12)
+        return ConwayGameState.Builder.newBuilder(12, 12)
                 .setRuleset("classic")
                         // P1 Oscilator
                 .setCell(2, 1, ConwayGameStateConstants.PLAYER1_CELL)
@@ -53,7 +53,7 @@ public class GameContextFactory {
     }
 
     public static State bigDemoState() {
-        return ConwayGameStateBuilder.newConwayGameStateBuilder(100, 100)
+        return ConwayGameState.Builder.newBuilder(100, 100)
                 .setRuleset("classic")
                         // P1 Oscilator
                 .setCell(2, 1, ConwayGameStateConstants.PLAYER1_CELL)

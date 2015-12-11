@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import hr.best.ai.games.conway.gamestate.ConwayGameStateBuilder;
+import hr.best.ai.games.conway.gamestate.ConwayGameState;
 import hr.best.ai.games.conway.gamestate.ConwayGameStateConstants;
 import hr.best.ai.games.conway.RunGame;
 import hr.best.ai.games.conway.players.DoNothingPlayerDemo;
@@ -66,7 +66,7 @@ public class ConfigUtilities {
         final JsonObject gameConfig = config.getAsJsonObject("game");
         final JsonArray players = config.getAsJsonArray("players");
 
-        ConwayGameStateBuilder builder = ConwayGameStateBuilder.newConwayGameStateBuilder
+        ConwayGameState.Builder builder = ConwayGameState.Builder.newBuilder
                 (gameConfig.get("rows").getAsInt()
                         , gameConfig.get("cols").getAsInt()
                 ).setCellGainPerTurn(gameConfig.get("cellGainPerTurn").getAsInt())
