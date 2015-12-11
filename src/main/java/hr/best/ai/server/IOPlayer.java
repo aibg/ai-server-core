@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * Abstract player which communicates with clients via 
- * input and output stream supplied in constructor. .
+ * input and output stream supplied in constructor.
  */
 public abstract class IOPlayer extends AbstractPlayer{
 
