@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class TestGrid extends JPanel {
 
-	/**
+    /**
      * Sets up initial state and visualization and listens for player input.
      * Reads desired config file in args or the default one if no path is provided.
      * 

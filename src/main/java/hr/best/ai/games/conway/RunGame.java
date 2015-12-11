@@ -22,7 +22,12 @@ import org.apache.log4j.Logger;
 
 
 /**
- * Class used as a main application entry point.
+ * Primary class for server part in our architecture. Configuration is read from json file 
+ * and is then set up in main method. Config file contains configuration about game(field 
+ * size, rules, etc.), players(type, bot path, starting location and cell structure, time 
+ * available for calculation, etc.) and determines if visualization is applied. GameContext 
+ * then deals with communication with players and observers(visual elements) when the game 
+ * is started.
  */
 public class RunGame {
 
