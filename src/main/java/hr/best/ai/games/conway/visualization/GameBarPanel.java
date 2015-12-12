@@ -12,6 +12,9 @@ import javax.swing.JPanel;
 
 import com.google.gson.JsonObject;
 
+/**
+ * Percentage bar, visualizes player control on the playing field (number of living cells).
+ */
 @SuppressWarnings("serial")
 public class GameBarPanel extends JPanel implements NewStateObserver {
 
@@ -19,12 +22,18 @@ public class GameBarPanel extends JPanel implements NewStateObserver {
 	private Color player1Color;
 	private Color player2Color;
 
+	/**
+	 * Draws initial state bar with provided colors.
+	 */
 	public GameBarPanel(ConwayGameState initialState, Color player1Color, Color player2Color) {
 		this.player1Color = player1Color;
 		this.player2Color = player2Color;
 		signalNewState(initialState);
 	}
 
+	/**
+	 * Updates the bar.
+	 */
 	@Override
 	public void signalNewState(State state) {
 		this.state = (ConwayGameState) state;
