@@ -28,24 +28,24 @@ public class GameContext implements AutoCloseable {
     /**
      * Three possible game states
      */
-	public static enum GS {
-		INIT, STOP, PLAY
-	}
+    public static enum GS {
+    	INIT, STOP, PLAY
+    }
 	
-	final static Logger logger = Logger.getLogger(GameContext.class);
+    final static Logger logger = Logger.getLogger(GameContext.class);
 	
-	private final List<AbstractPlayer> players = new ArrayList<>();
+    private final List<AbstractPlayer> players = new ArrayList<>();
 	
     /**
      * List of observers (for example, they could be visualization elements)
      */
-	private final List<NewStateObserver> observers = new ArrayList<>();
+    private final List<NewStateObserver> observers = new ArrayList<>();
 	
-	private final int maxPlayers;
+    private final int maxPlayers;
     private final int minPlayers;
 
-	private State state;
-	private GS gamestate = GS.INIT;
+    private State state;
+    private GS gamestate = GS.INIT;
 
     /**
      * Creates game context with initial state and different minimum and maximum
