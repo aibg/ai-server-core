@@ -31,7 +31,7 @@ public class ConwayGameStateTest {
          * ......O.O.
          * .......O..
          */
-        state = ConwayGameState.Builder.newBuilder(10, 10).setRuleset("diff")
+        state = ConwayGameState.newBuilder(10, 10).setRuleset("diff")
                 .setCell(4, 4, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(4, 5, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(5, 4, ConwayGameStateConstants.PLAYER1_CELL)
