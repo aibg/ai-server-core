@@ -29,18 +29,18 @@ public class GameContext implements AutoCloseable {
      * Three possible game states
      */
     public static enum GS {
-    	INIT, STOP, PLAY
+        INIT, STOP, PLAY
     }
-	
+
     final static Logger logger = Logger.getLogger(GameContext.class);
-	
+
     private final List<AbstractPlayer> players = new ArrayList<>();
-	
+
     /**
      * List of observers (for example, they could be visualization elements)
      */
     private final List<NewStateObserver> observers = new ArrayList<>();
-	
+
     private final int maxPlayers;
     private final int minPlayers;
 
@@ -82,13 +82,13 @@ public class GameContext implements AutoCloseable {
      *             state
      */
     public synchronized void addPlayer(AbstractPlayer client) {
-    	if (gamestate != GS.INIT)
-    		throw new IllegalStateException(
-    				"Game must be in initialization state");
-    	if (maxPlayers == players.size())
-    		throw new IllegalStateException("Already at max players");
-    	players.add(client);
-	}
+        if (gamestate != GS.INIT)
+            throw new IllegalStateException(
+                    "Game must be in initialization state");
+        if (maxPlayers == players.size())
+            throw new IllegalStateException("Already at max players");
+        players.add(client);
+    }
 
     /**
      * Registers an observer to game context.Allowed only in INIT state.
@@ -98,18 +98,18 @@ public class GameContext implements AutoCloseable {
      *             if not in INIT state
      */
     public synchronized void addObserver(NewStateObserver observer) {
-		if (gamestate != GS.INIT)
-			throw new IllegalStateException(
-					"Game must be in initialization state");
-		this.observers.add(observer);
-	}
+        if (gamestate != GS.INIT)
+            throw new IllegalStateException(
+                    "Game must be in initialization state");
+        this.observers.add(observer);
+    }
 
     /**
      * @return list of players
      */
-	public synchronized List<AbstractPlayer> getPlayers() {
-		return players;
-	}
+    public synchronized List<AbstractPlayer> getPlayers() {
+        return players;
+    }
 
     /**
      * Runs the game. On every iteration sends game states to players, receives
@@ -123,51 +123,51 @@ public class GameContext implements AutoCloseable {
                             + minPlayers + ", "
                             + maxPlayers + "] got: " + players.size());
 
-		if (gamestate != GS.INIT)
-			throw new IllegalStateException(
-					"Impossible to iterate if we're not playing");
-		gamestate = GS.PLAY;
+        if (gamestate != GS.INIT)
+            throw new IllegalStateException(
+                    "Impossible to iterate if we're not playing");
+        gamestate = GS.PLAY;
 
-		ExecutorService threadPool = Executors.newFixedThreadPool(observers
-				.size() + players.size());
-		
+        ExecutorService threadPool = Executors.newFixedThreadPool(observers
+                .size() + players.size());
+
         try {
-        	while (!state.isFinal()) {
-        		long t0 = System.currentTimeMillis();
-        		/**
-        		 * For asynchronous collection of player actions.
-        		 */
-        		List<Future<Action>> actionsF = new ArrayList<>();
-        		for (int i = 0; i < players.size(); ++i) {
-        			
-        			final int playerNo = i;
-        			actionsF.add(threadPool.submit(() -> state.parseAction(players
-									.get(playerNo)
-									.signalNewState(
-											state.toJSONObjectAsPlayer(playerNo)))
-					));
-				}
+            while (!state.isFinal()) {
+                long t0 = System.currentTimeMillis();
+                /**
+                 * For asynchronous collection of player actions.
+                 */
+                List<Future<Action>> actionsF = new ArrayList<>();
+                for (int i = 0; i < players.size(); ++i) {
 
-				observers.forEach(cl -> threadPool.submit(() -> cl
-						.signalNewState(state)));
-				/**
-				 * Retrieves actions.
-				 */
-				List<Action> actions = new ArrayList<>();
+                    final int playerNo = i;
+                    actionsF.add(threadPool.submit(() -> state.parseAction(players
+                            .get(playerNo)
+                            .signalNewState(
+                                    state.toJSONObjectAsPlayer(playerNo)))
+                            ));
+                }
+
+                observers.forEach(cl -> threadPool.submit(() -> cl
+                        .signalNewState(state)));
+                /**
+                 * Retrieves actions.
+                 */
+                List<Action> actions = new ArrayList<>();
                 final ArrayList<Pair<Integer, Exception>> playerErrors = new ArrayList<>();
-				for (int i = 0; i < players.size(); ++i) {
-					try {
-						actions.add(actionsF.get(i).get());
+                for (int i = 0; i < players.size(); ++i) {
+                    try {
+                        actions.add(actionsF.get(i).get());
 
-					} catch (ExecutionException e) {
-						Exception ex = (Exception) e.getCause();
-						logger.error(players.get(i).getName(), ex);
+                    } catch (ExecutionException e) {
+                        Exception ex = (Exception) e.getCause();
+                        logger.error(players.get(i).getName(), ex);
                         JsonObject json = new JsonObject();
                         json.add("error", new JsonPrimitive(ex.toString()));
-						players.get(i).sendError(json);
+                        players.get(i).sendError(json);
                         playerErrors.add(Pair.of(i, ex));
-					}
-				}
+                    }
+                }
 
                 /**
                  * Gets next state
@@ -181,41 +181,41 @@ public class GameContext implements AutoCloseable {
                     throw new AIBGExceptions(playerErrors.toString());
                 }
                 logger.debug(String.format("Whole State cycle finished: [%3d ms]", System.currentTimeMillis() - t0));
-			}
-			logger.debug("Final state: " + state.toString());
+            }
+            logger.debug("Final state: " + state.toString());
             /**
              * One last update to observers. They should query whether isFinal state
              * and than determine what they'd like to do with it.
              */
             observers.forEach(cl -> threadPool.submit(() -> cl
                     .signalNewState(state)));
-		} catch (Exception ex) {
-			logger.error(ex);
-			throw ex;
-		} finally {
-			threadPool.shutdown();
-			close();
-		}
-	}
+        } catch (Exception ex) {
+            logger.error(ex);
+            throw ex;
+        } finally {
+            threadPool.shutdown();
+            close();
+        }
+    }
 
     /**
      * Closes players and observers.
      */
     @Override
     public void close() throws Exception {
-    	this.gamestate = GS.STOP;
-    	for (AbstractPlayer player : players) {
-			try {
-				player.close();
-			} catch (Exception ignorable) {
-			}
-		}
-    	for (NewStateObserver observer : observers) {
-			try {
-				observer.close();
-			} catch (Exception ignorable) {
-			}
-		}
-	}
+        this.gamestate = GS.STOP;
+        for (AbstractPlayer player : players) {
+            try {
+                player.close();
+            } catch (Exception ignorable) {
+            }
+        }
+        for (NewStateObserver observer : observers) {
+            try {
+                observer.close();
+            } catch (Exception ignorable) {
+            }
+        }
+    }
 
 }
