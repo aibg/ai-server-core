@@ -20,35 +20,18 @@ public class TimeBucketPlayer extends AbstractPlayer {
      */
     private final AbstractPlayer  player;
     
-    /**
-     * Number of milliseconds gained on each signalNewState()
-     */
-    private final long gainPerTurn;
+    private final long millisecondsGainedPerTurn;
     
-    /**
-     * Maximum number of milliseconds allowed to spend on one signalNewState()
-     */
-    private final long maxTime;
+    private final long maxTurnTime;
     
-    /**
-     * Current amount of milliseconds to spend.
-     */
-    private long currTimeBucket;
+    private long currentTurnTimeLeft;
 
-    /**
-     * Wraps player.
-     * 
-     * @param gainPerTurn
-     *            amount of milliseconds gained per turn
-     * @param maxTime
-     *            maximum amount of milliseconds available in a single turn
-     */
-    public TimeBucketPlayer(AbstractPlayer player, long gainPerTurn, long maxTime) {
+    public TimeBucketPlayer(AbstractPlayer player, long millisecondsGainedPerTurn, long maxTurnTime) {
         super(player.getName());
         this.player = player;
-        this.gainPerTurn = gainPerTurn;
-        this.maxTime = maxTime;
-        this.currTimeBucket = maxTime;
+        this.millisecondsGainedPerTurn = millisecondsGainedPerTurn;
+        this.maxTurnTime = maxTurnTime;
+        this.currentTurnTimeLeft = maxTurnTime;
     }
 
     @Override
@@ -63,12 +46,12 @@ public class TimeBucketPlayer extends AbstractPlayer {
     @Override
     public JsonObject signalNewState(JsonObject state) throws IOException, InvalidActionException {
         long t0 = System.currentTimeMillis();
-        currTimeBucket = Math.min(this.maxTime, currTimeBucket + gainPerTurn);
-        state.add("timeGainPerTurn", new JsonPrimitive(gainPerTurn));
-        state.add("timeLeftForMove", new JsonPrimitive(currTimeBucket));
+        currentTurnTimeLeft = Math.min(this.maxTurnTime, currentTurnTimeLeft + millisecondsGainedPerTurn);
+        state.add("timeGainPerTurn", new JsonPrimitive(millisecondsGainedPerTurn));
+        state.add("timeLeftForMove", new JsonPrimitive(currentTurnTimeLeft));
         JsonObject sol = player.signalNewState(state);
-        currTimeBucket -= System.currentTimeMillis() - t0;
-        if (currTimeBucket < 0)
+        currentTurnTimeLeft -= System.currentTimeMillis() - t0;
+        if (currentTurnTimeLeft < 0)
             throw new TimeLimitException();
 
         return sol;

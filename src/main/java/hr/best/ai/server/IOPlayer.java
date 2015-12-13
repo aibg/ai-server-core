@@ -19,15 +19,8 @@ import java.nio.charset.StandardCharsets;
 public abstract class IOPlayer extends AbstractPlayer{
 
     final static Logger logger = Logger.getLogger(IOPlayer.class);
-    
-    /**
-     * Reads from input stream
-     */
+   
     private final BufferedReader reader;
-    
-    /**
-     * Writes to output stream
-     */
     private final PrintWriter writer;
     
     private final JsonParser parser = new JsonParser();
