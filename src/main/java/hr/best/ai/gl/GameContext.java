@@ -66,7 +66,7 @@ public class GameContext implements AutoCloseable {
      * required.
      * 
      * @param state initial game state
-     * @param noPlayers exact numbe of players
+     * @param noPlayers exact number of players
      */
     public GameContext(State state, int noPlayers) {
         this(state, noPlayers, noPlayers);
