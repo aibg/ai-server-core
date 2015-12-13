@@ -16,7 +16,7 @@ public interface NewStateObserver extends AutoCloseable {
     public void signalNewState(State state);
     
     /**
-     * Notifies observer of error message.
+     * Signals observer of error message.
      * 
      * @param message
      *            massage as a json object

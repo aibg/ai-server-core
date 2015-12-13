@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * Game is composed of states. Every next state is computed from last one with
- * player actions as input.
+ * player actions as input. State should be immutable once created.
  */
 public interface State {
     /**
