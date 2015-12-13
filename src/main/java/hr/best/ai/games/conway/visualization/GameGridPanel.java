@@ -1,7 +1,5 @@
 package hr.best.ai.games.conway.visualization;
 
-import hr.best.ai.games.conway.gamestate.Cell;
-import hr.best.ai.games.conway.gamestate.Cells;
 import hr.best.ai.games.conway.gamestate.ConwayGameState;
 import hr.best.ai.games.conway.gamestate.ConwayGameStateConstants;
 import hr.best.ai.gl.NewStateObserver;
@@ -15,18 +13,28 @@ import javax.swing.JPanel;
 import org.apache.log4j.Logger;
 
 import com.google.gson.JsonObject;
-
+/**
+ * Visualizes the game. On each new state draws the grid and living cells.
+ */
 @SuppressWarnings("serial")
 public class GameGridPanel extends JPanel implements NewStateObserver {
 
 	final static Logger logger = Logger.getLogger(GameGridPanel.class);
+	
 	private volatile ConwayGameState state;
+	
+	/**
+	 * Size of one grid element. Cell size.
+	 */
 	protected int blockSize;
 
 	protected final Color player1Color;
 	protected final Color player2Color;
 	private final Color gridColor;
 
+	/**
+	 * Sets the initial state and colors.
+	 */
 	public GameGridPanel(ConwayGameState initialState, Color player1Color, Color player2Color,
 			Color gridColor) {
 
@@ -40,6 +48,10 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 		setVisible(true);
 	}
 
+	/**
+	 * Calculates and sets grid size based on available space.
+	 * @param drawSpace allowed drawing space
+	 */
 	public void setComponentSize(Dimension drawSpace) {
 		double blockWidth = drawSpace.width / this.state.getCols();
 		double blockHeight = drawSpace.height / this.state.getRows();
@@ -49,12 +61,16 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 
 		int width = blockSize * this.state.getCols() + 1;
 		int height = blockSize * this.state.getRows() + 1;
+		
 		Dimension newSize = new Dimension(width, height);
 		setMinimumSize(newSize);
 		setPreferredSize(newSize);
 		setMaximumSize(newSize);
 	}
-
+	
+	/**
+	 * Paints new state.
+	 */
 	@Override
 	public void signalNewState(State state) {
 		long t = System.currentTimeMillis();
