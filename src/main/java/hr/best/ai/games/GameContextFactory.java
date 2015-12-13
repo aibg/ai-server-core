@@ -21,7 +21,7 @@ public class GameContextFactory {
         return new GameContext(new SumState(0), 2);
     }
     public static ConwayGameState.Builder getBasicGrid() {
-        return ConwayGameState.Builder.newBuilder(10,15)
+        return ConwayGameState.newBuilder(10,15)
                 .setCell(4,5, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(5,5, ConwayGameStateConstants.PLAYER1_CELL)
                 .setCell(5,4, ConwayGameStateConstants.PLAYER1_CELL)
@@ -31,7 +31,7 @@ public class GameContextFactory {
     }
 
     public static State demoState() {
-        return ConwayGameState.Builder.newBuilder(12, 12)
+        return ConwayGameState.newBuilder(12, 12)
                 .setRuleset("classic")
                         // P1 Oscilator
                 .setCell(2, 1, ConwayGameStateConstants.PLAYER1_CELL)
@@ -53,7 +53,7 @@ public class GameContextFactory {
     }
 
     public static State bigDemoState() {
-        return ConwayGameState.Builder.newBuilder(100, 100)
+        return ConwayGameState.newBuilder(100, 100)
                 .setRuleset("classic")
                         // P1 Oscilator
                 .setCell(2, 1, ConwayGameStateConstants.PLAYER1_CELL)

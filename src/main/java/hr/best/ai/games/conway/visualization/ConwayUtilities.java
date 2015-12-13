@@ -18,10 +18,23 @@ public class ConwayUtilities {
     final static Logger logger = Logger.getLogger(ConwayUtilities.class);
 
     public final static Color p1color = Color.white;
+    //Orange(together with white part of or AIBattleground Visual identity)
     public final static Color p2color = new Color(248,156,16);
     public final static Color gridColor = new Color(200, 200, 200, 200);
     public final static int barHeight = 30;
 
+    /**
+     * Sets visualization elements on a JFrame with size <code>windowSize</code>. 
+     * Grid panel is in the middle, surrounded by two info panels to the left and right.
+     * Player percentage bar takes up the top of the frame.
+     * 
+     * @param windowSize JFrame dimension
+     * @param grid central panel with game grid
+     * @param p1info left panel with some information about player 1
+     * @param p2info right panel with some information about player 2
+     * @param bar top panel with percentage bar
+     * @return constructed JFrame
+     */
     public static JFrame composeVisualization(Dimension windowSize, GameGridPanel grid, PlayerInfoPanel p1info, PlayerInfoPanel p2info, GameBarPanel bar) {
         JFrame frame = new JFrame("Conway");
         frame.setSize(windowSize);
@@ -68,22 +81,39 @@ public class ConwayUtilities {
         return frame;
     }
 
+    /**
+     * Default player and grid colors.
+     */
     public static GameGridPanel getDefaultGameGridPanel(ConwayGameState initialState) {
         return new GameGridPanel(initialState, p1color, p2color, gridColor);
     }
-
+    
+    /**
+     * Default player and grid colors.
+     */
     public static GameGridWithActionsPanel getGameGridWithActionsPanel(ConwayGameState initialState) {
         return new GameGridWithActionsPanel(initialState, p1color, p2color, gridColor);
     }
-
+    
+    /**
+     * Default player 2 color.
+     * @param p2name player 2 name
+     */
     public static PlayerInfoPanel getP2DefaultInfoPanel(String p2name) {
         return new PlayerInfoPanel(ConwayGameStateConstants.PLAYER2_CELL, p2color,p2name);
     }
 
+    /**
+     * Default player 1 color.
+     * @param p1name player 1 name
+     */
     public static PlayerInfoPanel getP1DefaultInfoPanel(String p1name) {
         return new PlayerInfoPanel(ConwayGameStateConstants.PLAYER1_CELL, p1color,p1name);
     }
 
+    /**
+     * Default player colors and default bar height.
+     */
     public static GameBarPanel getDefaultGameBarPanel(ConwayGameState initialState) {
         GameBarPanel bar = new GameBarPanel(initialState, p1color, p2color);
         bar.setPreferredSize(new Dimension(0, ConwayUtilities.barHeight));

@@ -66,7 +66,7 @@ public class ConfigUtilities {
         final JsonObject gameConfig = config.getAsJsonObject("game");
         final JsonArray players = config.getAsJsonArray("players");
 
-        ConwayGameState.Builder builder = ConwayGameState.Builder.newBuilder
+        ConwayGameState.Builder builder = ConwayGameState.newBuilder
                 (gameConfig.get("rows").getAsInt()
                         , gameConfig.get("cols").getAsInt()
                 ).setCellGainPerTurn(gameConfig.get("cellGainPerTurn").getAsInt())

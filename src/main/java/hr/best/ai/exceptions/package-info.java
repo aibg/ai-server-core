@@ -1,4 +1,4 @@
 /**
- * @author Neven Miculini&#x107; neven.miculinic@gmail.com
+ * Project-specific exceptions.
  */
 package hr.best.ai.exceptions;
