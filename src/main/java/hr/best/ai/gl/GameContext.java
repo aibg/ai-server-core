@@ -55,7 +55,7 @@ public class GameContext implements AutoCloseable {
      * @param minPlayers minimum number of players
      * @param maxPlayers maximum number of players
      */
-	public GameContext(State state, int minPlayers, int maxPlayers) {
+    public GameContext(State state, int minPlayers, int maxPlayers) {
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
         this.state = state;
@@ -81,14 +81,13 @@ public class GameContext implements AutoCloseable {
      *             if trying to add more players than allowed or not in INIT
      *             state
      */
-	public synchronized void addPlayer(AbstractPlayer client) {
-		if (gamestate != GS.INIT)
-			throw new IllegalStateException(
-					"Game must be in initialization state");
-
-		if (maxPlayers == players.size())
-			throw new IllegalStateException("Already at max players");
-		players.add(client);
+    public synchronized void addPlayer(AbstractPlayer client) {
+    	if (gamestate != GS.INIT)
+    		throw new IllegalStateException(
+    				"Game must be in initialization state");
+    	if (maxPlayers == players.size())
+    		throw new IllegalStateException("Already at max players");
+    	players.add(client);
 	}
 
     /**
@@ -98,7 +97,7 @@ public class GameContext implements AutoCloseable {
      * @throws IllegalStateException
      *             if not in INIT state
      */
-	public synchronized void addObserver(NewStateObserver observer) {
+    public synchronized void addObserver(NewStateObserver observer) {
 		if (gamestate != GS.INIT)
 			throw new IllegalStateException(
 					"Game must be in initialization state");
@@ -117,7 +116,7 @@ public class GameContext implements AutoCloseable {
      * their actions, measures how long it took and sends states to observers.
      * Stops when final state is reached.
      */
-	public synchronized void play() throws Exception {
+    public synchronized void play() throws Exception {
         if (players.size() < this.minPlayers || players.size() > this.maxPlayers)
             throw new IllegalStateException(
                     "Invalid number of player. Expected in range ["
@@ -132,17 +131,17 @@ public class GameContext implements AutoCloseable {
 		ExecutorService threadPool = Executors.newFixedThreadPool(observers
 				.size() + players.size());
 		
-		try {
-			while (!state.isFinal()) {
-                long t0 = System.currentTimeMillis();
-                /**
-                 * For asynchronous collection of player actions.
-                 */
-				List<Future<Action>> actionsF = new ArrayList<>();
-				for (int i = 0; i < players.size(); ++i) {
-
-                    final int playerNo = i;
-					actionsF.add(threadPool.submit(() -> state.parseAction(players
+        try {
+        	while (!state.isFinal()) {
+        		long t0 = System.currentTimeMillis();
+        		/**
+        		 * For asynchronous collection of player actions.
+        		 */
+        		List<Future<Action>> actionsF = new ArrayList<>();
+        		for (int i = 0; i < players.size(); ++i) {
+        			
+        			final int playerNo = i;
+        			actionsF.add(threadPool.submit(() -> state.parseAction(players
 									.get(playerNo)
 									.signalNewState(
 											state.toJSONObjectAsPlayer(playerNo)))
@@ -151,10 +150,9 @@ public class GameContext implements AutoCloseable {
 
 				observers.forEach(cl -> threadPool.submit(() -> cl
 						.signalNewState(state)));
-
-                /**
-                 * Retrieves actions.
-                 */
+				/**
+				 * Retrieves actions.
+				 */
 				List<Action> actions = new ArrayList<>();
                 final ArrayList<Pair<Integer, Exception>> playerErrors = new ArrayList<>();
 				for (int i = 0; i < players.size(); ++i) {
@@ -203,16 +201,16 @@ public class GameContext implements AutoCloseable {
     /**
      * Closes players and observers.
      */
-	@Override
-	public void close() throws Exception {
-		this.gamestate = GS.STOP;
-		for (AbstractPlayer player : players) {
+    @Override
+    public void close() throws Exception {
+    	this.gamestate = GS.STOP;
+    	for (AbstractPlayer player : players) {
 			try {
 				player.close();
 			} catch (Exception ignorable) {
 			}
 		}
-		for (NewStateObserver observer : observers) {
+    	for (NewStateObserver observer : observers) {
 			try {
 				observer.close();
 			} catch (Exception ignorable) {
