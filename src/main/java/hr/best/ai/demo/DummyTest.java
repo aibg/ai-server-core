@@ -16,10 +16,10 @@ import java.net.ServerSocket;
 import java.util.Arrays;
 import java.util.List;
 
-public class DebilniTest {
+public class DummyTest {
 
 	final static org.apache.log4j.Logger logger = org.apache.log4j.Logger
-			.getLogger(DebilniTest.class);
+			.getLogger(DummyTest.class);
 
     public static int port = 5858;
 

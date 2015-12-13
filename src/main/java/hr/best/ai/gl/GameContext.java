@@ -141,11 +141,11 @@ public class GameContext implements AutoCloseable {
 				List<Future<Action>> actionsF = new ArrayList<>();
 				for (int i = 0; i < players.size(); ++i) {
 
-                    final int playerNo = i + 1; // TODO Make state player beginning from zero
+                    final int playerNo = i;
 					actionsF.add(threadPool.submit(() -> state.parseAction(players
-									.get(playerNo - 1) // TODO fix this monstrosity hack
+									.get(playerNo)
 									.signalNewState(
-                                            state.toJSONObjectAsPlayer(playerNo)))
+											state.toJSONObjectAsPlayer(playerNo)))
 					));
 				}
 
