@@ -39,12 +39,8 @@ public class TimeBucketPlayer extends AbstractPlayer {
         player.sendError(message);
     }
 
-    /**
-     * @throws TimeLimitException
-     *             if player takes more time than he has in the "bucket".
-     */
     @Override
-    public JsonObject signalNewState(JsonObject state) throws IOException, InvalidActionException {
+    public JsonObject signalNewState(JsonObject state) throws Exception {
         long t0 = System.currentTimeMillis();
         currentTurnTimeLeft = Math.min(this.maxTurnTime, currentTurnTimeLeft + millisecondsGainedPerTurn);
         state.add("timeGainPerTurn", new JsonPrimitive(millisecondsGainedPerTurn));
