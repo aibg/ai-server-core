@@ -24,12 +24,22 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by lpp on 11/8/15.
+ * Simulates the game and then allows for moving back and forth through the states. 
+ * Press 'K' for next state and 'J' for the state before.
  */
 public class HistoricRunGame extends JPanel {
 
     final static Logger logger = Logger.getLogger(HistoricRunGame.class);
 
+    /**
+     * Sets up initial state and game context and simulates the game. Then it brings up 
+     * visualization which allows user to view its 'history'.
+     * Reads desired config file in args or the default one if no path is provided.
+     * 
+     * @param args
+     *            path to config file
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         Rulesets.getInstance(); // loading the class static part into JVM
         JsonObject config = ConfigUtilities.configFromCMDArgs(args);
@@ -47,6 +57,8 @@ public class HistoricRunGame extends JPanel {
         try(GameContext gc = new GameContext(initialState, 2)) {
             players.forEach(gc::addPlayer);
             logger.debug("Starting game simulation");
+            
+            // adds observer for saving states
             gc.addObserver(new NewStateObserver() {
                 @Override
                 public void signalNewState(State state) {

@@ -22,12 +22,25 @@ import org.apache.log4j.Logger;
 
 
 /**
- * Created by lpp on 10/31/15.
+ * Primary class for server part in our architecture. Configuration is read from json file 
+ * and is then set up in main method. Config file contains configuration about game(field 
+ * size, rules, etc.), players(type, bot path, starting location and cell structure, time 
+ * available for calculation, etc.) and determines if visualization is applied. GameContext 
+ * then deals with communication with players and observers(visual elements) when the game 
+ * is started.
  */
 public class RunGame {
 
     final static Logger logger = Logger.getLogger(RunGame.class);
 
+    /**
+     * Sets up initial state and game context, adds visualization if needed, and runs the
+     * game. Reads desired config file or the default one if no path is provided.
+     * 
+     * @param args
+     *            path to config file
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         try {
             Rulesets.getInstance(); // loading the class static part into JVM
