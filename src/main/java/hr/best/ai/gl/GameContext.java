@@ -50,7 +50,7 @@ public class GameContext implements AutoCloseable {
     /**
      * Creates game context with initial state and different minimum and maximum
      * number of players required.
-     * 
+     *
      * @param state initial game state
      * @param minPlayers minimum number of players
      * @param maxPlayers maximum number of players
@@ -64,7 +64,7 @@ public class GameContext implements AutoCloseable {
     /**
      * Creates game context with initial state and exact number of players
      * required.
-     * 
+     *
      * @param state initial game state
      * @param noPlayers exact number of players
      */
@@ -92,7 +92,7 @@ public class GameContext implements AutoCloseable {
 
     /**
      * Registers an observer to game context.Allowed only in INIT state.
-     * 
+     *
      * @param observer
      * @throws IllegalStateException
      *             if not in INIT state
@@ -117,15 +117,8 @@ public class GameContext implements AutoCloseable {
      * Stops when final state is reached.
      */
     public synchronized void play() throws Exception {
-        if (players.size() < this.minPlayers || players.size() > this.maxPlayers)
-            throw new IllegalStateException(
-                    "Invalid number of player. Expected in range ["
-                            + minPlayers + ", "
-                            + maxPlayers + "] got: " + players.size());
-
-        if (gamestate != GS.INIT)
-            throw new IllegalStateException(
-                    "Impossible to iterate if we're not playing");
+        verifyPlayerCount();
+        verifyGameState();
         gamestate = GS.PLAY;
 
         ExecutorService threadPool = Executors.newFixedThreadPool(observers
@@ -133,62 +126,33 @@ public class GameContext implements AutoCloseable {
 
         try {
             while (!state.isFinal()) {
-                long t0 = System.currentTimeMillis();
-                /**
-                 * For asynchronous collection of player actions.
-                 */
-                List<Future<Action>> actionsF = new ArrayList<>();
-                for (int i = 0; i < players.size(); ++i) {
+                long turnStartTime = System.currentTimeMillis();
 
-                    final int playerNo = i;
-                    actionsF.add(threadPool.submit(() -> state.parseAction(players
-                            .get(playerNo)
-                            .signalNewState(
-                                    state.toJSONObjectAsPlayer(playerNo)))
-                            ));
-                }
+                List<Future<Action>> actionsF = genPlayerActions(threadPool);
+                List<Future<Void>> observersF = signalObservers(threadPool);
 
-                observers.forEach(cl -> threadPool.submit(() -> cl
-                        .signalNewState(state)));
-                /**
-                 * Retrieves actions.
-                 */
-                List<Action> actions = new ArrayList<>();
-                final ArrayList<Pair<Integer, Exception>> playerErrors = new ArrayList<>();
-                for (int i = 0; i < players.size(); ++i) {
-                    try {
-                        actions.add(actionsF.get(i).get());
+                awaitObservers(observersF);
+                List<Action> actions = awaitPlayerActionsWithErrorChecking(actionsF);
 
-                    } catch (ExecutionException e) {
-                        Exception ex = (Exception) e.getCause();
-                        logger.error(players.get(i).getName(), ex);
-                        JsonObject json = new JsonObject();
-                        json.add("error", new JsonPrimitive(ex.toString()));
-                        players.get(i).sendError(json);
-                        playerErrors.add(Pair.of(i, ex));
-                    }
-                }
+                long stateComputationStartTime = System.currentTimeMillis();
 
-                /**
-                 * Gets next state
-                 */
-                if (playerErrors.isEmpty()) {
-                    long t = System.currentTimeMillis();
-                    state = state.nextState(actions);
-                    logger.debug(String.format("Calculating new state finished [%3dms]", System.currentTimeMillis() - t));
-                } else {
-                    logger.debug("Errors happened. Aborting!");
-                    throw new AIBGExceptions(playerErrors.toString());
-                }
-                logger.debug(String.format("Whole State cycle finished: [%3d ms]", System.currentTimeMillis() - t0));
+                state = state.nextState(actions);
+
+                logger.debug(String.format(
+                        "Calculating new state finished [%3dms]",
+                        System.currentTimeMillis() - stateComputationStartTime)
+                );
+                logger.debug(String.format(
+                        "Whole State cycle finished: [%3d ms]",
+                        System.currentTimeMillis() - turnStartTime)
+                );
             }
             logger.debug("Final state: " + state.toString());
             /**
              * One last update to observers. They should query whether isFinal state
              * and than determine what they'd like to do with it.
              */
-            observers.forEach(cl -> threadPool.submit(() -> cl
-                    .signalNewState(state)));
+            awaitObservers(signalObservers(threadPool));
         } catch (Exception ex) {
             logger.error(ex);
             throw ex;
@@ -196,6 +160,80 @@ public class GameContext implements AutoCloseable {
             threadPool.shutdown();
             close();
         }
+    }
+
+    private void verifyGameState() {
+        if (gamestate != GS.INIT)
+            throw new IllegalStateException(
+                    "Impossible to iterate if we're not playing");
+    }
+
+    private void verifyPlayerCount() {
+        if (players.size() < this.minPlayers || players.size() > this.maxPlayers)
+            throw new IllegalStateException(
+                    "Invalid number of player. Expected in range ["
+                            + minPlayers + ", "
+                            + maxPlayers + "] got: " + players.size());
+    }
+
+    private List<Future<Action>> genPlayerActions(ExecutorService threadPool) throws Exception {
+        List<Future<Action>> actionsF = new ArrayList<>();
+        for (int i = 0; i < players.size(); ++i) {
+
+            final int playerNo = i;
+            actionsF.add(threadPool.submit(() -> state.parseAction(players
+                            .get(playerNo)
+                            .signalNewState(
+                                    state.toJSONObjectAsPlayer(playerNo)))
+            ));
+        }
+        return actionsF;
+    }
+
+    private List<Action> awaitPlayerActionsWithErrorChecking(List<Future<Action>> actionsF) throws Exception {
+        final ArrayList<Pair<Integer, Exception>> playerErrors = new ArrayList<>();
+        List<Action> actions = new ArrayList<>();
+        for (int i = 0; i < players.size(); ++i) {
+            try {
+                actions.add(actionsF.get(i).get());
+
+            } catch (ExecutionException e) {
+                Exception ex = (Exception) e.getCause();
+                logger.error(players.get(i).getName(), ex);
+                JsonObject json = new JsonObject();
+                json.add("error", new JsonPrimitive(ex.toString()));
+                players.get(i).sendError(json);
+                playerErrors.add(Pair.of(i, ex));
+            }
+        }
+        checkForErrors(playerErrors);
+        return actions;
+    }
+
+    private void checkForErrors(ArrayList<Pair<Integer, Exception>> playerErrors) {
+        if (!playerErrors.isEmpty()) {
+            logger.debug("Errors happened. Aborting!");
+            throw new AIBGExceptions(playerErrors.toString());
+        }
+    }
+
+    private List<Future<Void>> signalObservers(ExecutorService threadPool) {
+        List<Future<Void>> observersF = new ArrayList<>();
+        for (NewStateObserver observer : observers) {
+            observersF.add((Future<Void>) threadPool.submit(new Runnable() {
+                @Override
+                public void run() {
+                    observer.signalNewState(state);
+                }
+            }));
+        }
+
+        return observersF;
+    }
+
+    private void awaitObservers(List<Future<Void>> observersF) throws Exception {
+        for (Future<Void> action : observersF)
+            action.get();
     }
 
     /**
