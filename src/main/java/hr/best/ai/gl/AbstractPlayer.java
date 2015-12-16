@@ -31,8 +31,8 @@ public abstract class AbstractPlayer implements AutoCloseable {
      * @param state
      *            JsonObject sent to player
      * @return JsonObject containing player action
-     * @throws Exception in case of irregularity in communication (IOException) 
-     * or related to game logic (AIBGException)
+     * @throws IOException in case of irregularity in communication
+     * @throws AIBGException when something went wrong related to game logic
      */
     public abstract JsonObject signalNewState(JsonObject state) throws Exception;
 
