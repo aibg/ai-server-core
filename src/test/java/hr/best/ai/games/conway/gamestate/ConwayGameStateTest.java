@@ -131,7 +131,7 @@ public class ConwayGameStateTest {
     	gameField[9]=".......O..";
     	
     	
-    	JsonObject p1=state.toJSONObjectAsPlayer(ConwayGameStateConstants.PLAYER1_ID);
+    	JsonObject p1=state.toJSONObjectAsPlayer(CellType.P1.getID());
     	JsonArray fieldArray1=p1.get("field").getAsJsonArray();
     	for(int i=0;i<fieldArray1.size();i++){
     		assertEquals(fieldArray1.get(i).getAsString(), gameField[i]);
@@ -149,7 +149,7 @@ public class ConwayGameStateTest {
     	gameField[8]="......#.#.";
     	gameField[9]=".......#..";
     	
-    	JsonObject p2=state.toJSONObjectAsPlayer(ConwayGameStateConstants.PLAYER2_ID);
+    	JsonObject p2=state.toJSONObjectAsPlayer(CellType.P2.getID());
     	JsonArray fieldArray2=p2.get("field").getAsJsonArray();
         for(int i=0;i<fieldArray2.size();i++){
         	assertEquals(fieldArray2.get(i).getAsString(), gameField[i]);

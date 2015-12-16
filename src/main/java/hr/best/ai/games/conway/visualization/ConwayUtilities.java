@@ -2,7 +2,6 @@ package hr.best.ai.games.conway.visualization;
 
 import hr.best.ai.games.conway.gamestate.CellType;
 import hr.best.ai.games.conway.gamestate.ConwayGameState;
-import hr.best.ai.games.conway.gamestate.ConwayGameStateConstants;
 import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
@@ -101,7 +100,7 @@ public class ConwayUtilities {
      * @param p2name player 2 name
      */
     public static PlayerInfoPanel getP2DefaultInfoPanel(String p2name) {
-        return new PlayerInfoPanel(CellType.P2.getID(), p2color, p2name);
+        return new PlayerInfoPanel(CellType.P2, p2color, p2name);
     }
 
     /**
@@ -109,7 +108,7 @@ public class ConwayUtilities {
      * @param p1name player 1 name
      */
     public static PlayerInfoPanel getP1DefaultInfoPanel(String p1name) {
-        return new PlayerInfoPanel(CellType.P1.getID(), p1color, p1name);
+        return new PlayerInfoPanel(CellType.P1, p1color, p1name);
     }
 
     /**

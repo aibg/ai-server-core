@@ -252,7 +252,7 @@ public class ConwayGameState implements State {
 	 */
 	@Override
 	public JsonObject toJSONObject() {
-		JsonObject json = toJSONObjectAsPlayer(ConwayGameStateConstants.PLAYER1_ID);
+		JsonObject json = toJSONObjectAsPlayer(CellType.P1.getID());
 		json.remove("cellsRemaining");
 		json.addProperty("cellsRemainingP1", p1_cells);
 		json.addProperty("cellsRemainingP2", p2_cells);
@@ -298,12 +298,10 @@ public class ConwayGameState implements State {
 			for (int j = 0; j < getCols(); j++) {
 				switch (field[i][j]) {
 				case P1:
-					sb.append(playerId == ConwayGameStateConstants.PLAYER1_ID ? "#"
-							: "O");
+					sb.append(playerId == CellType.P1.getID() ? "#" : "O");
 					break;
 				case P2:
-					sb.append(playerId == ConwayGameStateConstants.PLAYER2_ID ? "#"
-							: "O");
+					sb.append(playerId == CellType.P2.getID() ? "#"	: "O");
 					break;
 				case DEAD:
 					sb.append(".");
@@ -314,8 +312,7 @@ public class ConwayGameState implements State {
 		}
 
 		json.addProperty("cellsRemaining",
-				playerId == ConwayGameStateConstants.PLAYER1_ID ? p1_cells
-						: p2_cells);
+				playerId == CellType.P1.getID() ? p1_cells : p2_cells);
 		json.addProperty("cellGainPerTurn", cellGainPerTurn);
 		json.addProperty("maxCellCapacity", maxCellCapacity);
 		json.addProperty("maxColonisationDistance", maxColonisationDistance);

@@ -2,7 +2,6 @@ package hr.best.ai.games;
 
 import hr.best.ai.games.conway.gamestate.CellType;
 import hr.best.ai.games.conway.gamestate.ConwayGameState;
-import hr.best.ai.games.conway.gamestate.ConwayGameStateConstants;
 import hr.best.ai.games.conway.gamestate.Rulesets.*;
 import hr.best.ai.games.sum.SumState;
 import hr.best.ai.gl.GameContext;

@@ -7,7 +7,6 @@ import com.google.gson.JsonParser;
 
 import hr.best.ai.games.conway.gamestate.CellType;
 import hr.best.ai.games.conway.gamestate.ConwayGameState;
-import hr.best.ai.games.conway.gamestate.ConwayGameStateConstants;
 import hr.best.ai.games.conway.RunGame;
 import hr.best.ai.games.conway.players.DoNothingPlayerDemo;
 import hr.best.ai.gl.AbstractPlayer;

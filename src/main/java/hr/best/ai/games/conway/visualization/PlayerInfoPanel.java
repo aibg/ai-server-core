@@ -6,8 +6,8 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.io.IOException;
 
+import hr.best.ai.games.conway.gamestate.CellType;
 import hr.best.ai.games.conway.gamestate.ConwayGameState;
-import hr.best.ai.games.conway.gamestate.ConwayGameStateConstants;
 import hr.best.ai.gl.NewStateObserver;
 import hr.best.ai.gl.State;
 
@@ -24,12 +24,12 @@ public class PlayerInfoPanel extends JPanel implements NewStateObserver {
 	private final JLabel infoLabel = new JLabel();
 	private final JLabel iterationLabel = new JLabel();
 
-	private final int playerID;
+	private final CellType playerCell;
 	private final String playerName;
 	//private LogoPanel logoPanel;
 
-	public PlayerInfoPanel(int playerID, Color textColor, String playerName) {
-		this.playerID = playerID;
+	public PlayerInfoPanel(CellType playerCell, Color textColor, String playerName) {
+		this.playerCell = playerCell;
 		this.playerName = playerName;
 		setOpaque(false);
 
@@ -54,12 +54,11 @@ public class PlayerInfoPanel extends JPanel implements NewStateObserver {
 		infoLabel.setForeground(textColor);
 		iterationLabel.setForeground(textColor);
 
-		switch (playerID) {
-		case ConwayGameStateConstants.PLAYER1_ID:
+		switch (playerCell) {
+		case P1:
 			add(iterationLabel, BorderLayout.SOUTH);
 			break;
-		case ConwayGameStateConstants.PLAYER2_ID:
-			
+		case P2:
 			Image logo = null;
 			Dimension logoSize=new Dimension(170,100);
 			try {
@@ -100,11 +99,11 @@ public class PlayerInfoPanel extends JPanel implements NewStateObserver {
 				+ "</h1></center></html>");
 
 		int score = 0;
-		switch (playerID) {
-		case ConwayGameStateConstants.PLAYER1_ID:
+		switch (playerCell) {
+		case P1:
 			score = ((ConwayGameState) state).getP1LiveCellcount();
 			break;
-		case ConwayGameStateConstants.PLAYER2_ID:
+		case P2:
 			score = ((ConwayGameState) state).getP2LiveCellcount();
 			break;
 		default:
