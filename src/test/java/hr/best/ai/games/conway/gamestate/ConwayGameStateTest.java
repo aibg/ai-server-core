@@ -32,15 +32,15 @@ public class ConwayGameStateTest {
          * .......O..
          */
         state = ConwayGameState.newBuilder(10, 10).setRuleset("diff")
-                .setCell(4, 4, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(4, 5, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(5, 4, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(5, 5, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(7, 6, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(7, 7, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(8, 6, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(9, 7, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(8, 8, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(4, 4, CellType.P1)
+                .setCell(4, 5, CellType.P1)
+                .setCell(5, 4, CellType.P1)
+                .setCell(5, 5, CellType.P1)
+                .setCell(7, 6, CellType.P2)
+                .setCell(7, 7, CellType.P2)
+                .setCell(8, 6, CellType.P2)
+                .setCell(9, 7, CellType.P2)
+                .setCell(8, 8, CellType.P2)
                 .getState();
     }
 
@@ -104,16 +104,16 @@ public class ConwayGameStateTest {
          * .......O..
          */
 
-        assertEquals(nState.getCell(3, 4), ConwayGameStateConstants.PLAYER1_CELL);
-        assertEquals(nState.getCell(3,5), ConwayGameStateConstants.PLAYER1_CELL);
+        assertEquals(nState.getCell(3, 4), CellType.P1);
+        assertEquals(nState.getCell(3,5), CellType.P1);
 
-        assertEquals(nState.getCell(4,3), ConwayGameStateConstants.PLAYER1_CELL);
-        assertEquals(nState.getCell(4,4), ConwayGameStateConstants.DEAD_CELL);
-        assertEquals(nState.getCell(4,5), ConwayGameStateConstants.DEAD_CELL);
-        assertEquals(nState.getCell(4,6), ConwayGameStateConstants.PLAYER1_CELL);
+        assertEquals(nState.getCell(4,3), CellType.P1);
+        assertEquals(nState.getCell(4,4), CellType.DEAD);
+        assertEquals(nState.getCell(4,5), CellType.DEAD);
+        assertEquals(nState.getCell(4,6), CellType.P1);
 
-        assertEquals(nState.getCell(5,4), ConwayGameStateConstants.PLAYER1_CELL);
-        assertEquals(nState.getCell(5,5), ConwayGameStateConstants.PLAYER1_CELL);
+        assertEquals(nState.getCell(5,4), CellType.P1);
+        assertEquals(nState.getCell(5,5), CellType.P1);
     }
     
     @Test

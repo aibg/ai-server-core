@@ -49,12 +49,12 @@ public class ConwayGameState implements State {
 	 * isFinal() returns true
 	 */
 	private final int maxGameIterations;
-	
+		
 	/**
 	 * Represents the game field for this state where each element is one of the
 	 * ConwayGameStateConstants: DEAD_CELL, PLAYER1_CELL or PLAYER2_CELL.
 	 */
-	private final int[][] field;
+	private final CellType[][] field;
 	
 	/**
 	 * The amount of cells player 1 can activate in an action this turn. Always
@@ -83,7 +83,7 @@ public class ConwayGameState implements State {
 	 * be activated.
 	 * See {@link Rulesets} for more info
 	 */
-	private final Function<Pair<Integer, Integer>, Integer> fromEmpty;
+	private final Function<Pair<Integer, Integer>, CellType> fromEmpty;
 	
 	/**
 	 * Functions used to calculate which cell gets activated or died depending
@@ -91,7 +91,7 @@ public class ConwayGameState implements State {
 	 * stay active.
 	 * See {@link Rulesets} for more info
 	 */
-	private final Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied;
+	private final Function<Triple<Integer, Integer, CellType>, CellType> fromOccupied;
 
 	/**
 	 * Current amount of player 1 living cells
@@ -113,13 +113,13 @@ public class ConwayGameState implements State {
 			int maxColonisationDistance,
 			int currIteration,
 			int maxGameIterations,
-			int[][] field,
+			CellType[][] field,
 			int p1_cells,
 			Cells lastTurnP1,
 			int p2_cells,
 			Cells lastTurnP2,
-			Function<Pair<Integer, Integer>, Integer> fromEmpty,
-			Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied
+			Function<Pair<Integer, Integer>, CellType> fromEmpty,
+			Function<Triple<Integer, Integer, CellType>, CellType> fromOccupied
 			) {
 		this.cellGainPerTurn = cellGainPerTurn;
 		this.maxCellCapacity = maxCellCapacity;
@@ -133,8 +133,8 @@ public class ConwayGameState implements State {
 		this.lastTurnP2 = lastTurnP2;
 		this.fromEmpty = fromEmpty;
 		this.fromOccupied = fromOccupied;
-		this.p1count=countCells(ConwayGameStateConstants.PLAYER1_CELL);
-		this.p2count=countCells(ConwayGameStateConstants.PLAYER2_CELL);
+		this.p1count=countCells(CellType.P1);
+		this.p2count=countCells(CellType.P2);
 
 	}
 	
@@ -174,7 +174,7 @@ public class ConwayGameState implements State {
 	 *            DEAD_CELL, PLAYER1_CELL and PLAYER2_CELL
 	 * @return number of that kind of cells in the playing field
 	 */
-	private int countCells(int player) {
+	private int countCells(CellType player) {
 		int count = 0;
 
 		for (int i = 0; i < getRows(); i++) {
@@ -230,7 +230,7 @@ public class ConwayGameState implements State {
 	 * @return cell value, one of the ConwayGameStateConstants DEAD_CELL,
 	 *         PLAYER1_CELL, or PLAYER2_CELL
 	 */
-	public int getCell(int row, int col) {
+	public CellType getCell(int row, int col) {
 		return getCellOnTorus(row, col, field);
 	}
 	
@@ -242,7 +242,7 @@ public class ConwayGameState implements State {
 	 * @param gameField the two-dim integer array
 	 * @return cell value on that position(row,col) on a torus
 	 */
-	private static int getCellOnTorus(int row, int col, int[][] gameField) {
+	private static CellType getCellOnTorus(int row, int col, CellType[][] gameField) {
 		return gameField[Math.floorMod(row, gameField.length)][Math.floorMod(col, gameField[0].length)];
 	}
 
@@ -297,15 +297,15 @@ public class ConwayGameState implements State {
 			StringBuilder sb = new StringBuilder();
 			for (int j = 0; j < getCols(); j++) {
 				switch (field[i][j]) {
-				case ConwayGameStateConstants.PLAYER1_CELL:
+				case P1:
 					sb.append(playerId == ConwayGameStateConstants.PLAYER1_ID ? "#"
 							: "O");
 					break;
-				case ConwayGameStateConstants.PLAYER2_CELL:
+				case P2:
 					sb.append(playerId == ConwayGameStateConstants.PLAYER2_ID ? "#"
 							: "O");
 					break;
-				case ConwayGameStateConstants.DEAD_CELL:
+				case DEAD:
 					sb.append(".");
 					break;
 				}
@@ -356,13 +356,13 @@ public class ConwayGameState implements State {
 	 *            integer value
 	 * @return manhattan or 1-distance to nearest friendly cell
 	 */
-	private int distanceToFriendlyCell(int row, int col, int cell_type,
+	private int distanceToFriendlyCell(int row, int col, CellType type,
 			int maxSearchDistance) {
 		int distance = Integer.MAX_VALUE;
 
 		for (int r = row - maxSearchDistance; r <= row + maxSearchDistance; ++r) {
 			for (int c = col - maxSearchDistance; c <= col + maxSearchDistance; ++c)
-				if (getCell(r, c) == cell_type)
+				if (getCell(r, c) == type)
 					distance = Math.min(distance,Math.max(Math.abs(r - row),Math.abs(c - col)));
 		}
 		return distance;
@@ -381,13 +381,13 @@ public class ConwayGameState implements State {
 	 * 			  two-dimensional array on which the neighbors are calculated           
 	 * @return number of friendly neighbors
 	 */
-	private static int getSurroundingCellCount(int row, int col,int cell_type, int[][] gameField) {
+	private static int getSurroundingCellCount(int row, int col,CellType type, CellType[][] gameField) {
 
 		int dr[] = { -1, -1, -1, 0, 0, 1, 1, 1 };
 		int dc[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
 		int sol = 0;
 		for (int i = 0; i < dr.length; ++i) {
-			sol += getCellOnTorus(row + dr[i], col + dc[i], gameField) == cell_type ? 1 : 0;
+			sol += getCellOnTorus(row + dr[i], col + dc[i], gameField) == type ? 1 : 0;
 		}
 		return sol;
 	}
@@ -421,25 +421,23 @@ public class ConwayGameState implements State {
 
 		//check if activating living cells
 		for (Cell c : p1)
-			if (ConwayGameStateConstants.isPlayer(getCell(c.getRow(), c.getCol())))
+			if (isPlayerCell(getCell(c.getRow(), c.getCol())))
 				throw new IllegalArgumentException("P1 tried to activate a living cell");
 
 		for (Cell c : p2)
-            if (ConwayGameStateConstants.isPlayer(getCell(c.getRow(), c.getCol())))
+            if (isPlayerCell(getCell(c.getRow(), c.getCol())))
                 throw new IllegalArgumentException("P1 tried to activate a living cell");
 
         /**
 		 * Distance checks
 		 */
 		for (Cell c : p1) {
-			if (distanceToFriendlyCell(c.getRow(), c.getCol(),
-					ConwayGameStateConstants.PLAYER1_CELL,
+			if (distanceToFriendlyCell(c.getRow(), c.getCol(), CellType.P1,
 					this.maxColonisationDistance) > maxColonisationDistance)
 				throw new IllegalArgumentException("P2 over the distance");
 		}
 		for (Cell c : p2) {
-			if (distanceToFriendlyCell(c.getRow(), c.getCol(),
-					ConwayGameStateConstants.PLAYER2_CELL,
+			if (distanceToFriendlyCell(c.getRow(), c.getCol(), CellType.P2,
 					this.maxColonisationDistance) > maxColonisationDistance)
 				throw new IllegalArgumentException("P2 over the distance");
 		}
@@ -453,7 +451,7 @@ public class ConwayGameState implements State {
 		/**
 		 * Copies the field and does further calculations with the copy
 		 */
-		int[][] fieldCopy=new int[getRows()][getCols()];
+		CellType[][] fieldCopy=new CellType[getRows()][getCols()];
 		for(int i=0;i<getRows();i++)
 			for(int j=0;j<getCols();j++)
 				fieldCopy[i][j]=field[i][j];
@@ -463,25 +461,24 @@ public class ConwayGameState implements State {
 		 */
 		for (Cell a : p1) {
 			// TODO handle invalid cells
-			fieldCopy[a.getRow()][a.getCol()] = ConwayGameStateConstants.PLAYER1_CELL;
+			fieldCopy[a.getRow()][a.getCol()] = CellType.P1;
 		}
 
 		for (Cell b : p2) {
 			// TODO handle invalid cells
-			fieldCopy[b.getRow()][b.getCol()] = ConwayGameStateConstants.PLAYER2_CELL;
+			fieldCopy[b.getRow()][b.getCol()] = CellType.P2;
 		}
 
 		/**
 		 * generate new state matrix
 		 * */
-		int[][] sol = new int[getRows()][getCols()];
+		CellType[][] sol = new CellType[getRows()][getCols()];
 		for (int i = 0; i < getRows(); ++i)
 			for (int j = 0; j < getCols(); ++j) {
-                final int currentCell = fieldCopy[i][j];
-                if (ConwayGameStateConstants.isPlayer(currentCell)) {
+                final CellType currentCell = fieldCopy[i][j];
+                if (isPlayerCell(currentCell)) {
                     final int friendlyCellCount = getSurroundingCellCount(i, j, currentCell, fieldCopy);
-                    final int enemyCellCount = getSurroundingCellCount(i, j, ConwayGameStateConstants
-                                    .inversePlayer(currentCell), fieldCopy);
+                    final int enemyCellCount = getSurroundingCellCount(i, j, inversePlayerCell(currentCell), fieldCopy);
                     sol[i][j] = fromOccupied.apply(Triple.of(
                             friendlyCellCount
                             , enemyCellCount
@@ -489,9 +486,9 @@ public class ConwayGameState implements State {
                     );
 				} else {
                     final int p1CellCount = getSurroundingCellCount(i, j,
-                            ConwayGameStateConstants.PLAYER1_CELL, fieldCopy);
+                            CellType.P1, fieldCopy);
                     final int p2CellCount = getSurroundingCellCount(i, j,
-                            ConwayGameStateConstants.PLAYER2_CELL, fieldCopy);
+                            CellType.P2, fieldCopy);
                     sol[i][j] = fromEmpty.apply(Pair.of(
                             p1CellCount
                             , p2CellCount
@@ -509,11 +506,48 @@ public class ConwayGameState implements State {
         if (!this.isFinal())
             throw new IllegalStateException("Cannot get winner while game is running.");
         if (p1count > p2count)
-            return ConwayGameStateConstants.PLAYER1_CELL;
+            return CellType.P1.getID();
         if (p1count == p2count)
             return -1;
-        return ConwayGameStateConstants.PLAYER2_CELL;
+        return CellType.P2.getID();
     }
+    
+    /**
+     * Checks if cell is alive or dead.
+     * 
+     * @param value cell value
+     * @return <code>true</code> if its alive, <code>false</code> otherwise
+     */
+    public static boolean isPlayerCell(CellType value) {
+        switch (value) {
+            case P1:
+            case P2:
+                return true;
+            case  DEAD:
+                return false;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+    
+    /**
+     * @param player player constant
+     * @return other player constant
+     */
+    public static CellType inversePlayerCell(CellType value) {
+        switch (value) {
+            case P1:
+                return CellType.P2;
+            case P2:
+                return CellType.P1;
+            case  DEAD:
+                return CellType.DEAD;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+    
+    
     
     public static Builder newBuilder(int rows, int cols) {
         return new Builder(rows, cols);
@@ -522,10 +556,10 @@ public class ConwayGameState implements State {
     public static class Builder {
 
         private Builder(int rows, int cols){
-            field = new int[rows][cols];
+            field = new CellType[rows][cols];
             for (int i = 0; i < rows; ++i)
                 for (int j = 0; j < cols; ++j)
-                    field[i][j] = ConwayGameStateConstants.DEAD_CELL;
+                    field[i][j] = CellType.DEAD;
         }
 
         /**
@@ -535,12 +569,12 @@ public class ConwayGameState implements State {
         private int maxCellCapacity = 5;
         private int maxColonisationDistance = 4;
         private int maxGameIterations = 10000;
-        private final int[][] field;
+        private final CellType[][] field;
         private int startingCells = 5;
         /**
          * (P1, P2) -> resulting cell
          */
-        Function<Pair<Integer, Integer>, Integer> fromEmpty;
+        Function<Pair<Integer, Integer>, CellType> fromEmpty;
 
         /**
          * (Pa, Pb, player a)
@@ -549,16 +583,16 @@ public class ConwayGameState implements State {
          * 112
          * 111
          *
-         * we'd have (7, 1, 1)
+         * we'd have (7, 1, P1)
          *
          * and in this case:
          * 111
          * 122
          * 111
          *
-         * we'd have (1, 7, 2)
+         * we'd have (1, 7, P2)
          */
-        Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied;
+        Function<Triple<Integer, Integer, CellType>, CellType> fromOccupied;
 
         public Builder setStartingCells(int startingCells) {
             this.startingCells = startingCells;
@@ -585,7 +619,7 @@ public class ConwayGameState implements State {
             return this;
         }
 
-        public Builder setCell(int row, int col, int cellType) {
+        public Builder setCell(int row, int col, CellType cellType) {
             this.field[row][col] = cellType;
             return this;
         }
@@ -594,7 +628,7 @@ public class ConwayGameState implements State {
          *
          * @param fromEmpty function which takes #neighbouring P1 cells, #neigbouring P2 cells and returns resulting cell
          */
-        public Builder setFromEmpty(Function<Pair<Integer, Integer>, Integer> fromEmpty) {
+        public Builder setFromEmpty(Function<Pair<Integer, Integer>, CellType> fromEmpty) {
             this.fromEmpty = fromEmpty;
             return this;
         }
@@ -604,7 +638,7 @@ public class ConwayGameState implements State {
          * @param fromOccupied function which takes #neighbouring a cells, #neigbouring b cells and returns resulting cell.
          * @return
          */
-        public Builder setFromOccupied(Function<Triple<Integer, Integer, Integer>, Integer> fromOccupied) {
+        public Builder setFromOccupied(Function<Triple<Integer, Integer, CellType>, CellType> fromOccupied) {
             this.fromOccupied = fromOccupied;
             return this;
         }

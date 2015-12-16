@@ -55,10 +55,10 @@ public class PlayerInfoPanel extends JPanel implements NewStateObserver {
 		iterationLabel.setForeground(textColor);
 
 		switch (playerID) {
-		case ConwayGameStateConstants.PLAYER1_CELL:
+		case ConwayGameStateConstants.PLAYER1_ID:
 			add(iterationLabel, BorderLayout.SOUTH);
 			break;
-		case ConwayGameStateConstants.PLAYER2_CELL:
+		case ConwayGameStateConstants.PLAYER2_ID:
 			
 			Image logo = null;
 			Dimension logoSize=new Dimension(170,100);
@@ -101,10 +101,10 @@ public class PlayerInfoPanel extends JPanel implements NewStateObserver {
 
 		int score = 0;
 		switch (playerID) {
-		case ConwayGameStateConstants.PLAYER1_CELL:
+		case ConwayGameStateConstants.PLAYER1_ID:
 			score = ((ConwayGameState) state).getP1LiveCellcount();
 			break;
-		case ConwayGameStateConstants.PLAYER2_CELL:
+		case ConwayGameStateConstants.PLAYER2_ID:
 			score = ((ConwayGameState) state).getP2LiveCellcount();
 			break;
 		default:
