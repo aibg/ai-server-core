@@ -8,18 +8,30 @@ import hr.best.ai.gl.AbstractPlayer;
 
 import java.io.IOException;
 
+/**
+ * Player wrapper with limited time for signalNewState method. Exception is 
+ * thrown if player crosses the time limit.
+ */
 public class TimeBucketPlayer extends AbstractPlayer {
+	
+    /**
+     * TimeBucketPlayer delegates signalNewState to this player
+     * while taking care of time constraints.
+     */
     private final AbstractPlayer  player;
-    private final long gainPerTurn;
-    private final long maxTime;
-    private long currTimeBucket;
+    
+    private final long millisecondsGainedPerTurn;
+    
+    private final long maxTurnTime;
+    
+    private long currentTurnTimeLeft;
 
-    public TimeBucketPlayer(AbstractPlayer player, long gainPerTurn, long maxTime) {
+    public TimeBucketPlayer(AbstractPlayer player, long millisecondsGainedPerTurn, long maxTurnTime) {
         super(player.getName());
         this.player = player;
-        this.gainPerTurn = gainPerTurn;
-        this.maxTime = maxTime;
-        this.currTimeBucket = maxTime;
+        this.millisecondsGainedPerTurn = millisecondsGainedPerTurn;
+        this.maxTurnTime = maxTurnTime;
+        this.currentTurnTimeLeft = maxTurnTime;
     }
 
     @Override
@@ -28,14 +40,14 @@ public class TimeBucketPlayer extends AbstractPlayer {
     }
 
     @Override
-    public JsonObject signalNewState(JsonObject state) throws IOException, InvalidActionException {
+    public JsonObject signalNewState(JsonObject state) throws Exception {
         long t0 = System.currentTimeMillis();
-        currTimeBucket = Math.min(this.maxTime, currTimeBucket + gainPerTurn);
-        state.add("timeGainPerTurn", new JsonPrimitive(gainPerTurn));
-        state.add("timeLeftForMove", new JsonPrimitive(currTimeBucket));
+        currentTurnTimeLeft = Math.min(this.maxTurnTime, currentTurnTimeLeft + millisecondsGainedPerTurn);
+        state.add("timeGainPerTurn", new JsonPrimitive(millisecondsGainedPerTurn));
+        state.add("timeLeftForMove", new JsonPrimitive(currentTurnTimeLeft));
         JsonObject sol = player.signalNewState(state);
-        currTimeBucket -= System.currentTimeMillis() - t0;
-        if (currTimeBucket < 0)
+        currentTurnTimeLeft -= System.currentTimeMillis() - t0;
+        if (currentTurnTimeLeft < 0)
             throw new TimeLimitException();
 
         return sol;

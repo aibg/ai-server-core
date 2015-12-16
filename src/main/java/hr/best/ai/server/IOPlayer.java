@@ -13,13 +13,16 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Generic IPlayer operating on Input & output stream
+ * Abstract player which communicates with clients via 
+ * input and output stream supplied in constructor.
  */
 public abstract class IOPlayer extends AbstractPlayer{
 
     final static Logger logger = Logger.getLogger(IOPlayer.class);
+   
     private final BufferedReader reader;
     private final PrintWriter writer;
+    
     private final JsonParser parser = new JsonParser();
 
     public IOPlayer(InputStream in, OutputStream out, String name) throws IOException{
@@ -34,6 +37,9 @@ public abstract class IOPlayer extends AbstractPlayer{
         writer.println(message.toString());
     }
 
+    /**
+     * Sends state to output stream and reads player action from input.
+     */
     @Override
     public JsonObject signalNewState(JsonObject state) throws IOException, InvalidActionException {
         logger.debug(String.format("%s sent: %s", this.getName(),

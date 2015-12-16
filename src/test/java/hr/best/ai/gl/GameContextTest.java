@@ -208,7 +208,7 @@ public class GameContextTest {
                     verify(current, times(1)).toJSONObjectAsPlayer(index);
                     verify(p, times(1)).signalNewState(jsonState);
                     verify(current, times(1)).parseAction(jsonAction);
-                } catch (IOException | InvalidActionException e) {
+                } catch (Exception e) {
                     fail(e.getMessage());
                     e.printStackTrace();
                 }
