@@ -418,11 +418,11 @@ public class ConwayGameState implements State {
 
 		//check if activating living cells
 		for (Cell c : p1)
-			if (isPlayerCell(getCell(c.getRow(), c.getCol())))
+			if (CellType.isPlayerCell(getCell(c.getRow(), c.getCol())))
 				throw new IllegalArgumentException("P1 tried to activate a living cell");
 
 		for (Cell c : p2)
-            if (isPlayerCell(getCell(c.getRow(), c.getCol())))
+            if (CellType.isPlayerCell(getCell(c.getRow(), c.getCol())))
                 throw new IllegalArgumentException("P1 tried to activate a living cell");
 
         /**
@@ -473,9 +473,9 @@ public class ConwayGameState implements State {
 		for (int i = 0; i < getRows(); ++i)
 			for (int j = 0; j < getCols(); ++j) {
                 final CellType currentCell = fieldCopy[i][j];
-                if (isPlayerCell(currentCell)) {
+                if (CellType.isPlayerCell(currentCell)) {
                     final int friendlyCellCount = getSurroundingCellCount(i, j, currentCell, fieldCopy);
-                    final int enemyCellCount = getSurroundingCellCount(i, j, inversePlayerCell(currentCell), fieldCopy);
+                    final int enemyCellCount = getSurroundingCellCount(i, j, CellType.inversePlayerCell(currentCell), fieldCopy);
                     sol[i][j] = fromOccupied.apply(Triple.of(
                             friendlyCellCount
                             , enemyCellCount
@@ -508,43 +508,6 @@ public class ConwayGameState implements State {
             return -1;
         return CellType.P2.getID();
     }
-    
-    /**
-     * Checks if cell is alive or dead.
-     * 
-     * @param value cell value
-     * @return <code>true</code> if its alive, <code>false</code> otherwise
-     */
-    public static boolean isPlayerCell(CellType value) {
-        switch (value) {
-            case P1:
-            case P2:
-                return true;
-            case  DEAD:
-                return false;
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-    
-    /**
-     * @param player player constant
-     * @return other player constant
-     */
-    public static CellType inversePlayerCell(CellType value) {
-        switch (value) {
-            case P1:
-                return CellType.P2;
-            case P2:
-                return CellType.P1;
-            case  DEAD:
-                return CellType.DEAD;
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-    
-    
     
     public static Builder newBuilder(int rows, int cols) {
         return new Builder(rows, cols);
