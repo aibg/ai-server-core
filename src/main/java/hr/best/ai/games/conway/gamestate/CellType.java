@@ -13,10 +13,10 @@ public enum CellType {
     public int getID() {
         return playerID;
     }
-    
+
     /**
      * Checks if cell is alive or dead.
-     * 
+     *
      * @param value cell value
      * @return <code>true</code> if its alive, <code>false</code> otherwise
      */
@@ -31,10 +31,12 @@ public enum CellType {
                 throw new IllegalArgumentException();
         }
     }
-    
+
     /**
-     * @param player player constant
+     * This function takes cell value and returns opposing players.
+     * @param value cell value
      * @return other player constant
+     * @throws IllegalArgumentException if dead cell.
      */
     public static CellType inversePlayerCell(CellType value) {
         switch (value) {
@@ -43,7 +45,7 @@ public enum CellType {
             case P2:
                 return CellType.P1;
             case  DEAD:
-                return CellType.DEAD;
+                throw new IllegalArgumentException("Dead cell has no inverse player");
             default:
                 throw new IllegalArgumentException();
         }
