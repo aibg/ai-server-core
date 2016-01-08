@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>hr.best.ai.server</groupId>
-    <artifactId>ai-server</artifactId>
+    <groupId>hr.best.ai</groupId>
+    <artifactId>ai-server-core</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -25,11 +25,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>
         </dependency>
-        <dependency>
-			<groupId>com.kitfox.svg</groupId>
-			<artifactId>svg-salamander</artifactId>
-			<version>1.0</version>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -45,7 +40,7 @@
     </dependencies>
 
     <build>
-        <finalName>ai-server</finalName>
+        <finalName>ai-server-core</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -59,35 +54,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <!-- Jar file entry point -->
-                            <mainClass>hr.best.ai.games.conway.RunGame</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.dstovall</groupId>
-                <artifactId>onejar-maven-plugin</artifactId>
-                <version>1.4.4</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>one-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>onejar-maven-plugin.googlecode.com</id>
-            <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
-        </pluginRepository>
-    </pluginRepositories>
-
 </project>

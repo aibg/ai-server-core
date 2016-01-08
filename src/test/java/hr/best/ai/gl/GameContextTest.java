@@ -2,17 +2,10 @@ package hr.best.ai.gl;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import hr.best.ai.exceptions.InvalidActionException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
