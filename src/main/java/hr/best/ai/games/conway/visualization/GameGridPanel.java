@@ -1,7 +1,6 @@
 package hr.best.ai.games.conway.visualization;
 
 import hr.best.ai.games.conway.gamestate.ConwayGameState;
-import hr.best.ai.games.conway.gamestate.ConwayGameStateConstants;
 import hr.best.ai.gl.NewStateObserver;
 import hr.best.ai.gl.State;
 
@@ -106,13 +105,13 @@ public class GameGridPanel extends JPanel implements NewStateObserver {
 		for (int i = 0; i < state.getRows(); i++) {
 			for (int j = 0; j < state.getCols(); j++) {
 				switch (state.getCell(i, j)) {
-				case ConwayGameStateConstants.PLAYER1_CELL:
+				case P1:
                     paintCell(g, i, j, player1Color);
 					break;
-				case ConwayGameStateConstants.PLAYER2_CELL:
+				case P2:
                     paintCell(g, i, j, player2Color);
                     break;
-				case ConwayGameStateConstants.DEAD_CELL:
+				case DEAD:
 					continue;
 				}
 			}

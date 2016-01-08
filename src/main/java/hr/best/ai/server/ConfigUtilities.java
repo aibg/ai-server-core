@@ -4,8 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import hr.best.ai.games.conway.gamestate.CellType;
 import hr.best.ai.games.conway.gamestate.ConwayGameState;
-import hr.best.ai.games.conway.gamestate.ConwayGameStateConstants;
 import hr.best.ai.games.conway.RunGame;
 import hr.best.ai.games.conway.players.DoNothingPlayerDemo;
 import hr.best.ai.gl.AbstractPlayer;
@@ -78,12 +79,12 @@ public class ConfigUtilities {
 
         players.get(0).getAsJsonObject().getAsJsonArray("startingCells").forEach((JsonElement e) -> {
             final JsonArray a = e.getAsJsonArray();
-            builder.setCell(a.get(0).getAsInt(), a.get(1).getAsInt(), ConwayGameStateConstants.PLAYER1_CELL);
+            builder.setCell(a.get(0).getAsInt(), a.get(1).getAsInt(), CellType.P1);
         });
 
         players.get(1).getAsJsonObject().getAsJsonArray("startingCells").forEach((JsonElement e) -> {
             final JsonArray a = e.getAsJsonArray();
-            builder.setCell(a.get(0).getAsInt(), a.get(1).getAsInt(), ConwayGameStateConstants.PLAYER2_CELL);
+            builder.setCell(a.get(0).getAsInt(), a.get(1).getAsInt(), CellType.P2);
         });
         return builder.getState();
     }

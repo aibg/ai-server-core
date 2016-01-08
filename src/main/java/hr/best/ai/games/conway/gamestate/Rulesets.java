@@ -15,7 +15,7 @@ import java.util.function.Function;
  * how living cell changes.<br><br>
  * Each cell on the grid changes according to these two functions:<br>
  * fromEmpty    (player1 neighbors, player2 neighbors)-> cell type<br>
- * fromOccupied (friendly neighbors, enemy neighbors, player constant) -> cell type
+ * fromOccupied (friendly neighbors, enemy neighbors, cell_type) -> cell type
  * 
  */
 public class Rulesets {
@@ -31,20 +31,20 @@ public class Rulesets {
          * Cell activates only with exactly 3 friendly neighbors and 0 enemy
          * neighbors
          */
-        public final static Integer fromEmpty(Pair<Integer, Integer> a) {
+        public final static CellType fromEmpty(Pair<Integer, Integer> a) {
             if (a.getLeft() == 3 && a.getRight() == 0)
-                return ConwayGameStateConstants.PLAYER1_CELL;
+                return CellType.P1;
             if (a.getLeft() == 0 && a.getRight() == 3)
-                return ConwayGameStateConstants.PLAYER2_CELL;
-            return ConwayGameStateConstants.DEAD_CELL;
+                return CellType.P2;
+            return CellType.DEAD;
         }
         
         /**
          * Cell stays active only with 2 or 3 friendly neighbors
          */
-        public final static Integer fromOccupied(Triple<Integer, Integer, Integer> a) {
+        public final static CellType fromOccupied(Triple<Integer, Integer, CellType> a) {
             return a.getLeft() == 2 || a.getLeft() == 3
-                    ? a.getRight() : ConwayGameStateConstants.DEAD_CELL;
+                    ? a.getRight() : CellType.DEAD;
         }
     }
 
@@ -59,24 +59,24 @@ public class Rulesets {
         /**
          * Cell activates only with 2 or 3 neighbors (#friendly neighbors-#enemy neighbors)
          */
-        public final static Integer fromEmpty(Pair<Integer, Integer> a) {
+        public final static CellType fromEmpty(Pair<Integer, Integer> a) {
             if (a.getLeft() - a.getRight() == 3)
-                return ConwayGameStateConstants.PLAYER1_CELL;
+                return CellType.P1;
             if (a.getLeft() - a.getRight() == -3)
-                return ConwayGameStateConstants.PLAYER2_CELL;
-            return ConwayGameStateConstants.DEAD_CELL;
+                return CellType.P2;
+            return CellType.DEAD;
         }
         
         /**
          * Cell activates only with 2 or 3 neighbors (friendly-enemy)
          */
-        public final static Integer fromOccupied(Triple<Integer, Integer, Integer> a) {
+        public final static CellType fromOccupied(Triple<Integer, Integer, CellType> a) {
             switch (a.getLeft() - a.getMiddle()) {
                 case 2:
                 case 3:
                     return a.getRight();
                 default:
-                    return ConwayGameStateConstants.DEAD_CELL;
+                    return CellType.DEAD;
             }
         }
     }
@@ -84,12 +84,12 @@ public class Rulesets {
     /**
      * Hashmap of fromEmpty rules (functions)
      */
-    public final static HashMap<String, Function<Pair<Integer, Integer>, Integer>> fromEmpty = new HashMap<>();
+    public final static HashMap<String, Function<Pair<Integer, Integer>, CellType>> fromEmpty = new HashMap<>();
     
     /**
      * Hashmap of fromEmpty rules (functions)
      */
-    public final static HashMap<String, Function<Triple<Integer, Integer, Integer>, Integer>> fromOccupied = new
+    public final static HashMap<String, Function<Triple<Integer, Integer, CellType>, CellType>> fromOccupied = new
             HashMap<>();
 
     private static Rulesets singleton = new Rulesets();

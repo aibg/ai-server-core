@@ -1,7 +1,7 @@
 package hr.best.ai.games;
 
+import hr.best.ai.games.conway.gamestate.CellType;
 import hr.best.ai.games.conway.gamestate.ConwayGameState;
-import hr.best.ai.games.conway.gamestate.ConwayGameStateConstants;
 import hr.best.ai.games.conway.gamestate.Rulesets.*;
 import hr.best.ai.games.sum.SumState;
 import hr.best.ai.gl.GameContext;
@@ -22,33 +22,33 @@ public class GameContextFactory {
     }
     public static ConwayGameState.Builder getBasicGrid() {
         return ConwayGameState.newBuilder(10,15)
-                .setCell(4,5, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(5,5, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(5,4, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(7,9, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(8,9, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(8,8, ConwayGameStateConstants.PLAYER2_CELL);
+                .setCell(4,5, CellType.P1)
+                .setCell(5,5, CellType.P1)
+                .setCell(5,4, CellType.P1)
+                .setCell(7,9, CellType.P2)
+                .setCell(8,9, CellType.P2)
+                .setCell(8,8, CellType.P2);
     }
 
     public static State demoState() {
         return ConwayGameState.newBuilder(12, 12)
                 .setRuleset("classic")
                         // P1 Oscilator
-                .setCell(2, 1, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(3, 1, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(4, 1, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(1, 2, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(2, 2, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(3, 2, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(2, 1, CellType.P1)
+                .setCell(3, 1, CellType.P1)
+                .setCell(4, 1, CellType.P1)
+                .setCell(1, 2, CellType.P1)
+                .setCell(2, 2, CellType.P1)
+                .setCell(3, 2, CellType.P1)
                         // P2 Oscilator
-                .setCell(7 ,  7, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(7 ,  8, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(8 ,  7, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(8 ,  8, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(9 ,  9, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(9 , 10, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(10,  9, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(10, 10, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(7 ,  7, CellType.P2)
+                .setCell(7 ,  8, CellType.P2)
+                .setCell(8 ,  7, CellType.P2)
+                .setCell(8 ,  8, CellType.P2)
+                .setCell(9 ,  9, CellType.P2)
+                .setCell(9 , 10, CellType.P2)
+                .setCell(10,  9, CellType.P2)
+                .setCell(10, 10, CellType.P2)
                 .getState();
     }
 
@@ -56,21 +56,21 @@ public class GameContextFactory {
         return ConwayGameState.newBuilder(100, 100)
                 .setRuleset("classic")
                         // P1 Oscilator
-                .setCell(2, 1, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(3, 1, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(4, 1, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(1, 2, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(2, 2, ConwayGameStateConstants.PLAYER1_CELL)
-                .setCell(3, 2, ConwayGameStateConstants.PLAYER1_CELL)
+                .setCell(2, 1, CellType.P1)
+                .setCell(3, 1, CellType.P1)
+                .setCell(4, 1, CellType.P1)
+                .setCell(1, 2, CellType.P1)
+                .setCell(2, 2, CellType.P1)
+                .setCell(3, 2, CellType.P1)
                         // P2 Oscilator
-                .setCell(7 ,  7, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(7 ,  8, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(8 ,  7, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(8 ,  8, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(9 ,  9, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(9 , 10, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(10,  9, ConwayGameStateConstants.PLAYER2_CELL)
-                .setCell(10, 10, ConwayGameStateConstants.PLAYER2_CELL)
+                .setCell(7 ,  7, CellType.P2)
+                .setCell(7 ,  8, CellType.P2)
+                .setCell(8 ,  7, CellType.P2)
+                .setCell(8 ,  8, CellType.P2)
+                .setCell(9 ,  9, CellType.P2)
+                .setCell(9 , 10, CellType.P2)
+                .setCell(10,  9, CellType.P2)
+                .setCell(10, 10, CellType.P2)
                 .getState();
     }
 
@@ -91,15 +91,14 @@ public class GameContextFactory {
         State state = getBasicGrid()
                 .setFromEmpty((Pair<Integer, Integer> a) -> {
                     if (a.getLeft() == 3 && a.getRight() == 0)
-                        return ConwayGameStateConstants.PLAYER1_CELL;
+                        return CellType.P1;
                     if (a.getLeft() == 0 && a.getRight() == 3)
-                        return ConwayGameStateConstants.PLAYER2_CELL;
-                    return ConwayGameStateConstants.DEAD_CELL;
+                        return CellType.P2;
+                    return CellType.DEAD;
                 })
-                .setFromOccupied((Triple<Integer, Integer, Integer> a) -> {
-                            int diff = a.getLeft() - a.getRight();
-                            return diff == 2 || diff == 3 ? a.getRight() : ConwayGameStateConstants
-                                    .DEAD_CELL;
+                .setFromOccupied((Triple<Integer, Integer, CellType> a) -> {
+                            int diff = a.getLeft() - a.getMiddle();
+                            return diff == 2 || diff == 3 ? a.getRight() : CellType.DEAD;
                         }
                 )
                 .getState();
