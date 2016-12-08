@@ -1,5 +1,6 @@
 package hr.best.ai.gl;
 
+import com.google.gson.JsonElement;
 import hr.best.ai.exceptions.InvalidActionException;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ public abstract class AbstractPlayer implements AutoCloseable {
      * @throws IOException in case of irregularity in communication
      * @throws AIBGException when something went wrong related to game logic
      */
-    public abstract JsonObject signalNewState(JsonObject state) throws Exception;
+    public abstract JsonElement signalNewState(JsonObject state) throws Exception;
 
     /**
      * @return player name

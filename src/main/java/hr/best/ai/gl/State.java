@@ -1,5 +1,6 @@
 package hr.best.ai.gl;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import hr.best.ai.exceptions.InvalidActionException;
 
@@ -50,7 +51,7 @@ public interface State {
      * @throws InvalidActionException
      *             if action cannot be parsed properly
      */
-    Action parseAction(JsonObject action) throws InvalidActionException;
+    Action parseAction(JsonElement action) throws InvalidActionException;
 
     /**
      * @return -1 for TIE, else playerID for winner

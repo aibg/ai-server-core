@@ -45,7 +45,7 @@ public class TimeBucketPlayer extends AbstractPlayer {
         currentTurnTimeLeft = Math.min(this.maxTurnTime, currentTurnTimeLeft + millisecondsGainedPerTurn);
         state.add("timeGainPerTurn", new JsonPrimitive(millisecondsGainedPerTurn));
         state.add("timeLeftForMove", new JsonPrimitive(currentTurnTimeLeft));
-        JsonObject sol = player.signalNewState(state);
+        JsonObject sol = player.signalNewState(state).getAsJsonObject();
         currentTurnTimeLeft -= System.currentTimeMillis() - t0;
         if (currentTurnTimeLeft < 0)
             throw new TimeLimitException();
