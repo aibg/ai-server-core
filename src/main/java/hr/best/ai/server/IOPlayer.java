@@ -1,5 +1,6 @@
 package hr.best.ai.server;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -41,7 +42,7 @@ public abstract class IOPlayer extends AbstractPlayer{
      * Sends state to output stream and reads player action from input.
      */
     @Override
-    public JsonObject signalNewState(JsonObject state) throws IOException, InvalidActionException {
+    public JsonElement signalNewState(JsonObject state) throws IOException, InvalidActionException {
         logger.debug(String.format("%s sent: %s", this.getName(),
                 logger.isTraceEnabled() ? state.toString() : "[Set logging level to TRACE for full state]"));
         long t = System.currentTimeMillis();
@@ -56,7 +57,7 @@ public abstract class IOPlayer extends AbstractPlayer{
                 , System.currentTimeMillis() - t
                 , logger.isTraceEnabled() ? line : "[Set logging level to TRACE for full line received]"));
         try {
-            return parser.parse(line).getAsJsonObject();
+            return parser.parse(line);
         } catch (IllegalStateException ex) {
             throw new InvalidActionException(ex);
         }

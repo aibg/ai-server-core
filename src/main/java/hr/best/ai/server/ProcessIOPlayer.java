@@ -1,5 +1,6 @@
 package hr.best.ai.server;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import hr.best.ai.exceptions.InvalidActionException;
 
@@ -56,7 +57,7 @@ public class ProcessIOPlayer extends IOPlayer {
     }
 
     @Override
-    public JsonObject signalNewState(JsonObject state) throws IOException, InvalidActionException {
+    public JsonElement signalNewState(JsonObject state) throws IOException, InvalidActionException {
         try {
             return super.signalNewState(state);
         } finally {

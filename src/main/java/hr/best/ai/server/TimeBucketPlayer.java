@@ -1,5 +1,6 @@
 package hr.best.ai.server;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import hr.best.ai.exceptions.InvalidActionException;
@@ -40,12 +41,12 @@ public class TimeBucketPlayer extends AbstractPlayer {
     }
 
     @Override
-    public JsonObject signalNewState(JsonObject state) throws Exception {
+    public JsonElement signalNewState(JsonObject state) throws Exception {
         long t0 = System.currentTimeMillis();
         currentTurnTimeLeft = Math.min(this.maxTurnTime, currentTurnTimeLeft + millisecondsGainedPerTurn);
         state.add("timeGainPerTurn", new JsonPrimitive(millisecondsGainedPerTurn));
         state.add("timeLeftForMove", new JsonPrimitive(currentTurnTimeLeft));
-        JsonObject sol = player.signalNewState(state).getAsJsonObject();
+        JsonElement sol = player.signalNewState(state);
         currentTurnTimeLeft -= System.currentTimeMillis() - t0;
         if (currentTurnTimeLeft < 0)
             throw new TimeLimitException();
