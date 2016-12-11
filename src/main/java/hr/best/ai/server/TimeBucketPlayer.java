@@ -2,11 +2,8 @@ package hr.best.ai.server;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import hr.best.ai.exceptions.InvalidActionException;
 import hr.best.ai.exceptions.TimeLimitException;
 import hr.best.ai.gl.AbstractPlayer;
-
-import java.io.IOException;
 
 /**
  * Player wrapper with limited time for signalNewState method. Exception is 
@@ -51,6 +48,12 @@ public class TimeBucketPlayer extends AbstractPlayer {
             throw new TimeLimitException();
 
         return sol;
+    }
+
+    @Override
+    public void signalFinal(JsonObject state) throws Exception {
+        player.signalFinal(state);
+        close();
     }
 
     @Override

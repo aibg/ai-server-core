@@ -37,6 +37,8 @@ public abstract class AbstractPlayer implements AutoCloseable {
      */
     public abstract JsonElement signalNewState(JsonObject state) throws Exception;
 
+    public abstract void signalFinal(JsonObject state) throws Exception;
+
     /**
      * @return player name
      */
