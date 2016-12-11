@@ -153,6 +153,21 @@ public class GameContext implements AutoCloseable {
              * and than determine what they'd like to do with it.
              */
             awaitObservers(signalObservers(threadPool));
+            for (int i = 0; i < players.size(); ++i) {
+                final int playerNo = i;
+                threadPool.submit(() -> {
+                    try {
+                        players
+                                .get(playerNo)
+                                .signalFinal(
+                                        state.toJSONObjectAsPlayer(playerNo));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                })
+                ;
+            }
+
         } catch (Exception ex) {
             logger.error(ex);
             throw ex;

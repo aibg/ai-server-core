@@ -64,6 +64,12 @@ public abstract class IOPlayer extends AbstractPlayer{
     }
 
     @Override
+    public void signalFinal(JsonObject state) throws Exception {
+        writer.println(state.toString());
+        close();
+    }
+
+    @Override
     public void close() throws Exception {
         reader.close();
         writer.close();
