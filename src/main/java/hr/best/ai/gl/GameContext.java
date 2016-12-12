@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Main class which surrounds whole play of one game. Game can be in one of
@@ -147,7 +148,7 @@ public class GameContext implements AutoCloseable {
                         System.currentTimeMillis() - turnStartTime)
                 );
             }
-            logger.debug("Final state: " + state.toString());
+            logger.debug("Final state: " + state.toJSONObject().toString());
             /**
              * One last update to observers. They should query whether isFinal state
              * and than determine what they'd like to do with it.
@@ -172,7 +173,7 @@ public class GameContext implements AutoCloseable {
             logger.error(ex);
             throw ex;
         } finally {
-            threadPool.shutdown();
+            threadPool.awaitTermination(10, TimeUnit.SECONDS);
             close();
         }
     }
