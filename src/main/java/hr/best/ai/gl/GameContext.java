@@ -173,6 +173,7 @@ public class GameContext implements AutoCloseable {
             logger.error(ex);
             throw ex;
         } finally {
+            threadPool.shutdown();
             threadPool.awaitTermination(10, TimeUnit.SECONDS);
             close();
         }
